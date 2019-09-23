@@ -1,4 +1,5 @@
 # Server
+# test server push
 function(input, output, session) {
   output$urlText <- renderText({
     paste(sep = "",
