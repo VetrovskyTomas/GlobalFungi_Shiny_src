@@ -1,0 +1,75 @@
+hr {border-top: 1px solid #000000;}
+
+.main-header .logo {
+  font-family: "Calibri";
+  font-weight: bold;
+  font-size: 24px;
+}
+
+/* tabPanel */
+.tabbable > .nav > li > a {
+  /*background-color: #8aaad3;*/
+  background-color: #f8f8f8;
+}
+
+.tabbable > .nav {
+  /*background-color: #7da2d1;*/
+  background-color: white;
+}
+
+.sidebar {
+    position: fixed;
+    width: 200px;
+    white-space: nowrap;
+    overflow: visible;
+}
+/*
+.tabbable { 
+  background-color: #98b3d7;
+}
+*/
+
+/* logo */
+.skin-blue .main-header .logo {
+background-color: black;
+}
+
+.skin-blue .main-header .logo:hover {
+background-color: black;
+}
+                              
+/* navbar (rest of the header) */
+.skin-blue .main-header .navbar {
+background-color: black;
+}
+
+/* body */
+.content-wrapper, .right-side {
+background-color: #7da2d1;
+}
+
+h2 {
+  font-family: "Calibri";font-weight: bold;color: black;font-size: 16px;
+}
+
+/* main title */
+#welcome_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 20px;}
+
+/* title 1 */
+#info_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 16px;}
+
+footer {
+  font-family: "Calibri";
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:32px;   /* Height of the footer */
+  padding: 10px;
+  background-color: black;
+  z-index: 1000;
+  margin-left: -15px;
+}
+
