@@ -21,6 +21,7 @@ library(data.table) # fast read
 ##############
 ### GLOBAL ###
 ##############
+users = reactiveValues(count = 0, max = 0)
 # load module for data
 source("module_load.R", local = TRUE)
 

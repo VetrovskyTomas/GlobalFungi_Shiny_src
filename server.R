@@ -14,6 +14,22 @@ library(ECharts2Shiny)
 ##############
 
 server <- function(session, input, output) {
+  
+  # someone started session...
+  onSessionStart = isolate({
+    users$count = users$count + 1
+    if (users$count > users$max){
+      users$max = users$max + 1
+    }
+  })
+  
+  # someone ended session...
+  onSessionEnded(function() {
+    isolate({
+      users$count = users$count - 1
+    })
+  })  
+  
   #hide sidebar collabse button...  
   shinyjs::runjs("document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';")
   #
@@ -39,9 +55,11 @@ server <- function(session, input, output) {
   # info about connection...
   output$urlText <- renderText({
     paste(sep = "",
+          "# users:", users$count, "\n",
+          "max users:", users$max, "\n",
           "protocol: ", session$clientData$url_protocol, "\n",
-          "hostname: ", session$clientData$url_hostname, "\n",
-          "pathname: ", session$clientData$url_pathname, "\n",
+          "host: ", session$clientData$url_hostname, "\n",
+          "path: ", session$clientData$url_pathname, "\n",
           "port: ",     session$clientData$url_port,     "\n",
           "search: ",   session$clientData$url_search,   "\n"
     )
