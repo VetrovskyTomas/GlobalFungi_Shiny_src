@@ -3,42 +3,7 @@
 ######################
 ui <- tagList(
   dashboardPage(
-    dashboardHeader(
-      title = "Fungal Metastudy Database v 0.1",
-      titleWidth = 380,
-      #announcements...
-      dropdownMenu(type = "notifications",
-                   notificationItem(
-                     text = "5 new users today",
-                     icon("users")
-                   ),
-                   notificationItem(
-                     text = "12 items delivered",
-                     icon("truck"),
-                     status = "success"
-                   ),
-                   notificationItem(
-                     text = "Server load at 86%",
-                     icon = icon("exclamation-triangle"),
-                     status = "warning"
-                   )
-      ),
-      #progress...
-      dropdownMenu(type = "tasks", badgeStatus = "success",
-                   taskItem(value = 90, color = "green",
-                            "Documentation"
-                   ),
-                   taskItem(value = 17, color = "aqua",
-                            "Project X"
-                   ),
-                   taskItem(value = 75, color = "yellow",
-                            "Server deployment"
-                   ),
-                   taskItem(value = 80, color = "red",
-                            "Overall project"
-                   )
-      )
-    ),
+    dashboardHeader(title = "Fungal Metastudy Database v 0.11", titleWidth = 240),
     #sidebar...
     dashboardSidebar(
       width = 200,

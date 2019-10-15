@@ -1,29 +1,29 @@
 # Function for module UI with SH
 outputGeneralSHUI <- function(id) {
   ns <- NS(id)
-  
-  fluidPage(
-    tags$script("
-    Shiny.addCustomMessageHandler('resetValue', function(variableName) {
-      Shiny.onInputChange(variableName, null);
-    });
-    "),
-    # We MUST load the ECharts javascript library in advance
-    loadEChartsLibrary(),
-    loadEChartsTheme('shine'),
     #show map & metadata ...
     sidebarPanel(width = "100%", style = "background-color:white;",
-    tabsetPanel(id = "tabs",
-      tabPanel("SHs",
-        br(),
-        fluidRow(
-          sidebarPanel(
-            downloadButton(ns("downloadSHs"), "Download SH list")
-          )
+      tags$script("Shiny.addCustomMessageHandler('resetValue', function(variableName) {
+        Shiny.onInputChange(variableName, null);
+      });
+      "),
+      # We MUST load the ECharts javascript library in advance
+      loadEChartsLibrary(),
+      loadEChartsTheme('shine'),
+      # samples info...
+      verbatimTextOutput(ns('info_sample_count')),
+      # tabs...
+      tabsetPanel(id = "tabs",
+        tabPanel("SHs",
+          br(),
+          fluidRow(
+            sidebarPanel(
+              downloadButton(ns("downloadSHs"), "Download SH list")
+            )
+          ),
+          br(),
+          DT::dataTableOutput(ns("SH_list"))  
         ),
-        br(),
-        DT::dataTableOutput(ns("SH_list"))  
-      ),
       tabPanel("Sample type & Biome",
                # pie charts...
                sidebarPanel(width = "100%", style = "background-color:white;",
@@ -109,20 +109,21 @@ outputGeneralSHUI <- function(id) {
       )
     )
     )
-  )
+  
   
 }
 
 # Function for module UI with SH
 outputGeneralUI <- function(id) {
   ns <- NS(id)
-  
-  fluidPage(
-    # We MUST load the ECharts javascript library in advance
-    loadEChartsLibrary(),
-    loadEChartsTheme('shine'),
     #show map & metadata ...
     sidebarPanel(width = "100%", style = "background-color:white;",
+                 # We MUST load the ECharts javascript library in advance
+                 loadEChartsLibrary(),
+                 loadEChartsTheme('shine'),
+                 # samples info...
+                 verbatimTextOutput(ns('info_sample_count')),
+                 # tabs...
                  tabsetPanel(id = "tabs",
                              tabPanel("Sample type & Biome",
                                       # pie charts...
@@ -209,7 +210,6 @@ outputGeneralUI <- function(id) {
                              )
                  )
     )
-  )
 }
 
 # Function for module server logic
@@ -523,5 +523,14 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
       #updateTabItems(session = parent, "menu_tabs", "fmd_results")
     })
     }
+    
+    # show samples count info...
+    output$info_sample_count <- renderText({
+      num_samples <- 0
+      if (!is.null(variable$samples)){
+        num_samples <- nrow(variable$samples)
+      }
+      return(paste0("Result is covering ", num_samples, " samples")) 
+    })
     
 }

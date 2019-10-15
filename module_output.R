@@ -163,11 +163,9 @@ outputFunc <- function(input, output, session, variable, parent) {
   # dynamic content based on result type...
   output$dynamic_content <- renderUI({
     if (is.null(out_data$samples)){
-      fluidPage(
         sidebarPanel(width = "100%", style = "background-color:white;",
           h2("No results found.")
         )
-      )
     } else {
       if (!is.null(out_data$SHs)){
         outputGeneralSHUI(id = ns("results_out"))
@@ -211,4 +209,5 @@ outputFunc <- function(input, output, session, variable, parent) {
     }
     return(paste0("Here are the results for ", variable$type, " covering ", num_samples, " samples")) 
   })
+  
 }
