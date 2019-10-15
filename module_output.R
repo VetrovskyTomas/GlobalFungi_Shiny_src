@@ -88,7 +88,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       # filer sample based on selection...
       variants <- global_variants[which(global_variants$SH %in% variable$text), c("sequence", "samples", "abundances")]
       print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-      out_data$SeqVars <- variants[,"sequence"]
+      out_data$SeqVars <- variants[,c("samples","sequence")]
       
       samples <- strsplit(variants$samples, ';', fixed=TRUE)
       samples <- unique(unlist(samples))
@@ -110,7 +110,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       # filer sample based on selection...
       variants <- global_variants[which(global_variants$SH %in% SH_list$SH), c("sequence", "samples", "abundances")]
       print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-      out_data$SeqVars <- variants[,"sequence"]
+      out_data$SeqVars <- variants[,c("samples","sequence")]
         
       samples <- strsplit(variants$samples, ';', fixed=TRUE)
       samples <- unique(unlist(samples))
@@ -132,7 +132,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       # filer sample based on selection...
       variants <- global_variants[which(global_variants$SH %in% SH_list$SH), c("sequence", "samples", "abundances")]
       print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-      out_data$SeqVars <- variants[,"sequence"]
+      out_data$SeqVars <- variants[,c("samples","sequence")]
       
       samples <- strsplit(variants$samples, ';', fixed=TRUE)
       samples <- unique(unlist(samples))
@@ -176,30 +176,59 @@ outputFunc <- function(input, output, session, variable, parent) {
     }
   })
   
-  # dynamic button - seq vars...
-  output$dynamic_button <- renderUI({
-    if (!is.null(out_data$SeqVars)){
-      column(2,
-        textOutput(ns("seq_vars_count")),
-        downloadButton(ns("downloadSeqVars"), "Download FASTA")
-      )
-    }
-  })
   
-  # Downloadable fasta of selected sequence variants...
-  output$downloadSeqVars <- downloadHandler(
-    filename = "sequences.txt",
-    content = function(file) {
-      write.table(out_data$SeqVars, file, row.names = FALSE, dec = ".", sep = "\t", quote = FALSE)
-    }
-  )
-  
-  # show seq vars info...
-  output$seq_vars_count <- renderText({
-    if (!is.null(out_data$SeqVars)){
-      return(paste0("Found ", nrow(out_data$SeqVars), " of sequnce variants ")) 
-    }
-  })
+    # dynamic button - seq vars...
+    output$dynamic_button <- renderUI({
+      if (!is.null(out_data$SeqVars)){
+        column(2,
+          textOutput(ns("seq_vars_count")),
+          downloadButton(ns("downloadSeqVars"), "Download FASTA"),
+          checkboxInput(ns("seqs_derep"), "dereplicated", TRUE)
+        )
+      }
+    })
+    
+    # Downloadable fasta of selected sequence variants...
+    output$downloadSeqVars <- downloadHandler(
+
+      filename = "sequences.fasta",
+      content = function(file) {
+        if (!is.null(out_data$SeqVars)){
+          D <- NULL
+          # create fasta...
+          if (input$seqs_derep == TRUE) {
+            # dereplicated sequences...
+            fasta <- data.frame(
+              ids = seq.int(nrow(out_data$SeqVars)),
+              seqs = out_data$SeqVars[,"sequence"]
+            )
+            fasta$ids <- sub("^", paste0(">",variable$type,"_",variable$text,"_"), fasta$ids)
+            D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
+          } else {
+            # replicated sequences...
+            s <- strsplit(out_data$SeqVars$samples, split = ";", fixed=TRUE)
+            fasta <- data.frame(ids = unlist(s), seqs = rep(out_data$SeqVars$sequence, sapply(s, length)))
+            fasta$indices = seq.int(nrow(fasta))
+            fasta$titles <- paste0(fasta$indices,"_",fasta$ids)
+            # drop unnecesary columns...
+            fasta = subset(fasta, select = -c(indices,ids))
+            # add > to titles...
+            fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
+            fasta <- fasta[ , c("titles", "seqs")]
+            D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
+          }
+          write.table(D, file, row.names = FALSE, col.names = FALSE, quote = FALSE)
+        }
+      }
+    )
+    
+    # show seq vars info...
+    output$seq_vars_count <- renderText({
+      if (!is.null(out_data$SeqVars)){
+        return(paste0("Found ", nrow(out_data$SeqVars), " of sequnce variants "))
+      }
+    })
+
   
   # show output info...
   output$out_type <- renderText({
