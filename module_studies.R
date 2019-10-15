@@ -4,7 +4,9 @@ studiesUI <- function(id) {
   
   fluidPage(
     h1(id="welcome_title", "All studies:"),
-    DT::dataTableOutput(ns("data"))
+    sidebarPanel(width = "100%", style = "background-color:white;",
+      DT::dataTableOutput(ns("data"))
+    )
   )
   
 }

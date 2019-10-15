@@ -35,7 +35,7 @@ homeFunc <- function(input, output, session, samples) {
   })
   #basic info...
   output$fm_info <- renderPrint({
-    return(cat(paste0("Actual number of samples in database: ", nrow(global_samples), " (",nrow(global_papers)," studies)")))
+    return(cat(paste0("Actual number of samples in database: ", nrow(global_samples), " (",nrow(global_papers)," studies) and ",nrow(global_variants)," sequence variants")))
     #return("Actual number of samples in database: ")
   })
   

@@ -5,78 +5,80 @@ insertUI <- function(id) {
   fluidPage(
     # App title ----
     h1(id="welcome_title", "Insert sample metadata"),
-    
-    tabsetPanel(id = "inTabset",
-      ######################################################
-      tabPanel(title = "Study info", value = "panel2",
-        h1(id="info_title", "Study details"),
-        sidebarPanel(
-          checkboxInput("Published", "Published", TRUE)
-        )
-      ),
-      tabPanel(title = "Samples info", value = "panel2",
-        h1(id="info_title", "Samples details"),
-        # Sidebar layout with input and output definitions ----
-        sidebarLayout(
-          # Sidebar panel for inputs ----
-          sidebarPanel(
-            # Input: Select a file ----
-            fileInput("file1", "Choose CSV File",
-                      multiple = FALSE,
-                      accept = c("text/csv",
-                                 "text/comma-separated-values,text/plain",
-                                 ".csv")),
-            
-            # Horizontal line ----
-            tags$hr(),
-            
-            # Input: Checkbox if file has header ----
-            checkboxInput("header", "Header", TRUE),
-            
-            # Input: Select separator ----
-            radioButtons("sep", "Separator",
-                         choices = c(Comma = ",",
-                                     Semicolon = ";",
-                                     Tab = "\t"),
-                         selected = ","),
-            
-            # Input: Select quotes ----
-            radioButtons("quote", "Quote",
-                         choices = c(None = "",
-                                     "Double Quote" = '"',
-                                     "Single Quote" = "'"),
-                         selected = '"'),
-            
-            # Horizontal line ----
-            tags$hr(),
-            
-            # Input: Select number of rows to display ----
-            radioButtons("disp", "Display",
-                         choices = c(Head = "head",
-                                     All = "all"),
-                         selected = "head")
-            
-          ),
-          # Main panel for displaying outputs ----
-          mainPanel(
-            # Output: Data file ----
-            tableOutput("contents")
-          )
-        )
-      ),
-      tabPanel(title = "Data upload", value = "panel2",
-               h1(id="info_title", "Data upload"),
-               sidebarPanel(
-                 # Input: Select a file ----
-                 fileInput("file1", "Choose sequence files",
-                           multiple = FALSE,
-                           accept = c("text/csv",
-                                      "text/comma-separated-values,text/plain",
-                                      ".csv")),
-                 checkboxInput("Published", "Published", TRUE)
-               )
-      )
-      ###############################################
+    sidebarPanel(width = "100%", style = "background-color:white;",
+      h2("Coming soon...")
+      # tabsetPanel(id = "inTabset",
+      #   ######################################################
+      #   tabPanel(title = "Study info", value = "panel2",
+      #     h1(id="info_title", "Study details"),
+      #     sidebarPanel(
+      #       checkboxInput("Published", "Published", TRUE)
+      #     )
+      #   ),
+      #   tabPanel(title = "Samples info", value = "panel2",
+      #     h1(id="info_title", "Samples details"),
+      #     # Sidebar layout with input and output definitions ----
+      #     sidebarLayout(
+      #       # Sidebar panel for inputs ----
+      #       sidebarPanel(
+      #         # Input: Select a file ----
+      #         fileInput("file1", "Choose CSV File",
+      #                   multiple = FALSE,
+      #                   accept = c("text/csv",
+      #                              "text/comma-separated-values,text/plain",
+      #                              ".csv")),
+      #         
+      #         # Horizontal line ----
+      #         tags$hr(),
+      #         
+      #         # Input: Checkbox if file has header ----
+      #         checkboxInput("header", "Header", TRUE),
+      #         
+      #         # Input: Select separator ----
+      #         radioButtons("sep", "Separator",
+      #                      choices = c(Comma = ",",
+      #                                  Semicolon = ";",
+      #                                  Tab = "\t"),
+      #                      selected = ","),
+      #         
+      #         # Input: Select quotes ----
+      #         radioButtons("quote", "Quote",
+      #                      choices = c(None = "",
+      #                                  "Double Quote" = '"',
+      #                                  "Single Quote" = "'"),
+      #                      selected = '"'),
+      #         
+      #         # Horizontal line ----
+      #         tags$hr(),
+      #         
+      #         # Input: Select number of rows to display ----
+      #         radioButtons("disp", "Display",
+      #                      choices = c(Head = "head",
+      #                                  All = "all"),
+      #                      selected = "head")
+      #         
+      #       ),
+      #       # Main panel for displaying outputs ----
+      #       mainPanel(
+      #         # Output: Data file ----
+      #         tableOutput("contents")
+      #       )
+      #     )
+      #   ),
+      #   tabPanel(title = "Data upload", value = "panel2",
+      #            h1(id="info_title", "Data upload"),
+      #            sidebarPanel(
+      #              # Input: Select a file ----
+      #              fileInput("file1", "Choose sequence files",
+      #                        multiple = FALSE,
+      #                        accept = c("text/csv",
+      #                                   "text/comma-separated-values,text/plain",
+      #                                   ".csv")),
+      #              checkboxInput("Published", "Published", TRUE)
+      #            )
+      #   )
+      #   ###############################################
+      # )
     )
   )
 }

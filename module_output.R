@@ -34,6 +34,7 @@ outputFunc <- function(input, output, session, variable, parent) {
     out_data$SHs <- NULL
     out_data$SeqVars <- NULL
     
+    if (variable$text != "") {
     # study option...
     if (variable$type == "study"){
       # filter papers data...
@@ -146,6 +147,7 @@ outputFunc <- function(input, output, session, variable, parent) {
     } else {
       callModule(module = outputGeneralFunc, id = "results_out", out_data, parent = parent)
     }
+    }
   })
   
   # key
@@ -156,6 +158,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       variable$text
     }
   )
+  ###########################################################################
   
   # dynamic content based on result type...
   output$dynamic_content <- renderUI({

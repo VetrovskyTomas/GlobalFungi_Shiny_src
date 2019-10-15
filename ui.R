@@ -56,7 +56,7 @@ ui <- tagList(
                   menuItem("Results", icon = icon("poll"), tabName = "fmd_results"),
                   tags$hr(),
                   menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                           badgeLabel = "new", badgeColor = "green"),
+                           badgeLabel = "in progress", badgeColor = "red"),
                   tags$hr(),
                   # url info...
                   fluidPage(

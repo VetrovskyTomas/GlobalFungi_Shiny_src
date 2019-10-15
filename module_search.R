@@ -13,9 +13,13 @@ searchUI <- function(id) {
         tabPanel("SH",
           br(),
           selectizeInput(inputId = ns("search_key_sh"),
-            label = "Select SH:", choices = NULL, width = "200px",
-            selected = NULL, multiple = FALSE, # allow for multiple inputs
-            options = list(maxOptions = 5)
+                         options = list(
+                           maxOptions=length(global_SH_list),
+                           placeholder = 'Please select an option below'
+                         ),
+                         label = "Select SH:", choices = global_SH_list, width = "200px",
+                         selected = 1, 
+                         multiple = FALSE # allow for multiple inputs
           ),
           fluidRow(
             column(6, actionButton(ns("buttSearch_sh"), label = "Search"))
@@ -24,9 +28,13 @@ searchUI <- function(id) {
         tabPanel("Species", 
           br(),
           selectizeInput(inputId = ns("search_key_species"),
-                         label = "Select SH:", choices = NULL, width = "400px",
-                         selected = NULL, multiple = FALSE, # allow for multiple inputs
-                         options = list(maxOptions = 5)
+                         options = list(
+                           maxOptions=length(global_species_list),
+                           placeholder = 'Please select an option below'
+                         ),
+                         label = "Select species:", choices = global_species_list, width = "400px",
+                         selected = 1, 
+                         multiple = FALSE # allow for multiple inputs
           ),
           fluidRow(
             column(6, actionButton(ns("buttSearch_species"), label = "Search"))
@@ -35,10 +43,14 @@ searchUI <- function(id) {
         tabPanel("Genus",
           br(),  
           selectizeInput(inputId = ns("search_key_genus"),
-            label = "Select genus:", choices = NULL, width = "300px",
-            selected = NULL, multiple = FALSE, # allow for multiple inputs
-            options = list(maxOptions = 5)
+            options = list(
+              maxOptions=length(global_genus_list),
+              placeholder = 'Please select an option below'
             ),
+            label = "Select genus:", choices = global_genus_list, width = "300px",
+            selected = 1, 
+            multiple = FALSE # allow for multiple inputs
+          ),
             fluidRow(
               column(6, actionButton(ns("buttSearch_genus"), label = "Search"))
             )
@@ -96,15 +108,25 @@ searchFunc <- function(input, output, session, parent) {
   })
   
   observe({
-      updateSelectizeInput(session, "search_key_sh", choices = global_SH$SH, server = TRUE)
-      species <- unique(global_SH$Species)
-      updateSelectizeInput(session, "search_key_species", choices = sort(species), server = TRUE)
-      genera <- unique(global_SH$Genus)
-      updateSelectizeInput(session, "search_key_genus", choices = sort(genera), server = TRUE)
+      # load SH options...
+      updateSelectizeInput(session, "search_key_sh", 
+                           choices = global_SH_list, 
+                           server = TRUE)
+    
+      # load species options...
+      updateSelectizeInput(session, "search_key_species",
+                           choices = global_species_list, 
+                           server = TRUE)
+      
+      # load genus options...
+      updateSelectizeInput(session, "search_key_genus", 
+                           choices = global_genus_list, 
+                           server = TRUE)
+      
       # make bar chart...
       bar_data <- data.frame(
         name = c("SH","Species","Genus"),
-        value = c(length(global_SH$SH),length(species),length(genera))
+        value = c(length(global_SH_list),length(global_species_list),length(global_genus_list))
       )
       rownames(bar_data) <- bar_data[,1]
       bar_data = subset(bar_data, select = -name )

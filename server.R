@@ -1,3 +1,14 @@
+library(shiny)
+library(shinydashboard)
+library(shinyjs)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table) # fast read
+library(leaflet) # interactive world map
+library(DT)
+library(ECharts2Shiny)
+
 ##############
 ### SERVER ###
 ##############
