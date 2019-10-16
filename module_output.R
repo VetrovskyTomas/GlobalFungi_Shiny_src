@@ -7,11 +7,7 @@ outputUI <- function(id) {
     h2(id="welcome_title",textOutput(ns("out_type"))),
     # paper info table...
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
-       verbatimTextOutput(ns('info_key')),
-       fluidRow(
-       column(10,tableOutput(ns('info_table'))),
        uiOutput(ns('dynamic_button'))
-       )
     ),
     uiOutput(ns('dynamic_content'))
   )
@@ -42,7 +38,7 @@ outputFunc <- function(input, output, session, variable, parent) {
         global_papers[which(global_papers$paper_id %in% variable$text),c("title", "authors", "year","journal", "doi", "contact")]
       })
       # filer sample based on selection...
-      out_data$samples <- global_samples[which(global_samples$paper_id %in% variable$text), c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      out_data$samples <- global_samples[which(global_samples$paper_id %in% variable$text),]
     } else
     # sequence option...  
     if (variable$type == "sequence") {
@@ -68,7 +64,7 @@ outputFunc <- function(input, output, session, variable, parent) {
         samples <- unique(unlist(samples))
         print(paste0("Number of samples in ",variable$text," is ", length(samples)))
           
-        out_data$samples <- global_samples[which(global_samples$id %in% samples), c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+        out_data$samples <- global_samples[which(global_samples$id %in% samples),]
       }
       else
       {
@@ -94,7 +90,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       samples <- unique(unlist(samples))
       print(paste0("Number of samples in ",variable$text," is ", length(samples)))
       
-      out_data$samples <- global_samples[which(global_samples$id %in% samples), c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      out_data$samples <- global_samples[which(global_samples$id %in% samples),]
     } else
     # species option...  
     if (variable$type == "species") {
@@ -116,7 +112,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       samples <- unique(unlist(samples))
       print(paste0("Number of samples in ",variable$text," is ", length(samples)))
         
-      out_data$samples <- global_samples[which(global_samples$id %in% samples), c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      out_data$samples <- global_samples[which(global_samples$id %in% samples),]
     } else
     # genus option...  
     if (variable$type == "genus") {
@@ -138,7 +134,7 @@ outputFunc <- function(input, output, session, variable, parent) {
       samples <- unique(unlist(samples))
       print(paste0("Number of samples in ",variable$text," is ", length(samples)))
       
-      out_data$samples <- global_samples[which(global_samples$id %in% samples), c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      out_data$samples <- global_samples[which(global_samples$id %in% samples),]
     } 
     #############################################################
     # general output...
@@ -160,6 +156,24 @@ outputFunc <- function(input, output, session, variable, parent) {
   )
   ###########################################################################
   
+  # dynamic button - seq vars...
+  output$dynamic_button <- renderUI({
+    if (!is.null(out_data$SeqVars)){
+      fluidRow(
+        column(10,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table'))),
+        column(2,
+               textOutput(ns("seq_vars_count")),
+               downloadButton(ns("downloadSeqVars"), "Download FASTA"),
+               checkboxInput(ns("seqs_derep"), "dereplicated", TRUE)
+        )
+      )
+    } else {
+      fluidRow(
+        column(12,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table')))
+      )
+    }
+  })
+  
   # dynamic content based on result type...
   output$dynamic_content <- renderUI({
     if (is.null(out_data$samples)){
@@ -177,20 +191,8 @@ outputFunc <- function(input, output, session, variable, parent) {
   })
   
   
-    # dynamic button - seq vars...
-    output$dynamic_button <- renderUI({
-      if (!is.null(out_data$SeqVars)){
-        column(2,
-          textOutput(ns("seq_vars_count")),
-          downloadButton(ns("downloadSeqVars"), "Download FASTA"),
-          checkboxInput(ns("seqs_derep"), "dereplicated", TRUE)
-        )
-      }
-    })
-    
     # Downloadable fasta of selected sequence variants...
     output$downloadSeqVars <- downloadHandler(
-
       filename = "sequences.fasta",
       content = function(file) {
         if (!is.null(out_data$SeqVars)){

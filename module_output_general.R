@@ -29,7 +29,7 @@ outputGeneralSHUI <- function(id) {
                sidebarPanel(width = "100%", style = "background-color:white;",
                             fluidRow(
                               column(6,                  
-                                     h2("Sample type breakdown of study"),
+                                     h2("Sample type breakdown of resulting samples"),
                                      tags$div(id="typePieStud", style="width:100%;height:200px;"),
                                      deliverChart(div_id = ns("typePieStud")),
                                      style = "background-color:white;"),
@@ -41,7 +41,7 @@ outputGeneralSHUI <- function(id) {
                             ),
                             fluidRow(
                               column(6,      
-                                     h2("Sample biome breakdown of study"),
+                                     h2("Sample biome breakdown of resulting samples"),
                                      tags$div(id="biomePieStud", style="width:100%;height:200px;"),
                                      deliverChart(div_id = ns("biomePieStud")),
                                      style = "background-color:white;"),
@@ -58,7 +58,7 @@ outputGeneralSHUI <- function(id) {
                sidebarPanel(width = "100%", style = "background-color:white;",
                             fluidRow(
                               column(6,
-                                     h2("Histogram of MAT of study"),
+                                     h2("Histogram of MAT of resulting samples"),
                                      tags$div(id="MATBarStud", style="width:100%;height:200px;"),
                                      deliverChart(div_id = ns("MATBarStud")),
                                      style = "background-color:white;"),
@@ -70,7 +70,7 @@ outputGeneralSHUI <- function(id) {
                             ),
                             fluidRow(
                               column(6,
-                                     h2("Histogram of MAP of study"),
+                                     h2("Histogram of MAP of resulting samples"),
                                      tags$div(id="MAPBarStud", style="width:100%;height:200px;"),
                                      deliverChart(div_id = ns("MAPBarStud")),
                                      style = "background-color:white;"),
@@ -85,7 +85,7 @@ outputGeneralSHUI <- function(id) {
       tabPanel("pH",
                fluidRow(
                  column(6,
-                        h2("Histogram of pH of study"),
+                        h2("Histogram of pH of resulting samples"),
                         tags$div(id="pHBarStud", style="width:100%;height:200px;"),
                         deliverChart(div_id = ns("pHBarStud")),
                         style = "background-color:white;"),
@@ -96,7 +96,23 @@ outputGeneralSHUI <- function(id) {
                         style = "background-color:white;")
                )
       ),
-      tabPanel("Map", leafletOutput(ns("mymap"))),
+      tabPanel("Geography",
+               fluidRow(
+                 column(6,
+                        h2("Piechart of geolocation of resulting samples"),
+                        tags$div(id="geoPieStud", style="width:100%;height:200px;"),
+                        deliverChart(div_id = ns("geoPieStud")),
+                        style = "background-color:white;"),
+                 column(6,
+                        h2("Piechart of geolocation of all samples"),
+                        tags$div(id="geoPieGlob", style="width:100%;height:200px;"),
+                        deliverChart(div_id = ns("geoPieGlob")),
+                        style = "background-color:white;")
+               )
+      ),
+      tabPanel("Map", 
+               leafletOutput(ns("mymap")),
+               uiOutput(ns("map_sample_info"))),
       tabPanel("Metadata",
         br(),
         fluidRow(
@@ -130,7 +146,7 @@ outputGeneralUI <- function(id) {
                                       sidebarPanel(width = "100%", style = "background-color:white;",
                                                    fluidRow(
                                                      column(6,                  
-                                                            h2("Sample type breakdown of study"),
+                                                            h2("Sample type breakdown of resulting samples"),
                                                             tags$div(id="typePieStud", style="width:100%;height:200px;"),
                                                             deliverChart(div_id = ns("typePieStud")),
                                                             style = "background-color:white;"),
@@ -142,7 +158,7 @@ outputGeneralUI <- function(id) {
                                                    ),
                                                    fluidRow(
                                                      column(6,      
-                                                            h2("Sample biome breakdown of study"),
+                                                            h2("Sample biome breakdown of resulting samples"),
                                                             tags$div(id="biomePieStud", style="width:100%;height:200px;"),
                                                             deliverChart(div_id = ns("biomePieStud")),
                                                             style = "background-color:white;"),
@@ -159,7 +175,7 @@ outputGeneralUI <- function(id) {
                                       sidebarPanel(width = "100%", style = "background-color:white;",
                                                    fluidRow(
                                                      column(6,
-                                                            h2("Histogram of MAT of study"),
+                                                            h2("Histogram of MAT of resulting samples"),
                                                             tags$div(id="MATBarStud", style="width:100%;height:200px;"),
                                                             deliverChart(div_id = ns("MATBarStud")),
                                                             style = "background-color:white;"),
@@ -171,7 +187,7 @@ outputGeneralUI <- function(id) {
                                                    ),
                                                    fluidRow(
                                                      column(6,
-                                                            h2("Histogram of MAP of study"),
+                                                            h2("Histogram of MAP of resulting samples"),
                                                             tags$div(id="MAPBarStud", style="width:100%;height:200px;"),
                                                             deliverChart(div_id = ns("MAPBarStud")),
                                                             style = "background-color:white;"),
@@ -186,7 +202,7 @@ outputGeneralUI <- function(id) {
                              tabPanel("pH",
                                       fluidRow(
                                         column(6,
-                                               h2("Histogram of pH of study"),
+                                               h2("Histogram of pH of resulting samples"),
                                                tags$div(id="pHBarStud", style="width:100%;height:200px;"),
                                                deliverChart(div_id = ns("pHBarStud")),
                                                style = "background-color:white;"),
@@ -197,7 +213,23 @@ outputGeneralUI <- function(id) {
                                                style = "background-color:white;")
                                       )
                              ),
-                             tabPanel("Map", leafletOutput(ns("mymap"))),
+                             tabPanel("Geography",
+                                      fluidRow(
+                                        column(6,
+                                               h2("Piechart of geolocation of resulting samples"),
+                                               tags$div(id="geoPieStud", style="width:100%;height:200px;"),
+                                               deliverChart(div_id = ns("geoPieStud")),
+                                               style = "background-color:white;"),
+                                        column(6,
+                                               h2("Piechart of geolocation of all samples"),
+                                               tags$div(id="geoPieGlob", style="width:100%;height:200px;"),
+                                               deliverChart(div_id = ns("geoPieGlob")),
+                                               style = "background-color:white;")
+                                      )
+                             ),
+                             tabPanel("Map", 
+                                      leafletOutput(ns("mymap")),
+                                      uiOutput(ns("map_sample_info"))),
                              tabPanel("Metadata",
                                       br(),
                                       fluidRow(
@@ -214,6 +246,10 @@ outputGeneralUI <- function(id) {
 
 # Function for module server logic
 outputGeneralFunc <- function(input, output, session,  variable, parent) {
+  
+    #namespace for dynamic input...
+    ns <- session$ns
+  
     # show output info... 
     output$out_title <- renderText({
       return(paste("Study information page - # samples ", nrow(variable$samples)))
@@ -226,7 +262,7 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
           updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
           updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
         ) %>%
-        addCircleMarkers(data = variable$samples, ~longitude, ~latitude,
+        addCircleMarkers(data = variable$samples, ~longitude, ~latitude, layerId = ~id,
                          color = "black",
                          radius = 4,
                          fillColor = "red",
@@ -236,9 +272,36 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
         ) 
     })
     
+    # pop up text when clicked on map...
+    observe({
+      click <- input$mymap_marker_click
+      if (is.null(click)) {
+        print("null click")
+        return()
+      }
+      #print(click)
+      text <- paste0(input$mymap_marker_click$id, " ...number of seqs for TAXON / ALL ")
+      leafletProxy(mapId = "mymap") %>%
+        clearPopups() %>%
+        addPopups(dat = click, lat = ~lat, lng = ~lng, popup = text)
+    })
+    
+    # map sample details - clicked row...
+    output$map_sample_info <- renderUI({
+      req(length(input$mymap_marker_click) > 0)
+        verbatimTextOutput(ns('map_sample_table'))
+    })
+    
+    #
+    output$map_sample_table <- renderText({
+      sample_vals <- global_samples[which(global_samples$id %in% input$mymap_marker_click$id),]
+      #paste0(toString(sample_vals$id)," ",toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
+      paste(input$mymap_marker_click$id,toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
+    })
+    
     # table with samples metadata...
     output$metadata <- DT::renderDataTable({
-      variable$samples
+      variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
     }, selection = 'single')
     
     # Downloadable csv of selected dataset ----
@@ -410,11 +473,25 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
         renderGauge(div_id = "pHBarStud", gauge_name = "Data not provided...",
                     rate = 0)
       }
+      ############################################################
+      
+      # pie chart of samples geography...
+      datS <- as.data.frame(table(variable$samples[,"continent"]))
+      colnames(datS) <- c("name", "value")
+      # render...
+      renderPieChart(div_id = "geoPieStud", data = datS, show.legend = FALSE, radius = "75%")
+
+      # global pie chart biome...
+      datG <- as.data.frame(table(global_samples[,"continent"]))
+      colnames(datG) <- c("name", "value")
+      # sort names to have the same color in pie chart...
+      x <- as.character(datG$name) %in% datS$name
+      datG <- rbind(datG[x,], datG[!x,])
+      # render...
+      renderPieChart(div_id = "geoPieGlob", data = datG, show.legend = FALSE, radius = "75%")
+      
       }
     })
-    
-    #namespace for dynamic input...
-    ns <- session$ns
     
     # sample details - clicked row...
     output$sample_info <- renderUI({
@@ -433,6 +510,7 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
         tags$head(tags$style(paste0("#",ns('sample_table_paper')," table {background-color: white; }"), media="screen", type="text/css"))
         )
     })
+    
     #
     output$sample_table_basic <- renderTable({
       sample_vals <- variable$samples[input$metadata_rows_selected,]
@@ -468,7 +546,6 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
     
     # table with SHs info...
     if (!is.null(variable$SHs)){
-
       # show SH list with URL to SH...
       output$SH_list <- DT::renderDataTable(
         DT::datatable({
@@ -478,7 +555,6 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
         },
         escape = FALSE, selection = 'none')
       )
-        
       # Downloadable csv of selected SHs...
       output$downloadSHs <- downloadHandler(
         filename = "sh_list.txt",
