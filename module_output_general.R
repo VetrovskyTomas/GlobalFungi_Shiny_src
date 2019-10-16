@@ -468,32 +468,17 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
     
     # table with SHs info...
     if (!is.null(variable$SHs)){
-      print(paste0("Is nul SHs ", is.null(variable$SHs)))
-    # set table as reactive values...
-    df <- reactiveValues(data = data.frame(
-      SH =  variable$SHs$SH,
-      Kingdom = variable$SHs$Kingdom,
-      Phylum = variable$SHs$Phylum,
-      Class =  variable$SHs$Class,
-      Order = variable$SHs$Order,
-      Family = variable$SHs$Family,
-      Genus = variable$SHs$Genus,
-      Species = variable$SHs$Species,
-      Actions = shinyInput(actionButton, nrow(variable$SHs), 'button_', label = "Show",
-                           onclick = paste0("Shiny.onInputChange('", ns("select_button"), "', this.id);",
-                                            "Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
-                                            "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),
-      stringsAsFactors = FALSE,
-      row.names = 1:nrow(variable$SHs))
-    )
-    
-   
-      # show SH list...
+
+      # show SH list with URL to SH...
       output$SH_list <- DT::renderDataTable(
-        df$data, server = FALSE, escape = FALSE, selection = 'none'
+        DT::datatable({
+          data <- variable$SHs[,c("SH","Kingdom","Phylum","Class","Order","Family","Genus","Species")] %>% 
+            mutate(SH = paste0("<a href='", "/?SH=",SH,"' target='_blank'>", SH,"</a>"))
+          data
+        },
+        escape = FALSE, selection = 'none')
       )
-      
-      
+        
       # Downloadable csv of selected SHs...
       output$downloadSHs <- downloadHandler(
         filename = "sh_list.txt",
@@ -501,27 +486,6 @@ outputGeneralFunc <- function(input, output, session,  variable, parent) {
           write.table(variable$SHs, file, row.names = FALSE, dec = ".", sep = "\t", quote = FALSE)
         }
       )
-
-    # redirect...  
-    observeEvent(input$lastClick, {
-      #print(input$lastClickId)
-      selectedRow <- as.numeric(strsplit(input$lastClickId, "_")[[1]][2])
-      
-      # to be shared...
-      vals <- reactiveValues()
-      #info about result type...
-      vals$type =  "SH"
-      #pass code of the study...
-      vals$text <- toString(variable$SHs[selectedRow,1])
-      print(paste(vals$text, vals$type))
-      
-      print(paste0("Here should be redirect to SH page... try to reset ",input$lastClickId))
-      session$sendCustomMessage(type = "resetValue", message = ns("input$lastClickId"))
-      print(paste0("After reset ",input$lastClickId))
-      # call module...
-      #callModule(session = parent, module = outputFunc, id = "id_results",vals, parent = parent)
-      #updateTabItems(session = parent, "menu_tabs", "fmd_results")
-    })
     }
     
     # show samples count info...

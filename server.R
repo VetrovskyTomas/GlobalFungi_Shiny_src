@@ -40,6 +40,7 @@ server <- function(session, input, output) {
   vals <- reactiveValues()
   vals$type <- 'none'
   vals$text <- 'No results yet!'
+  
   #################################################
   main_session <<- session
   #home screen...
@@ -52,6 +53,19 @@ server <- function(session, input, output) {
   callModule(module = helpFunc, id = "id_help")
   callModule(module = outputFunc, id = "id_results", vals, parent = session)
   #################################################
+  
+  # TRY TO PROCESS URL QUERY
+  # e.g.: 127.0.0.1:5048/?SH=SH000160
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query[['SH']])) {
+      vals$type <- 'SH'
+      vals$text <- query[['SH']]
+      print(paste0("The url query SH value is ", vals$text))
+      updateTabItems(session, "menu_tabs", "fmd_results")
+    }
+  })
+
   # info about connection...
   output$urlText <- renderText({
     paste(sep = "",

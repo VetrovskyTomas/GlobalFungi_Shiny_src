@@ -53,11 +53,11 @@ outputFunc <- function(input, output, session, variable, parent) {
         # get info table...
         if (variants$SH != "-"){
           output$info_table <- renderTable({
-            global_SH[which(global_SH$SH %in% variants$SH),]
-          })
-        }
-        else
-        {
+            sh_data <- global_SH[which(global_SH$SH %in% variants$SH),]
+            sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
+            data.frame(sh_data)
+          }, sanitize.text.function = function(x) x)
+        } else {
           output$info_table <- renderTable({
             bar_data <- data.frame(
               SH = c("-")
