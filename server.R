@@ -32,14 +32,46 @@ server <- function(session, input, output) {
   
   #hide sidebar collabse button...  
   shinyjs::runjs("document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';")
-  #
-  output$menu <- renderMenu({
-    #
-  })
   
+  # set default vals...
   vals <- reactiveValues()
   vals$type <- 'none'
   vals$text <- 'No results yet!'
+  # TRY TO PROCESS URL QUERY
+  # e.g.: 127.0.0.1:5048/?SH=SH000160
+  query <- NULL
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query[['SH']])) {
+      vals$type <- 'SH'
+      vals$text <- query[['SH']]
+      print(paste0("The url query SH value is ", vals$text))
+      updateTabItems(session, "menu_tabs", "fmd_results")
+    }
+  })
+  
+  #
+  output$menu <- renderMenu({
+    sidebarMenu(id = "menu_tabs",
+                menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
+                menuItem("Sequence Analysis", icon = icon("dna"), tabName = "fmd_analysis"),
+                menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
+                menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
+                menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
+                menuItem("Help", icon = icon("info-circle"), tabName = "fmd_help"),
+                tags$hr(),
+                #result page...
+                menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
+                tags$hr(),
+                menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
+                         badgeLabel = "in progress", badgeColor = "red"),
+                tags$hr(),
+                # url info...
+                fluidPage(
+                  verbatimTextOutput("urlText")
+                )
+    )
+  })
   
   #################################################
   main_session <<- session
@@ -54,18 +86,6 @@ server <- function(session, input, output) {
   callModule(module = outputFunc, id = "id_results", vals, parent = session)
   #################################################
   
-  # TRY TO PROCESS URL QUERY
-  # e.g.: 127.0.0.1:5048/?SH=SH000160
-  observe({
-    query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query[['SH']])) {
-      vals$type <- 'SH'
-      vals$text <- query[['SH']]
-      print(paste0("The url query SH value is ", vals$text))
-      updateTabItems(session, "menu_tabs", "fmd_results")
-    }
-  })
-
   # info about connection...
   output$urlText <- renderText({
     paste(sep = "",

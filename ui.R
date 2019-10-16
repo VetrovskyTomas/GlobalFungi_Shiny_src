@@ -9,25 +9,6 @@ ui <- tagList(
       width = 200,
       #disable = FALSE, width = NULL, 
       collapsed = FALSE,
-      sidebarMenu(id = "menu_tabs",
-                  menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
-                  menuItem("Sequence Analysis", icon = icon("dna"), tabName = "fmd_analysis"),
-                  menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
-                  menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
-                  menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
-                  menuItem("Help", icon = icon("info-circle"), tabName = "fmd_help"),
-                  tags$hr(),
-                  #result page...
-                  menuItem("Results", icon = icon("poll"), tabName = "fmd_results"),
-                  tags$hr(),
-                  menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                           badgeLabel = "in progress", badgeColor = "red"),
-                  tags$hr(),
-                  # url info...
-                  fluidPage(
-                    verbatimTextOutput("urlText")
-                  )
-      ),
       sidebarMenuOutput("menu")
     ),
     #body...
