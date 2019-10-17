@@ -1,0 +1,6 @@
+# The Fungal Metastudy Consortium Database:
+
+----
+## Presentation
+<p style="text-align: justify"> The Fungal Metastudy Consortium Database aims to join the efforts of the scientific community to collect fungal diversity data worldwide. All the provided fungal sequencing data from environmental samples will be reprocessed with the SEED pipeline (Vetrovsky, T., et al. 2018) to obtain the Species Hypotheses composition (Koljalg, U., et al. 2013) and occurrence in each sample. These Species Hypotheses data will be combined with some environmental metadata. These environmental metadata will come from the biotic (dominant tree species) and the abiotic (soil chemistry, mean annual temperature and precipitation …) metadata provided by the authors about the environmental samples they load on the database. Thus, the Fungal Metastudy Consortium Database provides a precious tool allowing to map the distribution of the fungal species hypotheses worldwide and the partitioning of the species hypotheses according to different environmental variables. 
+</p>

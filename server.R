@@ -66,6 +66,9 @@ server <- function(session, input, output) {
                 menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
                          badgeLabel = "in progress", badgeColor = "red"),
                 tags$hr(),
+                # about the database
+                menuItem("About us", icon = icon("info-circle"), tabName = "fmd_aboutus"),
+                tags$hr(),
                 # url info...
                 fluidPage(
                   verbatimTextOutput("urlText")
@@ -84,6 +87,7 @@ server <- function(session, input, output) {
   callModule(module = citeFunc, id = "id_cite")
   callModule(module = helpFunc, id = "id_help")
   callModule(module = outputFunc, id = "id_results", vals, parent = session)
+  callModule(module = aboutusFunc, id = "id_aboutus")
   #################################################
   
   # info about connection...

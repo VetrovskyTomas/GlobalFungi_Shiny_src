@@ -6,6 +6,7 @@
 # install.packages("leaflet")
 # install.packages("DT")
 # install.packages("ECharts2Shiny")
+# install.packages("markdown")
 
 library(shiny)
 library(shinydashboard)
@@ -17,6 +18,7 @@ library(plyr)
 library(lazyeval) # so we can use interpret
 library(dplyr)
 library(data.table) # fast read
+library(markdown) # bring text data from markdown
 
 ##############
 ### GLOBAL ###
