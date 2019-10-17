@@ -58,7 +58,7 @@ server <- function(session, input, output) {
                 menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
-                menuItem("Help", icon = icon("info-circle"), tabName = "fmd_help"),
+                menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
                 tags$hr(),
                 #result page...
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
