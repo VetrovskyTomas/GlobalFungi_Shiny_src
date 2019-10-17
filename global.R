@@ -35,6 +35,7 @@ source("module_analysis.R")
 source("module_studies.R")
 source("module_cite.R")
 source("module_help.R")
+source("module_aboutus.R")
 # outputs...
 source("module_output.R")
 source("module_output_general.R")
