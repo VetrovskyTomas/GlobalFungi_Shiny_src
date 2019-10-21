@@ -34,8 +34,7 @@ studiesFunc <- function(input, output, session, parent) {
     Year =  global_papers$year,
     DOI = global_papers$doi,
     Actions = shinyInput(actionButton, nrow(global_papers), 'button_', label = "Show", 
-      onclick = paste0("Shiny.onInputChange('", ns("select_button"), "', this.id);",
-                       "Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
+      onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
                        "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),
     stringsAsFactors = FALSE,
     row.names = 1:nrow(global_papers)
@@ -53,7 +52,7 @@ studiesFunc <- function(input, output, session, parent) {
     vals$type =  "study"
     #pass code of the study...
     vals$text <- toString(global_papers[selectedRow,1])
-    callModule(session = parent, module = outputFunc, id = "id_results",vals)
+    callModule(session = parent, module = resultsFunc, id = "id_results",vals)
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
     }
   )

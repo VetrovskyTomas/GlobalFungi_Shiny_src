@@ -80,8 +80,8 @@ resultsFunc <- function(input, output, session, variable, parent) {
       } else
         # sequence option...  
         if (variable$type == "sequence") {
-          # filer sample based on selection...
-          variants <- global_variants[which(global_variants$sequence %in% variable$text), c("sequence", "samples", "abundances", "SH")]
+          # search by md5 checksum...
+          variants <- global_variants[which(global_variants$hash %in% variable$key),]
           #print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
           if (nrow(variants) > 0){
             # get info table...
@@ -120,9 +120,9 @@ resultsFunc <- function(input, output, session, variable, parent) {
               global_SH[which(global_SH$SH %in% variable$text),]
             })
             # filer sample based on selection...
-            variants <- global_variants[which(global_variants$SH %in% variable$text), c("sequence", "samples", "abundances")]
+            variants <- global_variants[which(global_variants$SH %in% variable$text),]
             print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-            out_data$SeqVars <- variants[,c("samples","sequence")]
+            out_data$SeqVars <- variants[,c("samples","hash")]
             
             samples <- strsplit(variants$samples, ';', fixed=TRUE)
             samples <- unique(unlist(samples))
@@ -142,9 +142,9 @@ resultsFunc <- function(input, output, session, variable, parent) {
                 tax_tab <- out_data$SHs[1,c("Species","Kingdom", "Phylum", "Class", "Order", "Family", "Genus")]
               })
               # filer sample based on selection...
-              variants <- global_variants[which(global_variants$SH %in% SH_list$SH), c("sequence", "samples", "abundances")]
+              variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
               print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-              out_data$SeqVars <- variants[,c("samples","sequence")]
+              out_data$SeqVars <- variants[,c("samples","hash")]
               
               samples <- strsplit(variants$samples, ';', fixed=TRUE)
               samples <- unique(unlist(samples))
@@ -164,9 +164,9 @@ resultsFunc <- function(input, output, session, variable, parent) {
                   tax_tab <- out_data$SHs[1,c("Genus","Kingdom", "Phylum", "Class", "Order", "Family")]
                 })
                 # filer sample based on selection...
-                variants <- global_variants[which(global_variants$SH %in% SH_list$SH), c("sequence", "samples", "abundances")]
+                variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
                 print(paste0("Number of seqs in ",variable$text," is ", nrow(variants)))
-                out_data$SeqVars <- variants[,c("samples","sequence")]
+                out_data$SeqVars <- variants[,c("samples","hash")]
                 
                 samples <- strsplit(variants$samples, ';', fixed=TRUE)
                 samples <- unique(unlist(samples))

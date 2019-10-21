@@ -8,6 +8,7 @@ library(data.table) # fast read
 library(leaflet) # interactive world map
 library(DT)
 library(ECharts2Shiny)
+library(digest)
 
 ##############
 ### SERVER ###

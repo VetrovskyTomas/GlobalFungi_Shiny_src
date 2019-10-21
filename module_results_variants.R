@@ -21,6 +21,43 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
     filename = "sequences.fasta",
     content = function(file) {
       if (!is.null(data$SeqVars)){
+        ##################################################
+        # retrieve fasta using ... "samtools faidx"
+        # generate folder for user task...
+        outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
+        system(paste("mkdir ", outputDir, sep = "")) #for linux
+        # write fasta titles...
+        input_titles <- data.frame(titles = data$SeqVars[,"hash"], stringsAsFactors = F)
+        write.table(input_titles,file = paste0(outputDir,"my_titles.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE)
+
+        # # run command...
+        cmd_blast <- paste0("xargs samtools faidx  /home/fungal/databases/blast_database/fm_sequences_vol1.fa < ",outputDir, "my_titles.txt > ", outputDir,"results.fa")
+        system(cmd_blast)
+        # linearize fasta...
+        fasta_file <- fread(file = paste0(outputDir, "results.fa"), header = F)
+        # remove folder after use...
+        cmd_blast <- paste0("rm -rf ",outputDir)
+        system(cmd_blast)
+        ##################################################################
+        # process fasta
+        data$SeqVars$sequence <- vector(mode="character", length=nrow(data$SeqVars))
+        name <- ""
+        seq <- ""
+        for (row in 1:nrow(fasta_file)) {
+          line <- toString(fasta_file[row][1])
+          first_char <- substring(line, 1, 1)
+          if (first_char == ">"){
+            if (seq != ""){
+              data$SeqVars$sequence[data$SeqVars$hash == name] <- seq
+            }
+            name <- substring(line, 2)
+            seq <- ""
+          } else {
+            seq <- paste0(seq,line)
+          }
+        }
+        data$SeqVars$sequence[data$SeqVars$hash == name] <- seq
+        #################################################
         D <- NULL
         # create fasta...
         if (input$seqs_derep == TRUE) {

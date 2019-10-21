@@ -24,8 +24,8 @@ if(!exists("global_samples")) {
   global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
   # load sequence variants with SH...
-  global_variants <- fread("C:/fm_database_root/tables/fm_sequences_test.txt")
-  global_variants <- global_variants[,c("sequence", "samples", "abundances", "SH")]
+  global_variants <- fread("C:/fm_database_root/tables/fm_sequences_vol1_test.txt")
+  global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
   
   # remove SH not existing in the dataset...
   SH_list <- unique(global_variants$SH)
@@ -38,4 +38,7 @@ if(!exists("global_samples")) {
   
   # output path 
   global_out_path <- "/home/fungal/databases/user_outputs/"
+  
+  # test blast out
+  global_blast_out <- read.delim(file = "C:/fm_database_root/tables/results.out", header = F)
 }

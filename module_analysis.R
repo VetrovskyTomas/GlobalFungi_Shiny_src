@@ -11,7 +11,7 @@ analysisUI <- function(id) {
         #text area for pasting the sequence...
         textAreaInput(ns("textSeq"), 
           "Paste you sequence", 
-          "CAACCCTCAAGCTCTGCTTGGTATTGGGCTACACCCGACTGGGTGGGCCTTAAAATCAGTGGCGGTGCCATCTGGCTCTAAGCGTAGTAATTCTTCTCGCTCTGGAGATCTAGGTGTTTGCTTGTCAGCAACCCCCAATTTATCAAA", 
+          "ATGAATCAGCACCGTGTTTTTGTTAATGCGGAGGCTGGACTTGGATGTTGCCGTCGTTGGCTCGTCCTTAAATGCATTAGCCTGGCGCGGCCAAGGCCTCTTTGGTGTGATAATTATCTACGCTGCTGGGGTTTGTGCTTTGTTGCTGGCTTACAGTCGTCCTCGGACAACTTTTTTTG", 
           width="100%",
           height = "200px"),
         
@@ -30,7 +30,7 @@ analysisUI <- function(id) {
           column(8, uiOutput(ns('dynamicInput_ITS')))
         ),
         fluidRow(
-          column(8,selectInput(ns("search_type"), "Type:", choices = c("Exact", "BLAST")))
+          column(8,selectInput(ns("search_type"), "Type:", choices = c("BLAST", "Exact")))
         ),
         hr(),
         fluidRow(
@@ -38,7 +38,7 @@ analysisUI <- function(id) {
         ),
         hr(),
         fluidRow(
-          column(12,tableOutput(ns('info_table')))
+          column(12,DT::dataTableOutput(ns('info_table')))
         )
       )
     
@@ -47,20 +47,26 @@ analysisUI <- function(id) {
 
 # Function for module server logic
 analysisFunc <- function(input, output, session, parent) {
+  
+  #namespace for dynamic input...
+  ns <- session$ns
+  
   # to be shared...
   vals <- reactiveValues()
+  vals$seq_hash <- NULL
   
   # When user clicks on submit button : Update result tab...
   observeEvent(input$analyze_button, {
     if (input$search_type == "Exact"){
       print("Searching for exact sequence match...")
-      vals$type =  as.character("sequence")
+      vals$type =  "sequence"
       vals$text <- input$textSeq
+      vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
       callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
       updateTabItems(session = parent, "menu_tabs", "fmd_results")
     } else {
-      print("Run the blast...")
-
+      print(print(paste0("Run the blast... exists global_blast_out: ",exists("global_blast_out"))))
+      if (!exists("global_blast_out")){
       # generate folder for user task...
       outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
       system(paste("mkdir ", outputDir, sep = "")) #for linux
@@ -72,25 +78,51 @@ analysisFunc <- function(input, output, session, parent) {
                   quote = F, col.names = F, row.names = F)
       
       # run blast command...
-      cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/my_self_made_db.fasta -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out -outfmt 6")
+      cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_database_vol1 -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out -outfmt 6")
       system(cmd_blast)
       
       # Check if your blast finished ## please lets improve this to something more cleaver ##
-      if(!dir.exists(outputDir)){
-        output$info_table <- renderTable({
-          data.frame(blast=c("output1", "output2"), query=c("input1", "input2"), no_blast = c(paste0("Error in creation of folder: ", outputDir), "not here..."), stringsAsFactors = F)
-        })
+      if(!file.exists(paste0(outputDir, "results.out"))){
+          blast_out <- NULL
       } else {
-        output$info_table <- renderTable({
           blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
-          blast_out
-        })
+          # remove folder after use...
+          cmd_blast <- paste0("rm -rf ",outputDir)
+          system(cmd_blast)
       }
+      } else {
+          blast_out <- global_blast_out
+      }
+      
+      # prepare output...
+      if (!is.null(blast_out)){
+      # add buttons...
+      shinyInput <- function(FUN, len, id, label, ...) {
+        inputs <- character(len)
+        for (i in seq_len(len)) {
+          inputs[i] <- as.character(FUN(paste0(id, i), label[i], ...))
+        }
+        inputs
+      }      
+      # modify output...
+      if (!is.null(blast_out)){
+      names(blast_out) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
+      vals$seq_hash <- blast_out[,c("sseqid","pident")]
+      blast_out$hits <- shinyInput(actionButton, nrow(blast_out), 'button_', label = blast_out[,"sseqid"], 
+                                      onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
+                                                       "Shiny.onInputChange('", ns("lastClick"), "', Math.random())"))
+      blast_out <- blast_out[,c("hits", "pident", "qstart", "qend", "sstart", "send", "evalue", "bitscore")]
+      } else {
+        data.frame(blast=c("output1", "output2"), query=c("input1", "input2"), no_blast = c("no blast results", "not here..."), stringsAsFactors = F)
+      }
+      # reder blast results table...
+      output$info_table <- DT::renderDataTable(
+        blast_out, server = FALSE, escape = FALSE, selection = 'none'
+      )
+      }
+      
     }
   })
-  
-  #namespace for dynamic input...
-  ns <- session$ns
   
   # The dynamic input definition
   output$dynamicInput_ITS <- renderUI({
@@ -103,4 +135,18 @@ analysisFunc <- function(input, output, session, parent) {
   }
   })
   
+  # redirect...  
+  observeEvent(input$lastClick, {
+    selectedRow <- as.numeric(strsplit(input$lastClickId, "_")[[1]][2])
+    md5_hash <- toString(vals$seq_hash[selectedRow,"sseqid"])
+    print(md5_hash)
+    #info about result type...
+    vals$type =  "sequence"
+    vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],input$textSeq)
+    #pass code of the study...
+    vals$key <- md5_hash
+    callModule(session = parent, module = resultsFunc, id = "id_results", vals)
+    updateTabItems(session = parent, "menu_tabs", "fmd_results")
+  }
+  )
 }
