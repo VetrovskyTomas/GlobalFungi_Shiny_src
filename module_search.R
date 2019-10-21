@@ -81,7 +81,7 @@ searchFunc <- function(input, output, session, parent) {
     #info for output page...
     vals$text <- input$search_key_sh
     
-    callModule(session = parent, module = outputFunc, id = "id_results",vals, parent = parent)    
+    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   })
   
@@ -92,7 +92,7 @@ searchFunc <- function(input, output, session, parent) {
     #info for output page...
     vals$text <- input$search_key_species
     
-    callModule(session = parent, module = outputFunc, id = "id_results",vals, parent = parent)    
+    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   })
   
@@ -103,7 +103,7 @@ searchFunc <- function(input, output, session, parent) {
     #info for output page...
     vals$text <- input$search_key_genus
     
-    callModule(session = parent, module = outputFunc, id = "id_results",vals, parent = parent)    
+    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   })
   

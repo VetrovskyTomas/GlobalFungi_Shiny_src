@@ -35,4 +35,7 @@ if(!exists("global_samples")) {
   global_SH_list <- sort(global_SH$SH)
   global_species_list <- sort(unique(global_SH$Species))
   global_genus_list <- sort(unique(global_SH$Genus))
+  
+  # output path 
+  global_out_path <- "/home/fungal/databases/user_outputs/"
 }
