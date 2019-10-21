@@ -45,13 +45,13 @@ homeFunc <- function(input, output, session, samples) {
         updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
         updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
       ) %>%
-      addCircleMarkers(data = global_samples, ~longitude, ~latitude,
+      addCircleMarkers(data = global_samples, ~longitude, ~latitude, options = pathOptions(clickable = FALSE),
                        color = "black",
                        radius = 3,
                        fillColor = "red",
                        weight = 1,
                        stroke = T,
-                       fillOpacity = 0.5#,
+                       fillOpacity = 0.5#, 
       ) 
   })
     

@@ -53,7 +53,7 @@ ui <- tagList(
         ),
         #insert study
         tabItem("fmd_results",
-                outputUI(id = "id_results")
+                resultsUI(id = "id_results")
         ),
         tabItem("fmd_aboutus",
                 aboutusUI(id = "id_aboutus")

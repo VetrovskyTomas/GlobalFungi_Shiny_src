@@ -36,6 +36,15 @@ source("module_studies.R")
 source("module_cite.R")
 source("module_help.R")
 source("module_aboutus.R")
-# outputs...
-source("module_output.R")
-source("module_output_general.R")
+
+# general results page 
+source("module_results.R")
+# sub-results
+source("module_results_matmap.R")
+source("module_results_ph.R")
+source("module_results_geography.R")
+source("module_results_types_and_biomes.R")
+source("module_results_map.R")
+source("module_results_samples.R")
+source("module_results_shs.R")
+source("module_results_variants.R")

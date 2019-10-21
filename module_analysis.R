@@ -18,11 +18,11 @@ analysisUI <- function(id) {
           height = "200px"),
         
         # Input: Select a file ----
-        fileInput("file1", "Choose FASTA file",
-        multiple = FALSE,
-        accept = c("text/csv",
-        "text/comma-separated-values,text/plain",
-        ".csv")),
+        # fileInput("file1", "Choose FASTA file",
+        # multiple = FALSE,
+        # accept = c("text/csv",
+        # "text/comma-separated-values,text/plain",
+        # ".csv")),
     
         hr(),
         
@@ -31,6 +31,7 @@ analysisUI <- function(id) {
           column(4, checkboxInput(ns("is_extracted"), "ITS is already extracted", TRUE)),
           column(8, uiOutput(ns('dynamicInput_ITS')))
         ),
+        column(8,selectInput(ns("data_type"), "Type:", choices = c("Exact", "SH"))),
         hr(),
         actionButton(ns("buttSubmitSeq"), label = "Analyze")
       ),
@@ -69,8 +70,7 @@ analysisFunc <- function(input, output, session, parent) {
   output$dynamicInput_ITS <- renderUI({
   if (input$is_extracted == FALSE) {
     fluidRow(
-      column(4,selectInput(ns("data_its"), "ITS:", choices = c("ITS1", "ITS2"))),
-      column(8,selectInput(ns("data_type"), "Type:", choices = c("Exact", "SH")))
+      column(4,selectInput(ns("data_its"), "ITS:", choices = c("ITS1", "ITS2")))
     )
   } else {
     return(NULL)
