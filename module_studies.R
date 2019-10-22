@@ -52,7 +52,9 @@ studiesFunc <- function(input, output, session, parent) {
     vals$type =  "study"
     #pass code of the study...
     vals$text <- toString(global_papers[selectedRow,1])
-    callModule(session = parent, module = resultsFunc, id = "id_results",vals)
+    withProgress(message = 'Loading...', {   
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals)
+    })
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
     }
   )

@@ -22,41 +22,38 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
     content = function(file) {
       if (!is.null(data$SeqVars)){
         ##################################################
-        # retrieve fasta using ... "samtools faidx"
-        # generate folder for user task...
-        outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
-        system(paste("mkdir ", outputDir, sep = "")) #for linux
-        # write fasta titles...
-        input_titles <- data.frame(titles = data$SeqVars[,"hash"], stringsAsFactors = F)
-        write.table(input_titles,file = paste0(outputDir,"my_titles.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE)
-
-        # # run command...
-        cmd_blast <- paste0("xargs samtools faidx  /home/fungal/databases/blast_database/fm_sequences_vol1.fa < ",outputDir, "my_titles.txt > ", outputDir,"results.fa")
-        system(cmd_blast)
-        # linearize fasta...
-        fasta_file <- fread(file = paste0(outputDir, "results.fa"), header = F)
-        # remove folder after use...
-        cmd_blast <- paste0("rm -rf ",outputDir)
-        system(cmd_blast)
+        withProgress(message = 'Retrieving sequences...', {
+          incProgress(1/5)
+          # generate folder for user task...
+          outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
+          system(paste("mkdir ", outputDir, sep = "")) #for linux
+          incProgress(1/5)
+          # write fasta titles...
+          input_titles <- data.frame(titles = data$SeqVars[,"hash"], stringsAsFactors = F)
+          write.table(input_titles,file = paste0(outputDir,"my_titles.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE)
+          incProgress(1/5)
+          # # run command...
+          cmd_blast <- paste0("blastdbcmd -db  /home/fungal/databases/blast_database/fm_sequences_vol1.fa -line_length 2000 -entry_batch ",outputDir, "my_titles.txt > ", outputDir,"results.fa")
+          system(cmd_blast)
+          incProgress(1/5)
+          # linearize fasta...
+          fasta_file <- scan(file = paste0(outputDir, "results.fa"), character(), quote = "")
+          #fasta_file <- scan("C:/fm_database_root/tables/results.fa", character(), quote = "")
+          
+          # remove folder after use...
+          cmd_blast <- paste0("rm -rf ",outputDir)
+          system(cmd_blast)
+          incProgress(1/5)
+        })
         ##################################################################
-        # process fasta
-        data$SeqVars$sequence <- vector(mode="character", length=nrow(data$SeqVars))
-        name <- ""
-        seq <- ""
-        for (row in 1:nrow(fasta_file)) {
-          line <- toString(fasta_file[row][1])
-          first_char <- substring(line, 1, 1)
-          if (first_char == ">"){
-            if (seq != ""){
-              data$SeqVars$sequence[data$SeqVars$hash == name] <- seq
-            }
-            name <- substring(line, 2)
-            seq <- ""
-          } else {
-            seq <- paste0(seq,line)
-          }
-        }
-        data$SeqVars$sequence[data$SeqVars$hash == name] <- seq
+        withProgress(message = 'Processing...', {
+          data$SeqVars$sequence <- vector(mode="character", length=nrow(data$SeqVars))
+          n <- fasta_file[seq(1, length(fasta_file), 2)]
+          n <- sub('.', '', n)
+          m <- fasta_file[seq(2, length(fasta_file), 2)]
+          df_fasta <- data.frame(hash=n, seqs=m, stringsAsFactors = F)
+          data$SeqVars$sequence[data$SeqVars$hash %in% df_fasta$hash] <- df_fasta$seqs
+        })
         #################################################
         D <- NULL
         # create fasta...
@@ -64,16 +61,19 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
           # dereplicated sequences...
           fasta <- data.frame(
             ids = seq.int(nrow(data$SeqVars)),
-            seqs = data$SeqVars[,"sequence"]
+            type = data$SeqVars$marker,
+            seqs = data$SeqVars$sequence
           )
-          fasta$ids <- sub("^", paste0(">",variable$type,"_",variable$text,"_"), fasta$ids)
+          fasta$titles <- paste0(fasta$type,"_",fasta$ids)
+          fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
+          fasta <- fasta[ , c("titles", "seqs")]
           D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
         } else {
           # replicated sequences...
           s <- strsplit(data$SeqVars$samples, split = ";", fixed=TRUE)
-          fasta <- data.frame(ids = unlist(s), seqs = rep(data$SeqVars$sequence, sapply(s, length)))
+          fasta <- data.frame(ids = unlist(s), seqs = rep(data$SeqVars$sequence, sapply(s, length)), type = rep(data$SeqVars$marker, sapply(s, length)))
           fasta$indices = seq.int(nrow(fasta))
-          fasta$titles <- paste0(fasta$indices,"_",fasta$ids)
+          fasta$titles <- paste0(fasta$type,"_",fasta$indices,"_",fasta$ids)
           # drop unnecesary columns...
           fasta = subset(fasta, select = -c(indices,ids))
           # add > to titles...
@@ -82,6 +82,7 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
           D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
         }
         write.table(D, file, row.names = FALSE, col.names = FALSE, quote = FALSE)
+        #write.table(fasta_file, file, row.names = FALSE, col.names = FALSE, quote = FALSE)
       }
     }
   )

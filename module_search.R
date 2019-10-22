@@ -80,8 +80,9 @@ searchFunc <- function(input, output, session, parent) {
     vals$type =  "SH"
     #info for output page...
     vals$text <- input$search_key_sh
-    
-    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
+    withProgress(message = 'Searching...', {      
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent) 
+    })
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   })
   
@@ -91,9 +92,10 @@ searchFunc <- function(input, output, session, parent) {
     vals$type =  "species"
     #info for output page...
     vals$text <- input$search_key_species
-    
-    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
-    updateTabItems(session = parent, "menu_tabs", "fmd_results")
+    withProgress(message = 'Searching...', {    
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)
+      updateTabItems(session = parent, "menu_tabs", "fmd_results")
+    })
   })
   
   # Submit button for genus...
@@ -102,9 +104,10 @@ searchFunc <- function(input, output, session, parent) {
     vals$type =  "genus"
     #info for output page...
     vals$text <- input$search_key_genus
-    
-    callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
-    updateTabItems(session = parent, "menu_tabs", "fmd_results")
+    withProgress(message = 'Searching...', {
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
+      updateTabItems(session = parent, "menu_tabs", "fmd_results")
+    })
   })
   
   observe({

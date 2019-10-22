@@ -62,35 +62,47 @@ analysisFunc <- function(input, output, session, parent) {
       vals$type =  "sequence"
       vals$text <- input$textSeq
       vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
-      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)    
-      updateTabItems(session = parent, "menu_tabs", "fmd_results")
+      #withProgress(message = 'Searching...', {
+        callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)
+        updateTabItems(session = parent, "menu_tabs", "fmd_results")
+      #})
     } else {
       print(print(paste0("Run the blast... exists global_blast_out: ",exists("global_blast_out"))))
       if (!exists("global_blast_out")){
-      # generate folder for user task...
-      outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
-      system(paste("mkdir ", outputDir, sep = "")) #for linux
-
-      # write input fasta...
-      input_fasta <- data.frame(seq1 = c(">query_seq", input$textSeq), stringsAsFactors = F)
-      write.table(x = input_fasta,
-                  file = paste(outputDir,"my_query.fasta", sep = ""),
-                  quote = F, col.names = F, row.names = F)
-      
-      # run blast command...
-      cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_database_vol1 -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out -outfmt 6")
-      system(cmd_blast)
-      
-      # Check if your blast finished ## please lets improve this to something more cleaver ##
-      if(!file.exists(paste0(outputDir, "results.out"))){
-          blast_out <- NULL
-      } else {
-          blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
-          # remove folder after use...
-          cmd_blast <- paste0("rm -rf ",outputDir)
+        withProgress(message = 'Running BLAST...', {
+          incProgress(1/5)
+          # generate folder for user task...
+          outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
+          system(paste("mkdir ", outputDir, sep = "")) #for linux
+          incProgress(1/5)
+          # write input fasta...
+          input_fasta <- data.frame(seq1 = c(">query_seq", input$textSeq), stringsAsFactors = F)
+          write.table(x = input_fasta,
+                      file = paste(outputDir,"my_query.fasta", sep = ""),
+                      quote = F, col.names = F, row.names = F)
+          incProgress(1/5)
+          # run blast command...
+          cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_sequences_vol1.fa -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out -outfmt 6")
           system(cmd_blast)
-      }
+          incProgress(1/5)
+          # Check if your blast finished ## please lets improve this to something more cleaver ##
+          if(!file.exists(paste0(outputDir, "results.out"))){
+              blast_out <- NULL
+          } else {
+              blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+              # remove folder after use...
+              cmd_blast <- paste0("rm -rf ",outputDir)
+              system(cmd_blast)
+          }
+          incProgress(1/5)
+        })
       } else {
+        withProgress(message = 'Loading...', {
+          for(i in 1:5) {
+            incProgress(1/5)
+            Sys.sleep(0.1)
+          }
+        })
           blast_out <- global_blast_out
       }
       
@@ -145,7 +157,9 @@ analysisFunc <- function(input, output, session, parent) {
     vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],input$textSeq)
     #pass code of the study...
     vals$key <- md5_hash
-    callModule(session = parent, module = resultsFunc, id = "id_results", vals)
+    withProgress(message = 'Searching...', {  
+      callModule(session = parent, module = resultsFunc, id = "id_results", vals)
+    })
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   }
   )
