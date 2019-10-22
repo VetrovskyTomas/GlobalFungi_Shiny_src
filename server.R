@@ -47,6 +47,7 @@ server <- function(session, input, output) {
       vals$type <- 'SH'
       vals$text <- query[['SH']]
       print(paste0("The url query SH value is ", vals$text))
+      callModule(module = resultsFunc, id = "id_results", vals)
       updateTabItems(session, "menu_tabs", "fmd_results")
     }
   })

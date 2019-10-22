@@ -237,10 +237,28 @@ resultsFunc <- function(input, output, session, variable) {
         h2("No results found.")
       } else {
         if (!is.null(out_data$SeqVars)){
-          fluidRow(
-            column(10,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table'))),
-            resutsVariantsUI(id = ns("results_variants"))
-          )
+          ###################################
+          if (type == "SH") {
+            fluidRow(
+              column(10,
+                fluidRow(  
+                  column(10,verbatimTextOutput(ns('info_key'))),
+                  column(2,actionButton(inputId = ns("unite_butt"), 
+                      label = NULL, 
+                      style = "width: 120px; height: 40px;background: url('unite.png');  background-size: cover; background-position: center;",
+                      onclick = paste0("window.open('https://unite.ut.ee/bl_forw_sh.php?sh_name=",text,"', '_blank')")
+                    ))
+                ),
+              column(10,tableOutput(ns('info_table')))),
+              resutsVariantsUI(id = ns("results_variants"))
+            )
+          } else {
+            fluidRow(
+              column(10,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table'))),
+              resutsVariantsUI(id = ns("results_variants"))
+            )
+          }
+          ###################################
         } else {
           fluidRow(
             column(12,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table')))
@@ -248,6 +266,15 @@ resultsFunc <- function(input, output, session, variable) {
         }
       }
     })
+    
+    # # button to unite
+    # output$unite_butt <- renderText(
+    #   if (type == "study"){
+    #     toString(global_papers[which(global_papers$paper_id %in% text),"title"])
+    #   } else { 
+    #     text
+    #   }
+    # )
     
     # key
     output$info_key <- renderText(

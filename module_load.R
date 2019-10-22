@@ -24,7 +24,7 @@ if(!exists("global_samples")) {
   global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
   # load sequence variants with SH...
-  global_variants <- fread("C:/fm_database_root/tables/fm_sequences_vol1_test.txt")
+  global_variants <- fread("C:/fm_database_root/tables/fm_sequences_vol1_test_corrected.txt")
   global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
   
   # remove SH not existing in the dataset...
