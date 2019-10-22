@@ -56,31 +56,33 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
         })
         #################################################
         D <- NULL
-        # create fasta...
-        if (input$seqs_derep == TRUE) {
-          # dereplicated sequences...
-          fasta <- data.frame(
-            ids = seq.int(nrow(data$SeqVars)),
-            type = data$SeqVars$marker,
-            seqs = data$SeqVars$sequence
-          )
-          fasta$titles <- paste0(fasta$type,"_",fasta$ids)
-          fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
-          fasta <- fasta[ , c("titles", "seqs")]
-          D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
-        } else {
-          # replicated sequences...
-          s <- strsplit(data$SeqVars$samples, split = ";", fixed=TRUE)
-          fasta <- data.frame(ids = unlist(s), seqs = rep(data$SeqVars$sequence, sapply(s, length)), type = rep(data$SeqVars$marker, sapply(s, length)))
-          fasta$indices = seq.int(nrow(fasta))
-          fasta$titles <- paste0(fasta$type,"_",fasta$indices,"_",fasta$ids)
-          # drop unnecesary columns...
-          fasta = subset(fasta, select = -c(indices,ids))
-          # add > to titles...
-          fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
-          fasta <- fasta[ , c("titles", "seqs")]
-          D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
-        }
+        withProgress(message = 'Formating...', {
+          # create fasta...
+          if (input$seqs_derep == TRUE) {
+            # dereplicated sequences...
+            fasta <- data.frame(
+              ids = seq.int(nrow(data$SeqVars)),
+              type = data$SeqVars$marker,
+              seqs = data$SeqVars$sequence
+            )
+            fasta$titles <- paste0(fasta$type,"_",fasta$ids)
+            fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
+            fasta <- fasta[ , c("titles", "seqs")]
+            D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
+          } else {
+            # replicated sequences...
+            s <- strsplit(data$SeqVars$samples, split = ";", fixed=TRUE)
+            fasta <- data.frame(ids = unlist(s), seqs = rep(data$SeqVars$sequence, sapply(s, length)), type = rep(data$SeqVars$marker, sapply(s, length)))
+            fasta$indices = seq.int(nrow(fasta))
+            fasta$titles <- paste0(fasta$type,"_",fasta$indices,"_",fasta$ids)
+            # drop unnecesary columns...
+            fasta = subset(fasta, select = -c(indices,ids))
+            # add > to titles...
+            fasta$titles <- sub("^", paste0(">",variable$type,"_",variable$text,"_"),fasta$titles)
+            fasta <- fasta[ , c("titles", "seqs")]
+            D <- do.call(rbind, lapply(seq(nrow(fasta)), function(i) t(fasta[i, ])))
+          }
+        })
         write.table(D, file, row.names = FALSE, col.names = FALSE, quote = FALSE)
         #write.table(fasta_file, file, row.names = FALSE, col.names = FALSE, quote = FALSE)
       }

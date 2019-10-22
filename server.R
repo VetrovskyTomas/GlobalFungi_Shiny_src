@@ -87,7 +87,7 @@ server <- function(session, input, output) {
   callModule(module = insertFunc, id = "id_insert")
   callModule(module = citeFunc, id = "id_cite")
   callModule(module = helpFunc, id = "id_help")
-  callModule(module = resultsFunc, id = "id_results", vals, parent = session)
+  callModule(module = resultsFunc, id = "id_results", vals)
   callModule(module = aboutusFunc, id = "id_aboutus")
   #################################################
   

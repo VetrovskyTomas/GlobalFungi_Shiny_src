@@ -62,10 +62,8 @@ analysisFunc <- function(input, output, session, parent) {
       vals$type =  "sequence"
       vals$text <- input$textSeq
       vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
-      #withProgress(message = 'Searching...', {
-        callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)
-        updateTabItems(session = parent, "menu_tabs", "fmd_results")
-      #})
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)
+      updateTabItems(session = parent, "menu_tabs", "fmd_results")
     } else {
       print(print(paste0("Run the blast... exists global_blast_out: ",exists("global_blast_out"))))
       if (!exists("global_blast_out")){
@@ -157,9 +155,7 @@ analysisFunc <- function(input, output, session, parent) {
     vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],input$textSeq)
     #pass code of the study...
     vals$key <- md5_hash
-    withProgress(message = 'Searching...', {  
-      callModule(session = parent, module = resultsFunc, id = "id_results", vals)
-    })
+    callModule(session = parent, module = resultsFunc, id = "id_results", vals)
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   }
   )
