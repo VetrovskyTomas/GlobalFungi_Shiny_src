@@ -20,14 +20,20 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
   #namespace for dynamic input...
   ns <- session$ns  
 
-  # table with samples metadata...
-  output$metadata <- DT::renderDataTable({
+  observe({
+    
+    table_samples <- variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+    col_names <- c("ID", "primers", "longitude", "latitude", "type", "ITS tot.", "Biome", "MAT", "MAP", "pH", "year")
     if("abundances" %in% colnames(variable$samples)) {
-      variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "abundances", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
-    } else {
-      variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      table_samples <- variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "abundances", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+      col_names <- c("ID", "primers", "longitude", "latitude", "type", "ITS obs.", "ITS tot.", "Biome", "MAT", "MAP", "pH", "year")
     }
-  }, selection = 'single')
+    
+    # table with samples metadata...
+    output$metadata <- DT::renderDataTable({
+      table_samples
+    }, colnames = col_names, selection = 'single')
+  })
   
   # Downloadable csv of selected dataset ----
   output$downloadData <- downloadHandler(
