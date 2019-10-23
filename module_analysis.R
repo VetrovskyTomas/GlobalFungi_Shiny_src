@@ -62,7 +62,7 @@ analysisFunc <- function(input, output, session, parent) {
       vals$type =  "sequence"
       vals$text <- input$textSeq
       vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
-      callModule(session = parent, module = resultsFunc, id = "id_results",vals, parent = parent)
+      callModule(session = parent, module = resultsFunc, id = "id_results",vals)
       updateTabItems(session = parent, "menu_tabs", "fmd_results")
     } else {
       print(print(paste0("Run the blast... exists global_blast_out: ",exists("global_blast_out"))))
