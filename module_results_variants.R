@@ -47,12 +47,11 @@ resutsVariantsFunc <- function(input, output, session,  data, variable) {
         })
         ##################################################################
         withProgress(message = 'Processing...', {
-          data$SeqVars$sequence <- vector(mode="character", length=nrow(data$SeqVars))
           n <- fasta_file[seq(1, length(fasta_file), 2)]
           n <- sub('.', '', n)
           m <- fasta_file[seq(2, length(fasta_file), 2)]
           df_fasta <- data.frame(hash=n, seqs=m, stringsAsFactors = F)
-          data$SeqVars$sequence[data$SeqVars$hash %in% df_fasta$hash] <- df_fasta$seqs
+          data$SeqVars$sequence <- df_fasta$seqs[match(data$SeqVars$hash, df_fasta$hash)]
         })
         #################################################
         D <- NULL
