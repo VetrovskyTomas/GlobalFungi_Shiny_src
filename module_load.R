@@ -1,6 +1,6 @@
 if(!exists("global_samples")) {
   # load samples table...
-  global_samples <- fread("C:/fm_database_root/tables/fm_samples_v7.txt")
+  global_samples <- fread("C:/fm_database_root/tables/fm_samples_v7_with_counts.txt")
   
   # construct papers table...
   global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
@@ -17,7 +17,7 @@ if(!exists("global_samples")) {
                                       "year_of_sampling", "Biome", "sequencing_platform", "target_gene", "primers", 
                                       "elevation", "MAT", "MAP", "country", "Plants", "area_sampled", "number_of_subsamples", "sample_depth", 
                                       "total_C_content", "total_N_content", "organic_matter_content", 
-                                      "pH", "pH_method", "total_Ca", "total_P", "total_K")]
+                                      "pH", "pH_method", "total_Ca", "total_P", "total_K", "ITS1_extracted", "ITS2_extracted", "ITS_total")]
   
   # load SH table...
   global_SH <- fread("C:/fm_database_root/tables/fm_sh_07FU.txt")

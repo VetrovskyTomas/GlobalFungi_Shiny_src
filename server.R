@@ -38,6 +38,7 @@ server <- function(session, input, output) {
   vals <- reactiveValues()
   vals$type <- 'none'
   vals$text <- 'No results yet!'
+  vals$single <- TRUE
   # TRY TO PROCESS URL QUERY
   # e.g.: 127.0.0.1:5048/?SH=SH000160
   query <- NULL
@@ -46,6 +47,7 @@ server <- function(session, input, output) {
     if (!is.null(query[['SH']])) {
       vals$type <- 'SH'
       vals$text <- query[['SH']]
+      vals$single <- TRUE
       print(paste0("The url query SH value is ", vals$text))
       callModule(module = resultsFunc, id = "id_results", vals)
       updateTabItems(session, "menu_tabs", "fmd_results")

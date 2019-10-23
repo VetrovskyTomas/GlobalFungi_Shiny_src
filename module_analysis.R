@@ -32,6 +32,9 @@ analysisUI <- function(id) {
         fluidRow(
           column(8,selectInput(ns("search_type"), "Type:", choices = c("BLAST", "Exact")))
         ),
+        fluidRow(
+          column(6, checkboxInput(ns("ignore_single"), "ignore singletons", FALSE))
+        ),
         hr(),
         fluidRow(
           column(6,actionButton(ns("analyze_button"), label = "Analyze"))
@@ -59,9 +62,16 @@ analysisFunc <- function(input, output, session, parent) {
   observeEvent(input$analyze_button, {
     if (input$search_type == "Exact"){
       print("Searching for exact sequence match...")
+      
+      # set singleton options...
+      vals$single <- !input$ignore_single
+      
+      # set other vals...
       vals$type =  "sequence"
       vals$text <- input$textSeq
       vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
+      
+      # call funtion...
       callModule(session = parent, module = resultsFunc, id = "id_results",vals)
       updateTabItems(session = parent, "menu_tabs", "fmd_results")
     } else {
@@ -148,8 +158,14 @@ analysisFunc <- function(input, output, session, parent) {
   # redirect...  
   observeEvent(input$lastClick, {
     selectedRow <- as.numeric(strsplit(input$lastClickId, "_")[[1]][2])
+
+    # set singleton options...
+    vals$single <- !input$ignore_single
+
+    # get md5 hash...
     md5_hash <- toString(vals$seq_hash[selectedRow,"sseqid"])
     print(md5_hash)
+    
     #info about result type...
     vals$type =  "sequence"
     vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],input$textSeq)

@@ -52,6 +52,7 @@ resultsFunc <- function(input, output, session, variable) {
   type <- isolate(variable$type)
   text <- isolate(variable$text)
   key <- isolate(variable$key)
+  singl <- isolate(variable$single)
   
   # render the charts...
   observe({
@@ -106,11 +107,31 @@ resultsFunc <- function(input, output, session, variable) {
                   )
                 })
               }
+              
               samples <- strsplit(variants$samples, ';', fixed=TRUE)
+              abundances <- strsplit(variants$abundances, ';', fixed=TRUE)
+              # store counts...
+              cover <- data.frame(sample = unlist(samples), abund = as.numeric(unlist(abundances)), stringsAsFactors = F)
+              cover <- ddply(cover,~sample,summarise,abundance=sum(abund))
+              
+              # continue with list of samples...
               samples <- unique(unlist(samples))
               print(paste0("Number of samples in ",text," is ", length(samples)))
               
-              out_data$samples <- global_samples[which(global_samples$id %in% samples),]
+              # append coverage
+              sample_tab <- global_samples[which(global_samples$id %in% samples),]
+              sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
+              
+              # filter by sigleton option...
+              if (singl == FALSE){
+                sample_tab <- sample_tab[sample_tab$abundances > 1,]
+                if (nrow(sample_tab) == 0) {
+                  sample_tab <- NULL
+                }
+              }
+              
+              # fill out data...
+              out_data$samples <- sample_tab
             }
             else
             {
@@ -138,10 +159,29 @@ resultsFunc <- function(input, output, session, variable) {
               
               incProgress(1/3)
               samples <- strsplit(variants$samples, ';', fixed=TRUE)
+              abundances <- strsplit(variants$abundances, ';', fixed=TRUE)
+              # store counts...
+              cover <- data.frame(sample = unlist(samples), abund = as.numeric(unlist(abundances)), stringsAsFactors = F)
+              cover <- ddply(cover,~sample,summarise,abundance=sum(abund))
+              
+              # continue with list of samples...
               samples <- unique(unlist(samples))
               print(paste0("Number of samples in ",text," is ", length(samples)))
               
-              out_data$samples <- global_samples[which(global_samples$id %in% samples),]
+              # append coverage
+              sample_tab <- global_samples[which(global_samples$id %in% samples),]
+              sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
+              
+              # filter by sigleton option...
+              if (singl == FALSE){
+                sample_tab <- sample_tab[sample_tab$abundances > 1,]
+                if (nrow(sample_tab) == 0) {
+                  sample_tab <- NULL
+                }
+              }
+              
+              # fill out data...
+              out_data$samples <- sample_tab
             })
           } else
             # species option...  
@@ -166,11 +206,31 @@ resultsFunc <- function(input, output, session, variable) {
                 out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
                 
                 samples <- strsplit(variants$samples, ';', fixed=TRUE)
+                abundances <- strsplit(variants$abundances, ';', fixed=TRUE)
+                # store counts...
+                cover <- data.frame(sample = unlist(samples), abund = as.numeric(unlist(abundances)), stringsAsFactors = F)
+                cover <- ddply(cover,~sample,summarise,abundance=sum(abund))
+                
+                # continue with list of samples...
                 samples <- unique(unlist(samples))
                 incProgress(1/5)
                 print(paste0("Number of samples in ",text," is ", length(samples)))
                 
-                out_data$samples <- global_samples[which(global_samples$id %in% samples),]
+                # append coverage
+                sample_tab <- global_samples[which(global_samples$id %in% samples),]
+                sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
+                
+                # filter by sigleton option...
+                if (singl == FALSE){
+                  sample_tab <- sample_tab[sample_tab$abundances > 1,]
+                  if (nrow(sample_tab) == 0) {
+                    sample_tab <- NULL
+                  }
+                }
+                
+                # fill out data...
+                out_data$samples <- sample_tab
+                
               })
             } else
               # genus option...  
@@ -195,11 +255,30 @@ resultsFunc <- function(input, output, session, variable) {
                   out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                   
                   samples <- strsplit(variants$samples, ';', fixed=TRUE)
+                  abundances <- strsplit(variants$abundances, ';', fixed=TRUE)
+                  # store counts...
+                  cover <- data.frame(sample = unlist(samples), abund = as.numeric(unlist(abundances)), stringsAsFactors = F)
+                  cover <- ddply(cover,~sample,summarise,abundance=sum(abund))
+
+                  # continue with list of samples...
                   samples <- unique(unlist(samples))
                   incProgress(1/5)
                   print(paste0("Number of samples in ",text," is ", length(samples)))
                   
-                  out_data$samples <- global_samples[which(global_samples$id %in% samples),]
+                  # append coverage
+                  sample_tab <- global_samples[which(global_samples$id %in% samples),]
+                  sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
+                  
+                  # filter by sigleton option...
+                  if (singl == FALSE){
+                    sample_tab <- sample_tab[sample_tab$abundances > 1,]
+                    if (nrow(sample_tab) == 0) {
+                      sample_tab <- NULL
+                    }
+                  }
+                  
+                  # fill out data...
+                  out_data$samples <- sample_tab
                 })
               }    
     
@@ -234,7 +313,7 @@ resultsFunc <- function(input, output, session, variable) {
     # dynamic header - seq vars...
     output$dynamic_header <- renderUI({
       if (is.null(out_data$samples)){
-        h2("No results found.")
+        h2(paste("No results found. ( ignore singletons ",!singl,")"))
       } else {
         if (!is.null(out_data$SeqVars)){
           ###################################

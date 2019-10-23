@@ -22,7 +22,11 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
 
   # table with samples metadata...
   output$metadata <- DT::renderDataTable({
-    variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+    if("abundances" %in% colnames(variable$samples)) {
+      variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "abundances", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+    } else {
+      variable$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
+    }
   }, selection = 'single')
   
   # Downloadable csv of selected dataset ----
@@ -44,6 +48,9 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
         column(4,tableOutput(ns('sample_table_paper')), 
                downloadButton(ns("downloadSeqs"), "Download sequences")
         )
+      ),
+      fluidRow(
+        "  *All metadata are provided by the outhors, please contact the authors for any questions."
       ),
       tags$head(tags$style(paste0("#",ns('sample_table_basic')," table {background-color: white; }"), media="screen", type="text/css")),
       tags$head(tags$style(paste0("#",ns('sample_table_advance')," table {background-color: white; }"), media="screen", type="text/css")),

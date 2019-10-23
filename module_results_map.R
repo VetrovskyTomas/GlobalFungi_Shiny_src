@@ -41,7 +41,13 @@ resutsMapFunc <- function(input, output, session,  variable) {
       return()
     }
     #print(click)
-    text <- paste0(input$mymap_marker_click$id, " ...number of seqs for TAXON / ALL ")
+    sample_info <- variable$samples[which(variable$samples$id %in% input$mymap_marker_click$id),]
+    
+    text <- paste0(sample_info[,"id"], " (", sample_info[,"ITS_total"]," ITS)")
+    if("abundances" %in% colnames(variable$samples)) {
+      text <- paste0(sample_info[,"id"], " (", sample_info[,"abundances"],"/",sample_info[,"ITS_total"],")")
+    } 
+    
     leafletProxy(mapId = "mymap") %>%
       clearPopups() %>%
       addPopups(dat = click, lat = ~lat, lng = ~lng, popup = text)
