@@ -7,6 +7,7 @@
 # install.packages("DT")
 # install.packages("ECharts2Shiny")
 # install.packages("markdown")
+# install.packages("seqRFLP")
 
 library(shiny)
 library(shinydashboard)
@@ -23,7 +24,7 @@ library(markdown) # bring text data from markdown
 ##############
 ### GLOBAL ###
 ##############
-users = reactiveValues(count = 0, max = 0)
+users = reactiveValues(count = 0, max = 0, IPs = vector())
 # load module for data
 source("module_load.R", local = TRUE)
 

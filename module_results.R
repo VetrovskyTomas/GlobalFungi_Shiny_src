@@ -56,14 +56,6 @@ resultsFunc <- function(input, output, session, variable) {
   
   # render the charts...
   observe({
-    if (exists("out_data")){
-      print("out_data already exist!!!!")
-      print(text)
-    } else {
-      print("out_data NOT exist!!!!")
-      print(text)
-    }
-    
     ################################################################
     out_data <- reactiveValues()
     # default
@@ -306,7 +298,9 @@ resultsFunc <- function(input, output, session, variable) {
     ###################################################################
     # variants...
     if (!is.null(out_data$SeqVars)){
-      callModule(module = resutsVariantsFunc, id = "results_variants", out_data, variable)
+      isolate(
+      callModule(module = resutsVariantsFunc, id = "results_variants", out_data, type, text)
+      )
     }
 
     

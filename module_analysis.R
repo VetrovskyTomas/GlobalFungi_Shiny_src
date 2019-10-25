@@ -90,7 +90,8 @@ analysisFunc <- function(input, output, session, parent) {
                       quote = F, col.names = F, row.names = F)
           incProgress(1/5)
           # run blast command...
-          cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_sequences_vol1.fa -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out -outfmt 6")
+          cmd_params <- "-outfmt 6 -max_target_seqs 10 -num_threads 2"
+          cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_sequences_vol1.fa -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
           system(cmd_blast)
           incProgress(1/5)
           # Check if your blast finished ## please lets improve this to something more cleaver ##

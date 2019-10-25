@@ -68,7 +68,7 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
   output$sample_table_basic <- renderTable({
     sample_vals <- variable$samples[input$metadata_rows_selected,]
     sample_vals <- global_samples[which(global_samples$id %in% sample_vals$id), 
-                                  c("id", "longitude", "latitude", "elevation", "MAT", "MAP", 
+                                  c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", 
                                     "country", "area_sampled", "number_of_subsamples", "sample_depth")]
     sample_vals <- data.frame(basic_metadata = rownames(t(sample_vals)), values = t(sample_vals))
   })

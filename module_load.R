@@ -15,7 +15,8 @@ if(!exists("global_samples")) {
   # filter sample table...
   global_samples <- global_samples[,c("id", "paper_id", "sample_type", "latitude", "longitude", "continent", 
                                       "year_of_sampling", "Biome", "sequencing_platform", "target_gene", "primers", 
-                                      "elevation", "MAT", "MAP", "country", "Plants", "area_sampled", "number_of_subsamples", "sample_depth", 
+                                      "elevation", "MAT", "MAP", "MAT_study", "MAP_study",
+                                      "country", "Plants", "area_sampled", "number_of_subsamples", "sample_depth", 
                                       "total_C_content", "total_N_content", "organic_matter_content", 
                                       "pH", "pH_method", "total_Ca", "total_P", "total_K", "ITS1_extracted", "ITS2_extracted", "ITS_total")]
   
@@ -34,6 +35,7 @@ if(!exists("global_samples")) {
   # options
   global_SH_list <- sort(global_SH$SH)
   global_species_list <- sort(unique(global_SH$Species))
+  global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
   global_genus_list <- sort(unique(global_SH$Genus))
   
   # output path 
@@ -41,4 +43,6 @@ if(!exists("global_samples")) {
   
   # test blast out
   global_blast_out <- read.delim(file = "C:/fm_database_root/tables/results.out", header = F)
+  # test retrieve FASTA (test file is for Genus "Russula")
+  global_fasta_out <- scan(file = "C:/fm_database_root/tables/results.fa", character(), quote = "")
 }

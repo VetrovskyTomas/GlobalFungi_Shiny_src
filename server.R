@@ -9,19 +9,29 @@ library(leaflet) # interactive world map
 library(DT)
 library(ECharts2Shiny)
 library(digest)
+library(seqRFLP)
 
 ##############
 ### SERVER ###
 ##############
-
 server <- function(session, input, output) {
   
   # someone started session...
   onSessionStart = isolate({
+    len <- length(users$IPs)
+    IP <- session$request[["REMOTE_ADDR"]]
+    print(IP)
+    users$IPs <- c( users$IPs , IP)
+    users$IPs <- unique(users$IPs)
+    
     users$count = users$count + 1
     if (users$count > users$max){
       users$max = users$max + 1
     }
+    
+    # if (length(users$IPs)>len){
+    #   write.table(users$IPs,file = "IP_addresses.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    # }
   })
   
   # someone ended session...
@@ -44,11 +54,21 @@ server <- function(session, input, output) {
   query <- NULL
   observe({
     query <- parseQueryString(session$clientData$url_search)
+    # SH redirection by link...
     if (!is.null(query[['SH']])) {
       vals$type <- 'SH'
       vals$text <- query[['SH']]
       vals$single <- TRUE
       print(paste0("The url query SH value is ", vals$text))
+      callModule(module = resultsFunc, id = "id_results", vals)
+      updateTabItems(session, "menu_tabs", "fmd_results")
+    } else 
+    # species redirection by link...
+    if (!is.null(query[['species']])) {
+      vals$type <- 'species'
+      vals$text <- query[['species']]
+      vals$single <- TRUE
+      print(paste0("The url query species value is ", vals$text))
       callModule(module = resultsFunc, id = "id_results", vals)
       updateTabItems(session, "menu_tabs", "fmd_results")
     }
@@ -97,8 +117,9 @@ server <- function(session, input, output) {
   # info about connection...
   output$urlText <- renderText({
     paste(sep = "",
-          "# users:", users$count, "\n",
-          "max users:", users$max, "\n",
+          "# sessions:", users$count, "\n",
+          "# sessions max:", users$max, "\n",
+          "# unique users:", length(users$IPs), "\n",
           "protocol: ", session$clientData$url_protocol, "\n",
           "host: ", session$clientData$url_hostname, "\n",
           "path: ", session$clientData$url_pathname, "\n",
