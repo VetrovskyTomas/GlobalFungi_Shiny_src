@@ -91,7 +91,7 @@ analysisFunc <- function(input, output, session, parent) {
           incProgress(1/5)
           # run blast command...
           cmd_params <- "-outfmt 6 -max_target_seqs 10 -num_threads 2"
-          cmd_blast <- paste0("blastn -db /home/fungal/databases/blast_database/fm_sequences_vol1.fa -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+          cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
           system(cmd_blast)
           incProgress(1/5)
           # Check if your blast finished ## please lets improve this to something more cleaver ##
@@ -100,8 +100,7 @@ analysisFunc <- function(input, output, session, parent) {
           } else {
               blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
               # remove folder after use...
-              cmd_blast <- paste0("rm -rf ",outputDir)
-              system(cmd_blast)
+              system(paste0("rm -rf ",outputDir))
           }
           incProgress(1/5)
         })

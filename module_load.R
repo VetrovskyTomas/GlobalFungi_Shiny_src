@@ -1,6 +1,21 @@
 if(!exists("global_samples")) {
+  #################################################################################
+  # python process sample FASTA script path
+  global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
+  
+  # nucleotide database for blast
+  global_blast_db <- "/home/fungal/databases/blast_database/fm_sequences_vol1.fa"
+
+  # output path 
+  global_out_path <- "/home/fungal/databases/user_outputs/"  
+    
+  # tables
+  #global_tables_path <- "/home/fungal/databases/tables/"  
+  global_tables_path <- "C:/fm_database_root/tables/"  
+  
+  #################################################################################
   # load samples table...
-  global_samples <- fread("C:/fm_database_root/tables/fm_samples_v7_with_counts.txt")
+  global_samples <- fread(paste0(global_tables_path, "fm_samples_v7_with_counts.txt"))
   
   # construct papers table...
   global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
@@ -21,11 +36,11 @@ if(!exists("global_samples")) {
                                       "pH", "pH_method", "total_Ca", "total_P", "total_K", "ITS1_extracted", "ITS2_extracted", "ITS_total")]
   
   # load SH table...
-  global_SH <- fread("C:/fm_database_root/tables/fm_sh_07FU.txt")
+  global_SH <- fread(paste0(global_tables_path, "fm_sh_07FU.txt"))
   global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
   # load sequence variants with SH...
-  global_variants <- fread("C:/fm_database_root/tables/fm_sequences_vol1_test_corrected.txt")
+  global_variants <- fread(paste0(global_tables_path, "fm_sequences_vol1_test_corrected.txt"))
   global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
   
   # remove SH not existing in the dataset...
@@ -37,9 +52,6 @@ if(!exists("global_samples")) {
   global_species_list <- sort(unique(global_SH$Species))
   global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
   global_genus_list <- sort(unique(global_SH$Genus))
-  
-  # output path 
-  global_out_path <- "/home/fungal/databases/user_outputs/"
   
   # test blast out
   global_blast_out <- read.delim(file = "C:/fm_database_root/tables/results.out", header = F)
