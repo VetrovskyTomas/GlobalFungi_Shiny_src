@@ -172,11 +172,15 @@ resultsFunc <- function(input, output, session, variable) {
               # filer sample based on selection...
               incProgress(1/3)
               variants <- global_variants[which(global_variants$SH %in% text),]
-              print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-              out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
               
-              incProgress(1/3)
-              out_data$samples <- sample_tab(variants)
+              # result is not empty...
+              if (nrow(variants) > 0) {
+                print(paste0("Number of seqs in ",text," is ", nrow(variants)))
+                out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
+                
+                incProgress(1/3)
+                out_data$samples <- sample_tab(variants)
+              }
             })
           } else
             # species option...  
@@ -197,12 +201,15 @@ resultsFunc <- function(input, output, session, variable) {
                 # filer sample based on selection...
                 incProgress(1/5)
                 variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
-                print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-                out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
                 
-                incProgress(1/5)
-                out_data$samples <- sample_tab(variants)
-                
+                # result is not empty...
+                if (nrow(variants) > 0) {
+                  print(paste0("Number of seqs in ",text," is ", nrow(variants)))
+                  out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
+                  
+                  incProgress(1/5)
+                  out_data$samples <- sample_tab(variants)
+                }
               })
             } else
               # genus option...  
@@ -223,11 +230,15 @@ resultsFunc <- function(input, output, session, variable) {
                   # filer sample based on selection...
                   incProgress(1/5)
                   variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
-                  print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-                  out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                   
-                  incProgress(1/5)
-                  out_data$samples <- sample_tab(variants)
+                  # result is not empty...
+                  if (nrow(variants) > 0) {
+                    print(paste0("Number of seqs in ",text," is ", nrow(variants)))
+                    out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                    
+                    incProgress(1/5)
+                    out_data$samples <- sample_tab(variants)
+                  }
                 })
               }    
     

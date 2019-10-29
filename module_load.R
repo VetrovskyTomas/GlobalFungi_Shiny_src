@@ -54,7 +54,7 @@ if(!exists("global_samples")) {
   global_genus_list <- sort(unique(global_SH$Genus))
   
   # test blast out
-  global_blast_out <- read.delim(file = "C:/fm_database_root/tables/results.out", header = F)
+  #global_blast_out <- read.delim(file = "C:/fm_database_root/tables/results.out", header = F)
   # test retrieve FASTA (test file is for Genus "Russula")
-  global_fasta_out <- scan(file = "C:/fm_database_root/tables/results.fa", character(), quote = "")
+  #global_fasta_out <- scan(file = "C:/fm_database_root/tables/results.fa", character(), quote = "")
 }
