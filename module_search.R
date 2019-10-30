@@ -12,14 +12,18 @@ searchUI <- function(id) {
       tabsetPanel(id = ns("navbar"),
         tabPanel("SH",
           br(),
-          selectizeInput(inputId = ns("search_key_sh"),
-                         options = list(
-                           maxOptions=length(global_SH_list),
-                           placeholder = 'Please select an option below'
-                         ),
-                         label = "Select SH:", choices = global_SH_list, width = "200px",
-                         selected = 1, 
-                         multiple = FALSE # allow for multiple inputs
+          # searchInput(
+          #   inputId = ns("search_key_sh"),
+          #   label = "Select SH:",
+          #   placeholder = "Enter your text",
+          #   btnSearch = icon("search"),
+          #   btnReset = icon("remove"),
+          #   width = "200px"
+          # )
+          textInput(inputId = ns("search_key_sh"),
+            placeholder = "Enter your text",
+            label = "Select SH:", 
+            width = "300px"
           )
         ),
         tabPanel("Species", 
@@ -29,7 +33,7 @@ searchUI <- function(id) {
                            maxOptions=length(global_species_list),
                            placeholder = 'Please select an option below'
                          ),
-                         label = "Select species:", choices = global_species_list, width = "400px",
+                         label = "Select species:", choices = global_species_list, width = "300px",
                          selected = 1, 
                          multiple = FALSE # allow for multiple inputs
           )
@@ -113,9 +117,9 @@ searchFunc <- function(input, output, session, parent) {
   
   observe({
       # load SH options...
-      updateSelectizeInput(session, "search_key_sh", 
-                           choices = global_SH_list, 
-                           server = TRUE)
+      # updateSelectizeInput(session, "search_key_sh", 
+      #                      choices = global_SH_list, 
+      #                      server = TRUE)
     
       # load species options...
       updateSelectizeInput(session, "search_key_species",

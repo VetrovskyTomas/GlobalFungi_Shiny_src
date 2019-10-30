@@ -111,6 +111,8 @@ resultsFunc <- function(input, output, session, variable) {
             #print(paste0("Number of seqs in ",text," is ", nrow(variants)))
             incProgress(1/3)
             if (nrow(variants) > 0){
+              # get sequence
+              out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
               # get info table...
               if (variants$SH != "-"){
                 output$info_table <- renderTable({
@@ -267,7 +269,7 @@ resultsFunc <- function(input, output, session, variable) {
     # variants...
     if (!is.null(out_data$SeqVars)){
       isolate(
-      callModule(module = resutsVariantsFunc, id = "results_variants", out_data, type, text)
+        callModule(module = resutsVariantsFunc, id = "results_variants", out_data, type, text)
       )
     }
 

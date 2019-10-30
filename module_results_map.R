@@ -53,16 +53,23 @@ resutsMapFunc <- function(input, output, session,  variable) {
       addPopups(dat = click, lat = ~lat, lng = ~lng, popup = text)
   })
   
-  # map sample details - clicked row...
-  output$map_sample_info <- renderUI({
-    req(length(input$mymap_marker_click) > 0)
-    verbatimTextOutput(ns('map_sample_table'))
-  })
-  
   #
   output$map_sample_table <- renderText({
     sample_vals <- global_samples[which(global_samples$id %in% input$mymap_marker_click$id),]
     #paste0(toString(sample_vals$id)," ",toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
     paste(input$mymap_marker_click$id,toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
+  })
+  
+  # map sample details - clicked row...
+  output$map_sample_info <- renderUI({
+    req(length(input$mymap_marker_click) > 0)
+    resultsSampleUI(id = ns("results_sample"))
+    #verbatimTextOutput(ns('map_sample_table'))
+  })
+  
+  observe({
+    #print(paste0("Map id: ",input$mymap_marker_click$id))
+    #s_id <- variable$samples[input$metadata_rows_selected,]$id[[1]]
+    callModule(module = resultsSampleFunc, id = "results_sample", input$mymap_marker_click$id)
   })
 }

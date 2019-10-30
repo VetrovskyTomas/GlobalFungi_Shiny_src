@@ -68,14 +68,16 @@ analysisFunc <- function(input, output, session, parent) {
       
       # set other vals...
       vals$type =  "sequence"
-      vals$text <- input$textSeq
-      vals$key <- md5_hash <- as.character(digest(input$textSeq, algo="md5", serialize=F))
+      
+      vals$text <- gsub("[\r\n]", "", input$textSeq)
+      vals$key <- md5_hash <- as.character(digest(vals$text, algo="md5", serialize=F))
       
       # call funtion...
       callModule(session = parent, module = resultsFunc, id = "id_results",vals)
       updateTabItems(session = parent, "menu_tabs", "fmd_results")
     } else {
       print(print(paste0("Run the blast... exists global_blast_out: ",exists("global_blast_out"))))
+      
       if (!exists("global_blast_out")){
         withProgress(message = 'Running BLAST...', {
           incProgress(1/5)
@@ -83,14 +85,15 @@ analysisFunc <- function(input, output, session, parent) {
           outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
           system(paste("mkdir ", outputDir, sep = "")) #for linux
           incProgress(1/5)
+          
           # write input fasta...
-          input_fasta <- data.frame(seq1 = c(">query_seq", input$textSeq), stringsAsFactors = F)
+          input_fasta <- data.frame(seq1 = c(">query_seq", gsub("[\r\n]", "", input$textSeq)), stringsAsFactors = F)
           write.table(x = input_fasta,
                       file = paste(outputDir,"my_query.fasta", sep = ""),
                       quote = F, col.names = F, row.names = F)
           incProgress(1/5)
           # run blast command...
-          cmd_params <- "-outfmt 6 -max_target_seqs 10 -num_threads 2"
+          cmd_params <- "-outfmt 6 -max_target_seqs 1 -num_threads 2"
           cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
           system(cmd_blast)
           incProgress(1/5)
@@ -168,7 +171,7 @@ analysisFunc <- function(input, output, session, parent) {
     
     #info about result type...
     vals$type =  "sequence"
-    vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],input$textSeq)
+    vals$text <- paste("BLAST SIMILARITY:",vals$seq_hash[selectedRow,"pident"],"\n",gsub("[\r\n]", "", input$textSeq))
     #pass code of the study...
     vals$key <- md5_hash
     callModule(session = parent, module = resultsFunc, id = "id_results", vals)
