@@ -4,18 +4,20 @@ resultsUI <- function(id) {
   fluidPage(
     useShinyjs(),
     # title...
-    h2(id="welcome_title",textOutput(ns("out_title"))),
-    # paper info table...
+    #h2(id="welcome_title",textOutput(ns("out_title"))),
+    # general info panel...
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
-      uiOutput(ns('dynamic_header'))
+      uiOutput(ns('dynamic_header')),
+      hr(),
+      uiOutput(ns('dynamic_filters'))
     ),
     # all panels...
     sidebarPanel(id = ns("panel"), width = "100%", style = "background-color:white;",
                  # We MUST load the ECharts javascript library in advance
                  loadEChartsLibrary(),
                  loadEChartsTheme('shine'),
-                 # samples info...
-                 verbatimTextOutput(ns('info_sample_count')),
+                 # filtered results...
+                 verbatimTextOutput(ns('info_sample_filtered')),
                  # tabs...
                  tabsetPanel(id = ns("tabs"),
                              tabPanel("SHs", value = "tab_SH",
@@ -52,7 +54,6 @@ resultsFunc <- function(input, output, session, variable) {
   type <- isolate(variable$type)
   text <- isolate(variable$text)
   key <- isolate(variable$key)
-  singl <- isolate(variable$single)
  
   # get samples tab funtion...
   sample_tab <- function(variants) {
@@ -70,13 +71,6 @@ resultsFunc <- function(input, output, session, variable) {
     sample_tab <- global_samples[which(global_samples$id %in% samples),]
     sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
     
-    # filter by sigleton option...
-    if (singl == FALSE){
-      sample_tab <- sample_tab[sample_tab$abundances > 1,]
-      if (nrow(sample_tab) == 0) {
-        sample_tab <- NULL
-      }
-    }
     sample_tab
   }  
    
@@ -141,14 +135,6 @@ resultsFunc <- function(input, output, session, variable) {
               # append coverage
               sample_tab <- global_samples[which(global_samples$id %in% samples),]
               sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
-              
-              # filter by sigleton option...
-              if (singl == FALSE){
-                sample_tab <- sample_tab[sample_tab$abundances > 1,]
-                if (nrow(sample_tab) == 0) {
-                  sample_tab <- NULL
-                }
-              }
               
               # fill out data...
               out_data$samples <- sample_tab
@@ -242,7 +228,7 @@ resultsFunc <- function(input, output, session, variable) {
                     out_data$samples <- sample_tab(variants)
                   }
                 })
-              }    
+              }
     
     #################################################################
     if (!is.null(out_data$samples)){
@@ -277,7 +263,7 @@ resultsFunc <- function(input, output, session, variable) {
     # dynamic header - seq vars...
     output$dynamic_header <- renderUI({
       if (is.null(out_data$samples)){
-        h2(paste("No results found. ( ignore singletons ",!singl,")"))
+        h2(paste("No results found."))
       } else {
         if (!is.null(out_data$SeqVars)){
           ###################################
@@ -293,20 +279,144 @@ resultsFunc <- function(input, output, session, variable) {
                     ))
                 ),
               column(10,tableOutput(ns('info_table')))),
-              resutsVariantsUI(id = ns("results_variants"))
+              resutsVariantsUI(id = ns("results_variants")),
+              column(12,verbatimTextOutput(ns('info_sample_count')))
             )
           } else {
             fluidRow(
               column(10,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table'))),
-              resutsVariantsUI(id = ns("results_variants"))
+              resutsVariantsUI(id = ns("results_variants")),
+              column(12,verbatimTextOutput(ns('info_sample_count')))
             )
           }
           ###################################
         } else {
           fluidRow(
-            column(12,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table')))
+            column(12,verbatimTextOutput(ns('info_key')),tableOutput(ns('info_table'))),
+            column(12,verbatimTextOutput(ns('info_sample_count')))
           )
         }
+      }
+    })
+    
+    # show filtered samples count info...
+    output$info_sample_filtered <- renderText({
+      num_samples <- 0
+      if (!is.null(out_data$samples)){
+        num_samples <- nrow(out_data$samples)
+      }
+      return(paste0("Filtered result is covering ", num_samples, " samples (NO FILTERS APPLIED)"  ))
+    })
+
+    
+    # apply filters...
+    observeEvent(input$applyFilters, {
+      if (!is.null(out_data$samples)){
+        print(paste0("Apply filters... ",input$sample_type))
+        
+        #str <- paste0(str, ', and input$n is ')
+        #paste0(str, isolate(input$sample_year))
+        filtered_data <- reactiveValues()
+        filtered_data$samples <- isolate(out_data$samples)
+        
+        # filter by singletons...
+        if (length(input$sample_single) > 0) {
+          filtered_data$samples <- filtered_data$samples[filtered_data$samples$abundances > 1,]
+        }
+        # filter by sample type...
+        filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$sample_type %in% input$sample_type),]
+        # filter by sample biome...
+        filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$Biome %in% input$sample_biome),]
+        # filter by sample year...
+        years <- isolate(input$sample_year)
+        if (length(years)>1){
+          years <- c(years[1]:years[2])
+        }
+        if ((length(input$sample_year_NA)>0)&&(input$sample_year_NA == TRUE)){
+          years <- c(years,NA)
+        }
+        filtered_data$samples <- filtered_data$samples[which(suppressWarnings(as.numeric(filtered_data$samples$year_of_sampling)) %in% years),]
+        
+        # show filtered samples count info...
+        output$info_sample_filtered <- renderText({
+          isolate({
+            filter <- input$sample_year
+            if (length(input$sample_year)>1){
+              filter <- paste(c(input$sample_year[1]:input$sample_year[2]), collapse=",")
+            }
+            filter <- paste0("Sampling years: ",filter," (NA included ", input$sample_year_NA,")")
+            filter <- paste("Sample biomes:",paste(input$sample_biome, collapse=","),"\n",filter)
+            filter <- paste("Sample types:",paste(input$sample_type, collapse=","),"\n",filter)
+            if (length(input$sample_single) > 0) {
+              filter <- paste(" Singletons ignored: TRUE\n",filter)
+            } else {
+              filter <- paste(" Singletons ignored: FALSE\n",filter)
+            }
+            return(paste0("Filtered result is covering ", nrow(filtered_data$samples), " samples - selected filters:\n", filter))
+          })
+        })
+        #
+        if (nrow(filtered_data$samples) > 0){
+          show(id = "panel")
+          # apply...
+          callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
+          callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
+          callModule(module = resutspHFunc, id = "results_ph", filtered_data)
+          callModule(module = resutsGeographyFunc, id = "results_geography", filtered_data)
+          callModule(module = resutsMapFunc, id = "results_map", filtered_data)
+          callModule(module = resutsSamplesFunc, id = "results_samples", filtered_data)
+          if (!is.null(out_data$SHs)){
+            filtered_data$SHs <- isolate(out_data$SHs)
+            callModule(module = resutsSHsFunc, id = "results_shs", filtered_data)
+          }
+        } else {
+          hide(id = "panel")
+        }
+      }
+    }, ignoreInit = TRUE)
+    
+    # dynamic filters...
+    output$dynamic_filters <- renderUI({
+      if (!is.null(out_data$samples)){
+        # variables...
+        #print(out_data$samples$year_of_sampling)
+        #years <- out_data$samples$year_of_sampling %>% filter(out_data$samples$year_of_sampling != "NA_")
+        sample_years <- suppressWarnings(as.numeric(out_data$samples$year_of_sampling))
+        year_na <- NA %in% sample_years
+        sample_years=sample_years[!is.na(sample_years)]
+        sample_biomes <- unique(out_data$samples$Biome)
+        sample_types <- unique(out_data$samples$sample_type)
+        # filters...
+        fluidRow(
+          column(2,actionButton(ns("applyFilters"), "Apply filters", icon = icon("filter")),img(src='filter.png', align = "left")),
+          column(2,checkboxGroupInput(ns("sample_single"), 
+                                      "Ignore singletons:",
+                                      choiceNames = "ignore",
+                                      choiceValues = "ignore",
+                                      selected = ""
+          ) 
+          ),
+          column(2,checkboxGroupInput(ns("sample_biome"), 
+                                      "Filter biome:",
+                                      choiceNames = sample_biomes, 
+                                      choiceValues = sample_biomes,
+                                      selected = sample_biomes
+          ) 
+          ),
+          column(2,checkboxGroupInput(ns("sample_type"), 
+                                      "Filter type:",
+                                      choiceNames = sample_types, 
+                                      choiceValues = sample_types,
+                                      selected = sample_types
+          ) 
+          ),
+          column(3,sliderInput(ns("sample_year"), "Sampling year:",
+                               min = min(sample_years), max = max(sample_years), value = c(min(sample_years),max(sample_years)), step = 1, sep = "")
+          ),
+          if (year_na) {
+            column(1,checkboxInput(ns("sample_year_NA"), "include NA", value = TRUE, width = NULL))
+          }
+        )
       }
     })
     
@@ -325,7 +435,7 @@ resultsFunc <- function(input, output, session, variable) {
       if (!is.null(out_data$samples)){
         num_samples <- nrow(out_data$samples)
       }
-      return(paste0("Result is covering ", num_samples, " samples")) 
+      return(paste0("Original result is covering ", num_samples, " samples")) 
     })
     
     # hide or show panel with tabs...
@@ -333,8 +443,10 @@ resultsFunc <- function(input, output, session, variable) {
       print("hide or show panel")
       if (is.null(out_data$samples)){
         hide(id = "panel")
+        hide(id = "filters")
       } else {
         show(id = "panel")
+        show(id = "filters")
       }
     })
     

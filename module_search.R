@@ -12,14 +12,6 @@ searchUI <- function(id) {
       tabsetPanel(id = ns("navbar"),
         tabPanel("SH",
           br(),
-          # searchInput(
-          #   inputId = ns("search_key_sh"),
-          #   label = "Select SH:",
-          #   placeholder = "Enter your text",
-          #   btnSearch = icon("search"),
-          #   btnReset = icon("remove"),
-          #   width = "200px"
-          # )
           textInput(inputId = ns("search_key_sh"),
             placeholder = "Enter your text",
             label = "Select SH:", 
@@ -52,9 +44,6 @@ searchUI <- function(id) {
         )
         ),
       fluidRow(
-        column(6, checkboxInput(ns("ignore_single"), "ignore singletons", FALSE))
-      ),
-      fluidRow(
         column(6, actionButton(ns("buttSearch"), label = "Search"))
       )
     ), 
@@ -84,7 +73,6 @@ searchFunc <- function(input, output, session, parent) {
     vals <- reactiveValues()
     vals$type <- 'none'
     vals$text <- 'No results yet!'
-    vals$single <- TRUE
     
     # get selected table...
     nav_type <- req(isolate(input$navbar))
@@ -107,9 +95,6 @@ searchFunc <- function(input, output, session, parent) {
     # message...
     print(paste("You are searching for", vals$type, "- value is",vals$text))
 
-    # set singleton options...
-    vals$single <- !input$ignore_single
-    
     # call results...
     callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals)) 
     updateTabItems(session = parent, "menu_tabs", "fmd_results")

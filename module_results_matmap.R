@@ -1,6 +1,7 @@
 # Function for module UI with SH
 resutsMatMapUI <- function(id) {
   ns <- NS(id)
+  
   #MAT & MAP histograms...
   sidebarPanel(width = "100%", style = "background-color:white;",
                fluidRow(
@@ -46,12 +47,14 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
   
   # global bar chart sample type...
   dat <- transform(dat_glob, MAT = as.numeric(MAT))
-  dat <- transform(dat, bin = cut(MAT, 10))
+  dat <- transform(dat, bin = cut(MAT, breaks=c(-12, -8, -4, 0, 4, 8, 12, 16, 20, 24, 100)))
+  
   out_sum <- as.data.frame(table(dat$bin))
   # change structure...
   rownames(out_sum) <- out_sum[,1]
   out_sum = subset(out_sum, select = -Var1 )
-  row.names(out_sum)<-gsub("\\(", "\\[", row.names(out_sum)) 
+  #row.names(out_sum)<-gsub("\\(", "\\[", row.names(out_sum))
+  row.names(out_sum)<- c("..-8","-8,-4","-4,0","0,4","4,8","8,12","12,16","16,20","20,24","24..")
   # render...
   renderBarChart(div_id = "MATBarGlob", data = out_sum, theme = "shine",
                  show.legend = FALSE, 
@@ -64,12 +67,13 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
     dat_study <- rbind(dat_glob, dat_study)
     # study bar chart sample type...
     dat <- transform(dat_study, MAT = as.numeric(MAT))
-    dat <- transform(dat, bin = cut(MAT, 10))
+    dat <- transform(dat, bin = cut(MAT, breaks=c(-12, -8, -4, 0, 4, 8, 12, 16, 20, 24, 100)))
     out_sum_st <- as.data.frame(table(dat$bin))
     # change structure...
     rownames(out_sum_st) <- out_sum_st[,1]
     out_sum_st = subset(out_sum_st, select = -Var1 )
-    row.names(out_sum_st)<-gsub("\\(", "\\[", row.names(out_sum_st))
+    #row.names(out_sum_st)<-gsub("\\(", "\\[", row.names(out_sum_st))
+    row.names(out_sum_st)<- c("..-8","-8,-4","-4,0","0,4","4,8","8,12","12,16","16,20","20,24","24..")
     #substract
     out_sum_sub <- out_sum_st-out_sum[colnames(out_sum_st)]
     # render...
@@ -78,8 +82,7 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
                    direction = "vertical", 
                    font.size.axis.x = 10)    
   } else {
-    renderGauge(div_id = "MATBarStud", gauge_name = "Data not provided...",
-                rate = 0)
+    renderGauge(div_id = "MATBarStud", gauge_name = "Data not provided...", rate = 0)
   }
   
   ####################################
@@ -90,12 +93,13 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
   
   # global bar chart sample type...
   dat <- transform(dat_glob, MAP = as.numeric(MAP))
-  dat <- transform(dat, bin = cut(MAP, 10))
+  dat <- transform(dat, bin = cut(MAP, breaks=c(0, 50, 100, 200, 400, 600, 800, 1000, 2000, 4000, 10000)))
   out_sum <- as.data.frame(table(dat$bin))
   # change structure...
   rownames(out_sum) <- out_sum[,1]
   out_sum = subset(out_sum, select = -Var1 )
-  row.names(out_sum)<-gsub("\\(", "\\[", row.names(out_sum)) 
+  #row.names(out_sum)<-gsub("\\(", "\\[", row.names(out_sum))
+  row.names(out_sum) <- c("0-50","50-100","100-200","200-400","400-600","600-800","800-1000","1000-2000","2000-4000","4000..") 
   # render...
   renderBarChart(div_id = "MAPBarGlob", data = out_sum, theme = "shine",
                  show.legend = FALSE, 
@@ -108,21 +112,21 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
     dat_study <- rbind(dat_glob, dat_study)
     # study bar chart sample type...
     dat <- transform(dat_study, MAP = as.numeric(MAP))
-    dat <- transform(dat, bin = cut(MAP, 10))
+    dat <- transform(dat, bin = cut(MAP, breaks=c(0, 50, 100, 200, 400, 600, 800, 1000, 2000, 4000, 10000)))
     out_sum_st <- as.data.frame(table(dat$bin))
     # change structure...
     rownames(out_sum_st) <- out_sum_st[,1]
     out_sum_st = subset(out_sum_st, select = -Var1 )
-    row.names(out_sum_st)<-gsub("\\(", "\\[", row.names(out_sum_st))
+    #row.names(out_sum_st)<-gsub("\\(", "\\[", row.names(out_sum_st))
+    row.names(out_sum_st) <- c("0-50","50-100","100-200","200-400","400-600","600-800","800-1000","1000-2000","2000-4000","4000..") 
     #substract
     out_sum_sub <- out_sum_st-out_sum[colnames(out_sum_st)]
     # render...
     renderBarChart(div_id = "MAPBarStud", data = out_sum_sub, theme = "shine",
                    show.legend = FALSE, 
                    direction = "vertical", 
-                   font.size.axis.x = 10)    
+                   font.size.axis.x = 10)
   } else {
-    renderGauge(div_id = "MAPBarStud", gauge_name = "Data not provided...",
-                rate = 0)
+    renderGauge(div_id = "MAPBarStud", gauge_name = "Data not provided...", rate = 0)
   }
 }

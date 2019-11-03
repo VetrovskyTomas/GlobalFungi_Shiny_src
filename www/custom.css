@@ -49,14 +49,14 @@ background-color: #7da2d1;
 }
 
 h2 {
-  font-family: "Calibri";font-weight: bold;color: black;font-size: 16px;
+  font-family: "Calibri";font-weight: bold;color: black;font-size: 14px;
 }
 
 /* main title */
 #welcome_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 20px;}
 
 /* title 1 */
-#info_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 16px;}
+#info_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 14px;}
 
 footer {
   font-family: "Calibri";

@@ -6,7 +6,7 @@ analysisUI <- function(id) {
     h1(id="welcome_title", "Analyze sequences!"),
     
       # Sidebar panel for inputs ----
-      sidebarPanel(width = 12,
+    sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
         
         #text area for pasting the sequence...
         textAreaInput(ns("textSeq"), 
@@ -31,9 +31,6 @@ analysisUI <- function(id) {
         ),
         fluidRow(
           column(8,selectInput(ns("search_type"), "Type:", choices = c("BLAST", "Exact")))
-        ),
-        fluidRow(
-          column(6, checkboxInput(ns("ignore_single"), "ignore singletons", FALSE))
         ),
         hr(),
         fluidRow(
@@ -62,9 +59,6 @@ analysisFunc <- function(input, output, session, parent) {
   observeEvent(input$analyze_button, {
     if (input$search_type == "Exact"){
       print("Searching for exact sequence match...")
-      
-      # set singleton options...
-      vals$single <- !input$ignore_single
       
       # set other vals...
       vals$type =  "sequence"
@@ -161,9 +155,6 @@ analysisFunc <- function(input, output, session, parent) {
   # redirect...  
   observeEvent(input$lastClick, {
     selectedRow <- as.numeric(strsplit(input$lastClickId, "_")[[1]][2])
-
-    # set singleton options...
-    vals$single <- !input$ignore_single
 
     # get md5 hash...
     md5_hash <- toString(vals$seq_hash[selectedRow,"sseqid"])
