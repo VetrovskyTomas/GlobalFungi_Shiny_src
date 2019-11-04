@@ -335,7 +335,7 @@ resultsFunc <- function(input, output, session, variable) {
         if ((length(input$sample_year_NA)>0)&&(input$sample_year_NA == TRUE)){
           years <- c(years,NA)
         }
-        filtered_data$samples <- filtered_data$samples[which(suppressWarnings(as.numeric(filtered_data$samples$year_of_sampling)) %in% years),]
+        filtered_data$samples <- filtered_data$samples[which(as.numeric(filtered_data$samples$year_of_sampling) %in% years),]
         
         # show filtered samples count info...
         output$info_sample_filtered <- renderText({
@@ -344,7 +344,11 @@ resultsFunc <- function(input, output, session, variable) {
             if (length(input$sample_year)>1){
               filter <- paste(c(input$sample_year[1]:input$sample_year[2]), collapse=",")
             }
-            filter <- paste0("Sampling years: ",filter," (NA included ", input$sample_year_NA,")")
+            if (length(input$sample_year_NA)>0){
+              filter <- paste0("Sampling years: ",filter," (NA included ", input$sample_year_NA,")")
+            } else {
+              filter <- paste0("Sampling years: ",filter)
+            }
             filter <- paste("Sample biomes:",paste(input$sample_biome, collapse=","),"\n",filter)
             filter <- paste("Sample types:",paste(input$sample_type, collapse=","),"\n",filter)
             if (length(input$sample_single) > 0) {
@@ -381,7 +385,7 @@ resultsFunc <- function(input, output, session, variable) {
         # variables...
         #print(out_data$samples$year_of_sampling)
         #years <- out_data$samples$year_of_sampling %>% filter(out_data$samples$year_of_sampling != "NA_")
-        sample_years <- suppressWarnings(as.numeric(out_data$samples$year_of_sampling))
+        sample_years <- as.numeric(out_data$samples$year_of_sampling)
         year_na <- NA %in% sample_years
         sample_years=sample_years[!is.na(sample_years)]
         sample_biomes <- unique(out_data$samples$Biome)
@@ -410,11 +414,21 @@ resultsFunc <- function(input, output, session, variable) {
                                       selected = sample_types
           ) 
           ),
-          column(3,sliderInput(ns("sample_year"), "Sampling year:",
-                               min = min(sample_years), max = max(sample_years), value = c(min(sample_years),max(sample_years)), step = 1, sep = "")
-          ),
+          if (length(sample_years) > 0) {
+            column(3,sliderInput(ns("sample_year"), "Sampling year:",
+                                 min = min(sample_years), max = max(sample_years), value = c(min(sample_years),max(sample_years)), step = 1, sep = "")
+            )
+          },
           if (year_na) {
-            column(1,checkboxInput(ns("sample_year_NA"), "include NA", value = TRUE, width = NULL))
+            size <- 1
+            if (length(sample_years) == 0) {
+              size <- 2
+            }
+            column(size,
+            if (length(sample_years) == 0) {
+              HTML(paste("<b>Sampling year:</b>"))
+            },
+            checkboxInput(ns("sample_year_NA"), "include NA", value = TRUE, width = NULL))
           }
         )
       }

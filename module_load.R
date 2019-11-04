@@ -15,7 +15,7 @@ if(!exists("global_samples")) {
   
   #################################################################################
   # load samples table...
-  global_samples <- fread(paste0(global_tables_path, "fm_samples_v7_with_counts.txt"))
+  global_samples <- fread(paste0(global_tables_path, "fm_samples_v8_with_counts.txt"))
   
   # construct papers table...
   global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
