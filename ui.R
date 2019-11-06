@@ -59,8 +59,6 @@ ui <- tagList(
                 aboutusUI(id = "id_aboutus")
         )
       )
-      #end dashboardPage
-      #,tags$footer("Created by Tomas Vetrovsky & Daniel Morais (c) 2019", align = "center")
     )
   )
 )

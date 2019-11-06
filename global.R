@@ -8,6 +8,8 @@
 # install.packages("ECharts2Shiny")
 # install.packages("markdown")
 # install.packages("seqRFLP")
+# install.packages("sendmailR")
+# install.packages("shinyalert")
 
 library(shiny)
 library(shinydashboard)

@@ -9,6 +9,9 @@ library(leaflet) # interactive world map
 library(DT)
 library(ECharts2Shiny)
 library(digest)
+library(sendmailR)
+library(stringr)
+library(stringi)
 
 ##############
 ### SERVER ###
@@ -92,6 +95,9 @@ server <- function(session, input, output) {
                 # url info...
                 fluidPage(
                   verbatimTextOutput("urlText")
+                ),
+                fluidPage(
+                  verbatimTextOutput("copyright")
                 )
     )
   })
@@ -123,4 +129,15 @@ server <- function(session, input, output) {
           "search: ",   session$clientData$url_search,   "\n"
     )
   })
+  
+  # copyright...
+  output$copyright <- renderText({
+    paste(sep = "",
+          "    site design    \n",
+          "         &         \n",
+          "    programming    \n",
+          "  Tomas Vetrovsky  \n",
+          "     (c) 2019      \n")
+  })
+  
 }

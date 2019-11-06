@@ -4,7 +4,7 @@ resultsUI <- function(id) {
   fluidPage(
     useShinyjs(),
     # title...
-    #h2(id="welcome_title",textOutput(ns("out_title"))),
+    h2(id="welcome_title",textOutput(ns("out_title"))),
     # general info panel...
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
       uiOutput(ns('dynamic_header')),
@@ -312,70 +312,68 @@ resultsFunc <- function(input, output, session, variable) {
     # apply filters...
     observeEvent(input$applyFilters, {
       if (!is.null(out_data$samples)){
-        print(paste0("Apply filters... ",input$sample_type))
-        
-        #str <- paste0(str, ', and input$n is ')
-        #paste0(str, isolate(input$sample_year))
-        filtered_data <- reactiveValues()
-        filtered_data$samples <- isolate(out_data$samples)
-        
-        # filter by singletons...
-        if (length(input$sample_single) > 0) {
-          filtered_data$samples <- filtered_data$samples[filtered_data$samples$abundances > 1,]
-        }
-        # filter by sample type...
-        filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$sample_type %in% input$sample_type),]
-        # filter by sample biome...
-        filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$Biome %in% input$sample_biome),]
-        # filter by sample year...
-        years <- isolate(input$sample_year)
-        if (length(years)>1){
-          years <- c(years[1]:years[2])
-        }
-        if ((length(input$sample_year_NA)>0)&&(input$sample_year_NA == TRUE)){
-          years <- c(years,NA)
-        }
-        filtered_data$samples <- filtered_data$samples[which(as.numeric(filtered_data$samples$year_of_sampling) %in% years),]
-        
-        # show filtered samples count info...
-        output$info_sample_filtered <- renderText({
-          isolate({
-            filter <- input$sample_year
-            if (length(input$sample_year)>1){
-              filter <- paste(c(input$sample_year[1]:input$sample_year[2]), collapse=",")
-            }
-            if (length(input$sample_year_NA)>0){
-              filter <- paste0("Sampling years: ",filter," (NA included ", input$sample_year_NA,")")
-            } else {
-              filter <- paste0("Sampling years: ",filter)
-            }
-            filter <- paste("Sample biomes:",paste(input$sample_biome, collapse=","),"\n",filter)
-            filter <- paste("Sample types:",paste(input$sample_type, collapse=","),"\n",filter)
-            if (length(input$sample_single) > 0) {
-              filter <- paste(" Singletons ignored: TRUE\n",filter)
-            } else {
-              filter <- paste(" Singletons ignored: FALSE\n",filter)
-            }
-            return(paste0("Filtered result is covering ", nrow(filtered_data$samples), " samples - selected filters:\n", filter))
-          })
-        })
-        #
-        if (nrow(filtered_data$samples) > 0){
-          show(id = "panel")
-          # apply...
-          callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
-          callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
-          callModule(module = resutspHFunc, id = "results_ph", filtered_data)
-          callModule(module = resutsGeographyFunc, id = "results_geography", filtered_data)
-          callModule(module = resutsMapFunc, id = "results_map", filtered_data)
-          callModule(module = resutsSamplesFunc, id = "results_samples", filtered_data)
-          if (!is.null(out_data$SHs)){
-            filtered_data$SHs <- isolate(out_data$SHs)
-            callModule(module = resutsSHsFunc, id = "results_shs", filtered_data)
+        withProgress(message = 'Filtering...', {
+          filtered_data <- reactiveValues()
+          filtered_data$samples <- isolate(out_data$samples)
+          
+          # filter by singletons...
+          if (length(input$sample_single) > 0) {
+            filtered_data$samples <- filtered_data$samples[filtered_data$samples$abundances > 1,]
           }
-        } else {
-          hide(id = "panel")
-        }
+          # filter by sample type...
+          filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$sample_type %in% input$sample_type),]
+          # filter by sample biome...
+          filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$Biome %in% input$sample_biome),]
+          # filter by sample year...
+          years <- isolate(input$sample_year)
+          if (length(years)>1){
+            years <- c(years[1]:years[2])
+          }
+          if ((length(input$sample_year_NA)>0)&&(input$sample_year_NA == TRUE)){
+            years <- c(years,NA)
+          }
+          filtered_data$samples <- filtered_data$samples[which(as.numeric(filtered_data$samples$year_of_sampling) %in% years),]
+          
+          # show filtered samples count info...
+          output$info_sample_filtered <- renderText({
+            isolate({
+              filter <- input$sample_year
+              if (length(input$sample_year)>1){
+                filter <- paste(c(input$sample_year[1]:input$sample_year[2]), collapse=",")
+              }
+              if (length(input$sample_year_NA)>0){
+                filter <- paste0("Sampling years: ",filter," (NA included ", input$sample_year_NA,")")
+              } else {
+                filter <- paste0("Sampling years: ",filter)
+              }
+              filter <- paste("Sample biomes:",paste(input$sample_biome, collapse=","),"\n",filter)
+              filter <- paste("Sample types:",paste(input$sample_type, collapse=","),"\n",filter)
+              if (length(input$sample_single) > 0) {
+                filter <- paste(" Singletons ignored: TRUE\n",filter)
+              } else {
+                filter <- paste(" Singletons ignored: FALSE\n",filter)
+              }
+              return(paste0("Filtered result is covering ", nrow(filtered_data$samples), " samples - selected filters:\n", filter))
+            })
+          })
+          #
+          if (nrow(filtered_data$samples) > 0){
+            show(id = "panel")
+            # apply...
+            callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
+            callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
+            callModule(module = resutspHFunc, id = "results_ph", filtered_data)
+            callModule(module = resutsGeographyFunc, id = "results_geography", filtered_data)
+            callModule(module = resutsMapFunc, id = "results_map", filtered_data)
+            callModule(module = resutsSamplesFunc, id = "results_samples", filtered_data)
+            if (!is.null(out_data$SHs)){
+              filtered_data$SHs <- isolate(out_data$SHs)
+              callModule(module = resutsSHsFunc, id = "results_shs", filtered_data)
+            }
+          } else {
+            hide(id = "panel")
+          }
+        })
       }
     }, ignoreInit = TRUE)
     
@@ -383,8 +381,6 @@ resultsFunc <- function(input, output, session, variable) {
     output$dynamic_filters <- renderUI({
       if (!is.null(out_data$samples)){
         # variables...
-        #print(out_data$samples$year_of_sampling)
-        #years <- out_data$samples$year_of_sampling %>% filter(out_data$samples$year_of_sampling != "NA_")
         sample_years <- as.numeric(out_data$samples$year_of_sampling)
         year_na <- NA %in% sample_years
         sample_years=sample_years[!is.na(sample_years)]
@@ -392,7 +388,6 @@ resultsFunc <- function(input, output, session, variable) {
         sample_types <- unique(out_data$samples$sample_type)
         # filters...
         fluidRow(
-          column(2,actionButton(ns("applyFilters"), "Apply filters", icon = icon("filter")),img(src='filter.png', align = "left")),
           column(2,checkboxGroupInput(ns("sample_single"), 
                                       "Ignore singletons:",
                                       choiceNames = "ignore",
@@ -415,7 +410,11 @@ resultsFunc <- function(input, output, session, variable) {
           ) 
           ),
           if (length(sample_years) > 0) {
-            column(3,sliderInput(ns("sample_year"), "Sampling year:",
+            size <- 4
+            if (year_na) {
+              size <- 3
+            }
+            column(size,sliderInput(ns("sample_year"), "Sampling year:",
                                  min = min(sample_years), max = max(sample_years), value = c(min(sample_years),max(sample_years)), step = 1, sep = "")
             )
           },
@@ -430,6 +429,7 @@ resultsFunc <- function(input, output, session, variable) {
             },
             checkboxInput(ns("sample_year_NA"), "include NA", value = TRUE, width = NULL))
           }
+          ,column(2,actionButton(ns("applyFilters"), "Apply filters", icon = icon("filter")),img(src='filter.png', align = "left"))
         )
       }
     })
