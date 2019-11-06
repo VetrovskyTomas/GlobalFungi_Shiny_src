@@ -112,11 +112,13 @@ analysisFunc <- function(input, output, session, parent) {
       # modify fasta dataframe...
       
       input_fasta$titles <- substring(input_fasta$titles, 2)
-      input_fasta$md5 <- as.character(sapply(input_fasta$sequences, digest, algo="md5", , serialize=F))
+      input_fasta$md5 <- as.character(sapply(input_fasta$sequences, digest, algo="md5", serialize=F))
       
       
       variants <- global_variants[which(global_variants$hash %in% input_fasta$md5),]
-      print(paste0("Found variants...", nrow(variants)))
+      
+      cat(file=stderr(), "input_fasta size is ", nrow(variants), "\n")
+      #print(paste0("Found variants...", nrow(variants)))
       input_fasta$found <- input_fasta$md5[match(input_fasta$md5, variants$hash)]
       
       input_fasta$hits <- shinyInput(actionButton, nrow(input_fasta), 'button_', label = input_fasta[,"found"],
@@ -240,16 +242,6 @@ analysisFunc <- function(input, output, session, parent) {
   
   # analyze...
   observeEvent(input$analyze_button, {
-    # if (input$search_type == "Exact"){
-    #   # Searching for exact sequence match...
-    #   vals$type =  "sequence"
-    #   vals$text <- gsub("[\r\n]", "", input$textSeq)
-    #   vals$key <- md5_hash <- as.character(digest(vals$text, algo="md5", serialize=F))
-    #   # call funtion...
-    #   callModule(session = parent, module = resultsFunc, id = "id_results",vals)
-    #   updateTabItems(session = parent, "menu_tabs", "fmd_results")
-    # } else {
-
       input_fasta <- NULL
 
       # load fasta from file...
