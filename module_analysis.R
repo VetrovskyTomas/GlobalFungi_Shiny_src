@@ -138,7 +138,6 @@ analysisFunc <- function(input, output, session, parent) {
           input_fasta <- input_fasta %>% mutate(hits = ifelse(!grepl("NA", hits), hits, "NOT FOUND"))
           input_fasta
         }, escape = FALSE, selection = 'none')
-        #input_fasta, server = FALSE, escape = FALSE, selection = 'none'
       )
       incProgress(1/2)
     })
@@ -151,13 +150,10 @@ analysisFunc <- function(input, output, session, parent) {
       # generate folder for user task...
       outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
       system(paste("mkdir ", outputDir, sep = ""))
-      
+
       write.table(x = do.call(rbind, lapply(seq(nrow(input_fasta)), function(i) t(input_fasta[i, ]))), file = paste(outputDir,"my_query.fasta", sep = ""), quote = F, col.names = F, row.names = F)
       incProgress(1/5)
-      
-      # modify fasta dataframe...
-      input_fasta$titles <- substring(input_fasta$titles, 2)
-      
+
       # run blast command...
       cmd_params <- "-outfmt 6 -max_target_seqs 1 -num_threads 2"
       cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
@@ -166,34 +162,50 @@ analysisFunc <- function(input, output, session, parent) {
       
       # Check if your blast finished...
       blast_out <- NULL
-      
       if(file.exists(paste0(outputDir, "results.out"))){
         blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
       }
       incProgress(1/5)
-      
+
       # remove folder after use...
       system(paste0("rm -rf ",outputDir))
       
       # prepare output...
       if (!is.null(blast_out)){
         names(blast_out) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
-        vals$seq_hash <- blast_out[,c("qseqid", "sseqid", "pident")]
-        # add sequences...
-        vals$seq_hash$sequence <- input_fasta$sequences[match(vals$seq_hash$qseqid, input_fasta$titles)]
-        #
         blast_out$hits <- shinyInput(actionButton, nrow(blast_out), 'button_', label = blast_out[,"sseqid"],
                                      onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
                                                       "Shiny.onInputChange('", ns("lastClick"), "', Math.random())"))
-        blast_out <- blast_out[,c("qseqid", "hits", "pident", "qstart", "qend", "sstart", "send", "evalue", "bitscore")]
+        blast_out <- blast_out[,c("qseqid", "sseqid", "hits", "pident", "qstart", "qend", "sstart", "send", "evalue", "bitscore")]
       } else {
-        blast_out <- data.frame(status=c("Output not found!"), stringsAsFactors = F)
+        blast_out <- data.frame(qseqid = vector(), sseqid = vector(), hits = vector(), pident = vector(), qstart = vector(), qend = vector(), sstart = vector(), send = vector(), evalue = vector(), bitscore = vector(), stringsAsFactors = F)
       }
       incProgress(1/5)
       
+      # finish the table
+      input_fasta$titles <- substring(input_fasta$titles, 2)
+      input_fasta$hits <- blast_out$hits[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$md5 <- blast_out$sseqid[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$similarity <- blast_out$pident[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$qstart <- blast_out$qstart[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$qend <- blast_out$qend[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$sstart <- blast_out$sstart[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$send <- blast_out$send[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$evalue <- blast_out$evalue[match(input_fasta$titles, blast_out$qseqid)]
+      input_fasta$bitscore <- blast_out$bitscore[match(input_fasta$titles, blast_out$qseqid)]
+      
+      # create seq_hash data.frame
+      vals$seq_hash <- data.frame(sseqid = input_fasta$md5, qseqid = input_fasta$titles,pident = input_fasta$similarity, sequence = input_fasta$sequences, stringsAsFactors = F)
+      
+      # select the columns...
+      input_fasta <- input_fasta[,c("titles","hits","similarity","qstart","qend","sstart","send","evalue","bitscore")]
+      
       # reder blast results table...
       output$info_table <- DT::renderDataTable(
-        blast_out, server = FALSE, escape = FALSE, selection = 'none'
+        DT::datatable({
+        input_fasta <- input_fasta %>% mutate(hits = ifelse(!is.na(hits), hits, "NO HIT"))
+        input_fasta
+        }, escape = FALSE, selection = 'none')
       )
       incProgress(1/5)
     })
@@ -228,18 +240,6 @@ analysisFunc <- function(input, output, session, parent) {
     }
   })
 
-  # test
-  # observeEvent(input$test_button, {
-  #     # Searching for exact sequence match...
-  #     vals$type =  "sequence"
-  #     vals$text <- gsub("[\r\n]", "", input$textSeq)
-  #     vals$key <- md5_hash <- as.character(digest(vals$text, algo="md5", serialize=F))
-  #     print(vals$key)
-  #     # call funtion...
-  #     callModule(session = parent, module = resultsFunc, id = "id_results",vals)
-  #     updateTabItems(session = parent, "menu_tabs", "fmd_results")
-  # })
-  
   # analyze...
   observeEvent(input$analyze_button, {
       input_fasta <- NULL
