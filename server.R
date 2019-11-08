@@ -9,7 +9,6 @@ library(leaflet) # interactive world map
 library(DT)
 library(ECharts2Shiny)
 library(digest)
-library(sendmailR)
 library(stringr)
 library(stringi)
 

@@ -8,6 +8,9 @@ if(!exists("global_samples")) {
 
   # output path 
   global_out_path <- "/home/fungal/databases/user_outputs/"  
+  
+  # output path - messages
+  global_messages_path <- "/home/fungal/databases/user_outputs/" 
     
   # tables
   #global_tables_path <- "/home/fungal/databases/tables/"  
