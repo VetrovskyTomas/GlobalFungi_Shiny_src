@@ -54,6 +54,9 @@ resultsFunc <- function(input, output, session, variable) {
   type <- isolate(variable$type)
   text <- isolate(variable$text)
   key <- isolate(variable$key)
+  if (is.null(key)||(key=="")){
+    key <- text
+  }
  
   # get samples tab funtion...
   sample_tab <- function(variants) {
@@ -100,14 +103,11 @@ resultsFunc <- function(input, output, session, variable) {
         if (type == "sequence") {
           withProgress(message = 'Searching...', {
             # search by md5 checksum...
-            incProgress(1/3)
             variants <- global_variants[which(global_variants$hash %in% key),]
-            #print(paste0("Number of seqs in ",text," is ", nrow(variants)))
             incProgress(1/3)
-            if (nrow(variants) > 0){
-              # get sequence
-              out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
-              # get info table...
+            
+            if (nrow(variants) > 0) {
+              # get SH info table...
               if (variants$SH != "-"){
                 output$info_table <- renderTable({
                   sh_data <- global_SH[which(global_SH$SH %in% variants$SH),]
@@ -121,23 +121,14 @@ resultsFunc <- function(input, output, session, variable) {
                   )
                 })
               }
+              incProgress(1/3)
               
-              samples <- strsplit(variants$samples, ';', fixed=TRUE)
-              abundances <- strsplit(variants$abundances, ';', fixed=TRUE)
-              # store counts...
-              cover <- data.frame(sample = unlist(samples), abund = as.numeric(unlist(abundances)), stringsAsFactors = F)
-              cover <- ddply(cover,~sample,summarise,abundance=sum(abund))
+              # get samples table...
+              print(paste0("Number of seqs in ",text," is ", nrow(variants)))
+              out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
               
-              # continue with list of samples...
-              samples <- unique(unlist(samples))
-              print(paste0("Number of samples in ",text," is ", length(samples)))
-              
-              # append coverage
-              sample_tab <- global_samples[which(global_samples$id %in% samples),]
-              sample_tab$abundances <- cover$abundance[match(sample_tab$id, cover$sample)]
-              
-              # fill out data...
-              out_data$samples <- sample_tab
+              incProgress(1/3)
+              out_data$samples <- sample_tab(variants)
             }
             else
             {
@@ -165,7 +156,7 @@ resultsFunc <- function(input, output, session, variable) {
               if (nrow(variants) > 0) {
                 print(paste0("Number of seqs in ",text," is ", nrow(variants)))
                 out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
-                
+
                 incProgress(1/3)
                 out_data$samples <- sample_tab(variants)
               }
@@ -189,12 +180,13 @@ resultsFunc <- function(input, output, session, variable) {
                 # filer sample based on selection...
                 incProgress(1/5)
                 variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
+
                 
                 # result is not empty...
                 if (nrow(variants) > 0) {
                   print(paste0("Number of seqs in ",text," is ", nrow(variants)))
                   out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
-                  
+
                   incProgress(1/5)
                   out_data$samples <- sample_tab(variants)
                 }
@@ -255,7 +247,7 @@ resultsFunc <- function(input, output, session, variable) {
     # variants...
     if (!is.null(out_data$SeqVars)){
       isolate(
-        callModule(module = resutsVariantsFunc, id = "results_variants", out_data, type, text)
+        callModule(module = resutsVariantsFunc, id = "results_variants", out_data, type, key)
       )
     }
 

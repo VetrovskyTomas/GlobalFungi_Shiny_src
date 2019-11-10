@@ -16,6 +16,17 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
   #namespace for dynamic input...
   ns <- session$ns  
 
+  type <- gsub(" ", "_", type)
+  text <- gsub(" ", "_", text)
+  
+  if (text == ""){
+    text <- "variant"
+  }
+  
+  if (type == ""){
+    type <- "sequence"
+  }
+  
   # Downloadable fasta of selected sequence variants...
   output$downloadSeqVars <- downloadHandler(
     filename = "sequences.gz",
