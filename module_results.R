@@ -108,18 +108,23 @@ resultsFunc <- function(input, output, session, variable) {
             
             if (nrow(variants) > 0) {
               # get SH info table...
-              if (variants$SH != "-"){
-                output$info_table <- renderTable({
-                  sh_data <- global_SH[which(global_SH$SH %in% variants$SH),]
-                  sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
-                  data.frame(sh_data)
-                }, sanitize.text.function = function(x) x)
+              if (length(variants$SH) > 1){
+                key <- "group"
+                print(variants$SH)
               } else {
-                output$info_table <- renderTable({
-                  bar_data <- data.frame(
-                    SH = c("-")
-                  )
-                })
+                if (variants$SH != "-"){
+                  output$info_table <- renderTable({
+                    sh_data <- global_SH[which(global_SH$SH %in% variants$SH),]
+                    sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
+                    data.frame(sh_data)
+                  }, sanitize.text.function = function(x) x)
+                } else {
+                  output$info_table <- renderTable({
+                    bar_data <- data.frame(
+                      SH = c("-")
+                    )
+                  })
+                }
               }
               incProgress(1/3)
               

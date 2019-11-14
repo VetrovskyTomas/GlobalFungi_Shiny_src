@@ -57,6 +57,9 @@ ui <- tagList(
         ),
         tabItem("fmd_aboutus",
                 aboutusUI(id = "id_aboutus")
+        ),
+        tabItem("fmd_analysis_group",
+                analysisGroupUI(id = "id_analysis_group")
         )
       )
     )

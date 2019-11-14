@@ -97,7 +97,8 @@ server <- function(session, input, output) {
                 ),
                 fluidPage(
                   verbatimTextOutput("copyright")
-                )
+                ),
+                menuItem("Group analysis", icon = icon("dna"), tabName = "fmd_analysis_group")
     )
   })
   
@@ -113,6 +114,7 @@ server <- function(session, input, output) {
   callModule(module = helpFunc, id = "id_help")
   callModule(module = resultsFunc, id = "id_results", vals)
   callModule(module = aboutusFunc, id = "id_aboutus")
+  callModule(module = analysisGroupFunc, id = "id_analysis_group", parent = session)
   #################################################
   
   # info about connection...
