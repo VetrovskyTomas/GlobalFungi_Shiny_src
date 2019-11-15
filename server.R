@@ -15,8 +15,70 @@ library(stringi)
 ##############
 ### SERVER ###
 ##############
+my_username <- "test"
+my_password <- "test"
+
 server <- function(session, input, output) {
+  # Return the UI for a modal dialog with data selection input. If 'failed' 
+  # is TRUE, then display a message that the previous value was invalid.
+  dataModal <- function(failed = FALSE) {
+    modalDialog(
+      textInput("username", "Username:"),
+      passwordInput("password", "Password:"),
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("ok", "OK")
+      )
+    )
+  }
+    
+  logged_in <- reactiveVal(FALSE)
+
+  # switch value of logged_in variable to TRUE after login succeeded
+  observeEvent(input$login, {
+    if(logged_in()) {
+      logged_in(FALSE)
+    } else {
+    showModal(dataModal())
+    #logged_in(ifelse(logged_in(), FALSE, TRUE))
+    }
+  })
   
+  # show "Login" or "Logout" depending on whether logged out or in
+  output$logintext <- renderText({
+    if(logged_in()) return("Logout here.")
+    return("Login here")
+  })
+  
+  # show text of logged in user
+  output$logged_user <- renderText({
+    if(logged_in()) return("User 1 is logged in.")
+    return("")
+  })
+  
+  obs2 <- observe({
+    req(input$ok)
+    isolate({
+      Username <- input$username
+      Password <- input$password
+    })
+    Id.username <- which(my_username == Username)
+    Id.password <- which(my_password == Password)
+    if (length(Id.username) > 0 & length(Id.password) > 0) {
+      if (Id.username == Id.password) {
+        logged_in(TRUE)
+        print(paste0("You are logged in..."))
+        #values$authenticated <- TRUE
+        #obs1$suspend()
+        removeModal()
+      } else {
+        print(paste0("Wrong authentication..."))
+        #values$authenticated <- FALSE
+      }     
+    }
+  })
+  
+
   # someone started session...
   onSessionStart = isolate({
     len <- length(users$IPs)
@@ -54,6 +116,7 @@ server <- function(session, input, output) {
   query <- NULL
   observe({
     query <- parseQueryString(session$clientData$url_search)
+    print(query)
     # SH redirection by link...
     if (!is.null(query[['SH']])) {
       vals$type <- 'SH'
@@ -81,6 +144,15 @@ server <- function(session, input, output) {
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
                 menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
+                ###########################
+                hidden(tags$div(
+                  id = "hidden",
+                  sidebarMenu(
+                  menuItem("BLAST analysis", icon = icon("dna"), tabName = "fmd_analysis_group",
+                           badgeLabel = "special", badgeColor = "yellow")
+                  )
+                )),
+                ###########################
                 tags$hr(),
                 #result page...
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
@@ -97,11 +169,18 @@ server <- function(session, input, output) {
                 ),
                 fluidPage(
                   verbatimTextOutput("copyright")
-                ),
-                menuItem("Group analysis", icon = icon("dna"), tabName = "fmd_analysis_group")
+                )
     )
   })
   
+  # show/hide special items...
+  observe({
+    if (logged_in()){
+      show("hidden")
+    } else {
+      hide("hidden")
+    }
+  })
   #################################################
   main_session <<- session
   #home screen...

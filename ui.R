@@ -1,17 +1,23 @@
 ######################
 ### USER INTERFACE ###
 ######################
+itemIds <- c(team = "#team", team2 = "#team2", login = "#login")
 ui <- tagList(
   dashboardPage(
-    dashboardHeader(title = "Fungal Metastudy Database v 0.11", titleWidth = 240),
-    #sidebar...
+    dashboardHeader(title = "Fungal Metastudy Database v 0.11", titleWidth = 240,
+      # dropdown...
+      tags$li(class = "dropdown",
+              tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
+              tags$li(class = "dropdown", actionLink("login", textOutput("logintext"))))
+    ),
+    # sidebar...
     dashboardSidebar(
       width = 200,
       #disable = FALSE, width = NULL, 
       collapsed = FALSE,
       sidebarMenuOutput("menu")
     ),
-    #body...
+    # body...
     dashboardBody(
       useShinyjs(),
       # link the page style...

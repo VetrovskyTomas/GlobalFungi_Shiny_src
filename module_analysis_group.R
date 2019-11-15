@@ -104,7 +104,7 @@ analysisGroupFunc <- function(input, output, session, parent) {
     inputs
   }
   
-  # run BLAST
+  # simulate BLAST
   blast <- function(input_fasta, vals) {
     withProgress(message = 'Running BLAST...', {
       # generate folder for user task...
@@ -115,11 +115,12 @@ analysisGroupFunc <- function(input, output, session, parent) {
       incProgress(1/5)
 
       # run blast command...
-      cmd_params <- "-outfmt 6 -num_threads 2"
+      print(paste("Maximum of blast results:",input$max_blast_results))
+      cmd_params <- paste0("-outfmt 6 -max_target_seqs ",input$max_blast_results," -num_threads 2")
       cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
-      
+
       # Check if your blast finished...
       blast_out <- NULL
       if(file.exists(paste0(outputDir, "results.out"))){
@@ -130,74 +131,13 @@ analysisGroupFunc <- function(input, output, session, parent) {
       # remove folder after use...
       system(paste0("rm -rf ",outputDir))
       
-      # prepare output...
-      if (!is.null(blast_out)){
-        names(blast_out) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
-        blast_out$hits <- shinyInput(actionButton, nrow(blast_out), 'button_', label = blast_out[,"sseqid"],
-                                     onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
-                                                      "Shiny.onInputChange('", ns("lastClick"), "', Math.random())"))
-        blast_out <- blast_out[,c("qseqid", "sseqid", "hits", "pident", "qstart", "qend", "sstart", "send", "evalue", "bitscore")]
-      } else {
-        blast_out <- data.frame(qseqid = vector(), sseqid = vector(), hits = vector(), pident = vector(), qstart = vector(), qend = vector(), sstart = vector(), send = vector(), evalue = vector(), bitscore = vector(), stringsAsFactors = F)
-      }
-      incProgress(1/5)
-      
-      # finish the table
-      input_fasta$titles <- substring(input_fasta$titles, 2)
-      input_fasta$hits <- blast_out$hits[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$md5 <- blast_out$sseqid[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$similarity <- blast_out$pident[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$qstart <- blast_out$qstart[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$qend <- blast_out$qend[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$sstart <- blast_out$sstart[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$send <- blast_out$send[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$evalue <- blast_out$evalue[match(input_fasta$titles, blast_out$qseqid)]
-      input_fasta$bitscore <- blast_out$bitscore[match(input_fasta$titles, blast_out$qseqid)]
-      
-      # create seq_hash data.frame
-      vals$seq_hash <- data.frame(sseqid = input_fasta$md5, qseqid = input_fasta$titles,pident = input_fasta$similarity, sequence = input_fasta$sequences, stringsAsFactors = F)
-      
-      # select the columns...
-      input_fasta <- input_fasta[,c("titles","hits","similarity","qstart","qend","sstart","send","evalue","bitscore")]
-      
-      # reder blast results table...
-      output$info_table <- DT::renderDataTable(
-        DT::datatable({
-        input_fasta <- input_fasta %>% mutate(hits = ifelse(!is.na(hits), hits, "NO HIT"))
-        input_fasta
-        }, escape = FALSE, selection = 'none')
-      )
-      incProgress(1/5)
-    })
-    return(vals)
-  }  
-
-  # simulate BLAST
-  blastSimulation <- function(input_fasta, vals) {
-    withProgress(message = 'Running BLAST...', {
-      # generate folder for user task...
-      #outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
-      #system(paste("mkdir ", outputDir, sep = ""))
-      
-      #write.table(x = do.call(rbind, lapply(seq(nrow(input_fasta)), function(i) t(input_fasta[i, ]))), file = paste(outputDir,"my_query.fasta", sep = ""), quote = F, col.names = F, row.names = F)
-      #incProgress(1/5)
-      
-      # run blast command...
-      print(paste("Maximum of blast results:",input$max_blast_results))
-      # cmd_params <- paste0("-outfmt 6 -max_target_seqs ",input$max_blast_results," -num_threads 2")
-      # cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
-      # system(cmd_blast)
-      # incProgress(1/5)
-      
+      ###################################
       # Check if your blast finished...
-      blast_out <- NULL
-      if(file.exists(paste0("results.out"))){
-        blast_out <- read.delim(file = paste0("results.out"), header = F)
-      }
-      incProgress(1/5)
-      
-      # remove folder after use...
-      #system(paste0("rm -rf ",outputDir))
+      # blast_out <- NULL
+      # if(file.exists(paste0("results.out"))){
+      #   blast_out <- read.delim(file = paste0("results.out"), header = F)
+      # }
+      ###################################
       
       # prepare output...
       if (!is.null(blast_out)){
@@ -244,7 +184,8 @@ analysisGroupFunc <- function(input, output, session, parent) {
           print("reading from text-area...")
           # simple nucleotide text...
           seq <- gsub("[\r\n]", "", input$textSeq)
-            input_fasta <- get_fasta(data.frame(titles = ">query", sequences = as.character(seq), stringsAsFactors = F))
+          vals$seq <- seq
+          input_fasta <- get_fasta(data.frame(titles = ">query", sequences = as.character(seq), stringsAsFactors = F))
         } else {
           alert(paste0("Input sequence is empty!"))
         }
@@ -253,8 +194,7 @@ analysisGroupFunc <- function(input, output, session, parent) {
       # 
       if (!is.null(input_fasta)) {
         print("FASTA IS OK...")
-        #vals <- blast(input_fasta, vals)
-        vals <- blastSimulation(input_fasta, vals)
+        vals <- blast(input_fasta, vals)
         #
       } else {
         print("ERROR: CRITERIA NOT FULFILLED...")
@@ -281,10 +221,6 @@ analysisGroupFunc <- function(input, output, session, parent) {
         column(2,actionButton(ns("getSamples"), "Show samples", icon = icon("dna")))
       )
       )
-      # get info results...
-      # output$info_fasta <- renderText({
-      #   return(paste0("BLASTn resulted in ",nrow(vals$blast_out)," sequences."))
-      # })
     }
   })
   
@@ -317,7 +253,7 @@ analysisGroupFunc <- function(input, output, session, parent) {
     #info about result type...
     vals$type =  "sequence"
     vals$key <- filtered_data$blast_out$sseqid
-    vals$text <- paste("BLAST group result (", length(vals$key),"sequence variants") #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
+    vals$text <- paste0("BLAST group result (", length(vals$key)," sequence variants) for query:\n", vals$seq) #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
 
     
     # call results...
