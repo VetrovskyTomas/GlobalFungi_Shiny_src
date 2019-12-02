@@ -3,8 +3,13 @@ resutsMapUI <- function(id) {
   ns <- NS(id)
   #world map...
   sidebarPanel(width = "100%", style = "background-color:white;", 
-    fluidRow(
-      leafletOutput(ns("mymap")),
+      fluidRow(  
+        #this will create a space for us to display our map
+        column(10,leafletOutput(ns("mymap"))),
+        #this allows me to put the checkmarks ontop of the map to allow people to view earthquake depth or overlay a heatmap
+        column(2, checkboxInput(ns("all_samples"), "Show all samples", FALSE))
+      ),
+      fluidRow(  
       uiOutput(ns("map_sample_info"))
     )
   )
@@ -14,23 +19,126 @@ resutsMapUI <- function(id) {
 resutsMapFunc <- function(input, output, session,  variable) {
   
   #namespace for dynamic input...
-  ns <- session$ns  
+  ns <- session$ns
+  
 
-  # map of sample from the study...
-  output$mymap <- renderLeaflet({
-    leaflet(data = variable$samples, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
-      addProviderTiles(providers$Esri, options = providerTileOptions(
-        updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
-        updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
-      ) %>%
-      addCircleMarkers(data = variable$samples, ~longitude, ~latitude, layerId = ~id,
-                       color = "black",
-                       radius = 4,
-                       fillColor = "red",
-                       weight = 1,
-                       stroke = T,
-                       fillOpacity = 1#,
-      ) 
+  # actual version - map of samples from the study...
+  observe({
+    map_data <- NULL
+    # TAXON
+    if (!is.null(variable$samples$abundances)){
+      map_data <- data.frame(id = variable$samples[,"id"],
+                           longitude = variable$samples[,"longitude"],
+                           latitude = variable$samples[,"latitude"],
+                           type = variable$samples$abundances / variable$samples$ITS_total,#cut((variable$samples$abundances / variable$samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
+                           stringsAsFactors = F)
+    
+    map_data <- map_data[order(map_data$type),]
+    #print(map_data)
+    pallete <- colorBin(palette = c('#f0ff00', '#ffce00', '#ff5a00', '#8b0000'), map_data$type, bins = c(0, .001, .01, .1, 1))
+    
+
+    # map of samples from the study...
+    output$mymap <- renderLeaflet({
+      if (input$all_samples) {
+      leaflet(data = map_data, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
+        addProviderTiles(providers$Esri, options = providerTileOptions(
+          updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
+          updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
+        ) %>%
+        addCircleMarkers(data = global_samples, ~longitude, ~latitude,  options = pathOptions(clickable = FALSE),layerId = -1,
+                         color = "gray",
+                         radius = 4,
+                         fillColor = "gray",
+                         weight = 1,
+                         stroke = T,
+                         fillOpacity = 1
+        ) %>%
+        addCircleMarkers(data = map_data, ~longitude, ~latitude, layerId = ~id,
+                         color = "black",
+                         radius = 4,
+                         fillColor = ~pallete(map_data$type),
+                         weight = 1,
+                         stroke = T,
+                         fillOpacity = 1
+        ) %>%
+        addLegend("topright", pal = pallete, values = map_data$type,
+                  labFormat = labelFormat(
+                    suffix = " %", between = " - ",
+                    transform = function(x) 100 * x
+                  ),
+                  title = "Abundance", opacity = 1)
+      } else {
+        leaflet(data = map_data, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
+          addProviderTiles(providers$Esri, options = providerTileOptions(
+            updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
+            updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
+          ) %>%
+          addCircleMarkers(data = map_data, ~longitude, ~latitude, layerId = ~id,
+                           color = "black",
+                           radius = 4,
+                           fillColor = ~pallete(map_data$type),
+                           weight = 1,
+                           stroke = T,
+                           fillOpacity = 1
+          ) %>%
+          addLegend("topright", pal = pallete, values = map_data$type,
+                    labFormat = labelFormat(
+                      suffix = " %", between = " - ",
+                      transform = function(x) 100 * x
+                    ),
+                    title = "Abundance", opacity = 1)
+      }
+    })
+    } else {
+      # STUDY
+      map_data <- data.frame(id = variable$samples[,"id"],
+                             longitude = variable$samples[,"longitude"],
+                             latitude = variable$samples[,"latitude"],
+                             #type = 0.0,#cut((variable$samples$abundances / variable$samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
+                             stringsAsFactors = F)
+      
+      # map of samples from the study...
+      output$mymap <- renderLeaflet({
+        if (input$all_samples) {
+          leaflet(data = map_data, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
+            addProviderTiles(providers$Esri, options = providerTileOptions(
+              updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
+              updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
+            ) %>%
+            addCircleMarkers(data = global_samples, ~longitude, ~latitude,  options = pathOptions(clickable = FALSE),layerId = -1,
+                             color = "gray",
+                             radius = 4,
+                             fillColor = "gray",
+                             weight = 1,
+                             stroke = T,
+                             fillOpacity = 1
+            ) %>%
+            addCircleMarkers(data = map_data, ~longitude, ~latitude, layerId = ~id,
+                             color = "black",
+                             radius = 4,
+                             fillColor = "blue",
+                             weight = 1,
+                             stroke = T,
+                             fillOpacity = 1
+            )
+        } else {
+          leaflet(data = map_data, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
+            addProviderTiles(providers$Esri, options = providerTileOptions(
+              updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
+              updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
+            ) %>%
+            addCircleMarkers(data = map_data, ~longitude, ~latitude, layerId = ~id,
+                             color = "black",
+                             radius = 4,
+                             fillColor = "blue",
+                             weight = 1,
+                             stroke = T,
+                             fillOpacity = 1
+            )
+        }
+      })
+    }
   })
   
   # pop up text when clicked on map...
