@@ -58,4 +58,6 @@ if(!exists("global_samples")) {
   
   # load users table...
   #global_users <- fread(paste0(global_tables_path, "users.txt"))
+  insert_instructions_table <- fread(paste0(global_tables_path, "metadata_instructions.txt"))
+  
 }

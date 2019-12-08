@@ -29,7 +29,7 @@ ui <- tagList(
       # body code...
       # buttons...
       tabItems(
-        #home
+        # home
         tabItem("fmd_home",
                 homeUI(id = "id_home")
         ),
@@ -37,13 +37,17 @@ ui <- tagList(
         tabItem("fmd_analysis",
                 analysisUI(id = "id_analysis")
         ),
-        #sequence analysis
+        #search taxon
         tabItem("fmd_search",
                 searchUI(id = "id_search")
         ),
-        #sequence analysis
+        #studies
         tabItem("fmd_studies",
                 studiesUI(id = "id_studies")
+        ),
+        #geoshape
+        tabItem("fmd_geoshape",
+                geoshapeUI(id = "id_geoshape")
         ),
         #cite
         tabItem("fmd_cite",
@@ -66,6 +70,9 @@ ui <- tagList(
         ),
         tabItem("fmd_analysis_group",
                 analysisGroupUI(id = "id_analysis_group")
+        ),
+        tabItem("fmd_admin",
+                adminUI(id = "id_admin")
         )
       )
     )

@@ -453,11 +453,11 @@ resultsFunc <- function(input, output, session, variable) {
     observe({
       print("hide or show panel")
       if (is.null(out_data$samples)){
-        hide(id = "panel")
-        hide(id = "filters")
+        shinyjs::hide(id = "panel")
+        shinyjs::hide(id = "filters")
       } else {
-        show(id = "panel")
-        show(id = "filters")
+        shinyjs::show(id = "panel")
+        shinyjs::show(id = "filters")
       }
     })
     

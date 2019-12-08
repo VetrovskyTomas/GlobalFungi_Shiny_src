@@ -6,21 +6,26 @@ library(plyr)
 library(dplyr)
 library(data.table) # fast read
 library(leaflet) # interactive world map
+library(leaflet.extras)
+library(sp)
 library(DT)
 library(ECharts2Shiny)
 library(digest)
 library(stringr)
 library(stringi)
+library(readxl)
+library(geoshaper)
 
 ##############
 ### SERVER ###
 ##############
+main_username <- "admin"
+main_password <- "Leho"
 my_username <- "test"
 my_password <- "test"
 
 server <- function(session, input, output) {
-  # Return the UI for a modal dialog with data selection input. If 'failed' 
-  # is TRUE, then display a message that the previous value was invalid.
+  # UI for user login modal dialog
   dataModal <- function(failed = FALSE) {
     modalDialog(
       textInput("username", "Username:"),
@@ -31,16 +36,51 @@ server <- function(session, input, output) {
       )
     )
   }
+  
+  # UI for a main modal dialog
+  dataModalMain <- function(failed = FALSE) {
+    modalDialog(
+      textInput("username_main", "Username:"),
+      passwordInput("password_main", "Password:"),
+      footer = tagList(
+        actionButton("ok_main", "OK")
+      )
+    )
+  }  
     
   logged_in <- reactiveVal(FALSE)
 
-  # switch value of logged_in variable to TRUE after login succeeded
+  ##############################################################
+  # MAIN LOCK - THIS WILL BE REMOVED LATER
+  # observe({
+  #   showModal(dataModalMain())
+  # })
+  
+  observe({
+    req(input$ok_main)
+    isolate({
+      Username <- input$username_main
+      Password <- input$password_main
+    })
+    Id.username <- which(main_username == Username)
+    Id.password <- which(main_password == Password)
+    if (length(Id.username) > 0 & length(Id.password) > 0) {
+      if (Id.username == Id.password) {
+        print(paste0("You are logged in..."))
+        removeModal()
+      } else {
+        print(paste0("Wrong authentication..."))
+      }     
+    }
+  })
+  ##############################################################
+  
+  # usesrs login...
   observeEvent(input$login, {
     if(logged_in()) {
       logged_in(FALSE)
     } else {
-    showModal(dataModal())
-    #logged_in(ifelse(logged_in(), FALSE, TRUE))
+      showModal(dataModal())
     }
   })
   
@@ -52,11 +92,11 @@ server <- function(session, input, output) {
   
   # show text of logged in user
   output$logged_user <- renderText({
-    if(logged_in()) return("User 1 is logged in.")
+    if(logged_in()) return("User is logged in.")
     return("")
   })
   
-  obs2 <- observe({
+  observe({
     req(input$ok)
     isolate({
       Username <- input$username
@@ -68,12 +108,9 @@ server <- function(session, input, output) {
       if (Id.username == Id.password) {
         logged_in(TRUE)
         print(paste0("You are logged in..."))
-        #values$authenticated <- TRUE
-        #obs1$suspend()
         removeModal()
       } else {
         print(paste0("Wrong authentication..."))
-        #values$authenticated <- FALSE
       }     
     }
   })
@@ -142,14 +179,18 @@ server <- function(session, input, output) {
                 menuItem("Sequence Analysis", icon = icon("dna"), tabName = "fmd_analysis"),
                 menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
+                menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
                 menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
                 ###########################
                 hidden(tags$div(
                   id = "hidden",
                   sidebarMenu(
+                  tags$hr(),
                   menuItem("BLAST analysis", icon = icon("dna"), tabName = "fmd_analysis_group",
-                           badgeLabel = "special", badgeColor = "yellow")
+                           badgeLabel = "special", badgeColor = "yellow"),
+                  menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
+                           badgeLabel = "admin", badgeColor = "orange")
                   )
                 )),
                 ###########################
@@ -188,12 +229,14 @@ server <- function(session, input, output) {
   callModule(module = analysisFunc, id = "id_analysis", parent = session)
   callModule(module = searchFunc, id = "id_search", parent = session)
   callModule(module = studiesFunc, id = "id_studies", parent = session)
+  callModule(module = geoshapeFunc, id = "id_geoshape")
   callModule(module = insertFunc, id = "id_insert")
   callModule(module = citeFunc, id = "id_cite")
   callModule(module = helpFunc, id = "id_help")
   callModule(module = resultsFunc, id = "id_results", vals)
   callModule(module = aboutusFunc, id = "id_aboutus")
   callModule(module = analysisGroupFunc, id = "id_analysis_group", parent = session)
+  callModule(module = adminFunc, id = "id_admin")
   #################################################
   
   # info about connection...

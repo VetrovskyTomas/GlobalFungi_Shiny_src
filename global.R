@@ -34,11 +34,15 @@ source("module_home.R")
 source("module_search.R")
 source("module_insert.R")
 source("module_analysis.R")
-source("module_analysis_group.R")
 source("module_studies.R")
 source("module_cite.R")
 source("module_help.R")
 source("module_aboutus.R")
+source("module_geoshape.R")
+
+# hidden 
+source("module_admin.R")
+source("module_analysis_group.R")
 
 # general results page 
 source("module_results.R")
