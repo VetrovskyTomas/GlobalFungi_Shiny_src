@@ -6,7 +6,7 @@ geoshapeUI <- function(id) {
     h1(id="welcome_title", "Geosearch!"),
     sidebarPanel(width = "100%", style = "background-color:white;",
       fluidRow(
-        leafletOutput(ns("mymap"))
+        leafletOutput(ns("mymap"), height=500)
       ),
       br(),
       fluidRow(
@@ -199,11 +199,12 @@ geoshapeFunc <- function(input, output, session, samples) {
       # compute SH lists...
       withProgress(message = 'Searching...', {
         incProgress(1/3, detail = "getting SH names...")
-        SH_matches <- unique(filter(global_variants, grepl(paste(selected_global$samples$id, collapse="|"), global_variants$samples))$SH)
-        print(paste0("Found ",length(SH_matches)," SH"))
-        incProgress(1/3, detail = "getting SH info...")
+        
+        samples <- strsplit(global_variants$samples, ';', fixed=TRUE)
+        indices <- which(samples %in% selected_global$samples$id)
+        SH_matches <- unique(global_variants[indices, ]$SH)
         selected_global$sel_SH <- global_SH[which(global_SH$SH %in% SH_matches),]
-        #print(sel_SH)
+        #print(SH_matches)
       })
       
       #

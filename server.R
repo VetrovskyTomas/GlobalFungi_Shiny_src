@@ -177,6 +177,7 @@ server <- function(session, input, output) {
     sidebarMenu(id = "menu_tabs",
                 menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
                 menuItem("Sequence Analysis", icon = icon("dna"), tabName = "fmd_analysis"),
+                menuItem("Cluster analysis", icon = icon("indent"), tabName = "fmd_analysis_group"),
                 menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
@@ -187,8 +188,6 @@ server <- function(session, input, output) {
                   id = "hidden",
                   sidebarMenu(
                   tags$hr(),
-                  menuItem("BLAST analysis", icon = icon("dna"), tabName = "fmd_analysis_group",
-                           badgeLabel = "special", badgeColor = "yellow"),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
                            badgeLabel = "admin", badgeColor = "orange")
                   )

@@ -355,7 +355,7 @@ resultsFunc <- function(input, output, session, variable) {
           })
           #
           if (nrow(filtered_data$samples) > 0){
-            show(id = "panel")
+            shinyjs::show(id = "panel")
             # apply...
             callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
             callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
@@ -368,7 +368,7 @@ resultsFunc <- function(input, output, session, variable) {
               callModule(module = resutsSHsFunc, id = "results_shs", filtered_data)
             }
           } else {
-            hide(id = "panel")
+            shinyjs::hide(id = "panel")
           }
         })
       }
