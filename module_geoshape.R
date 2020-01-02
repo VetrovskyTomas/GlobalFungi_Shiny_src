@@ -15,29 +15,29 @@ geoshapeUI <- function(id) {
       ),
         sidebarPanel(width = "100%", style = "background-color:white;",
         tabsetPanel(id = ns("tabs"),
-                    tabPanel("Selected samples", value = "tab_selSamples",
-                      wellPanel(style = "background-color:white;",  
-                             fluidRow(
-                               column(6,downloadButton(ns("downloadData"), "Download metadata"))
-                             ),
-                             fluidRow(
-                               br(),
-                             DT::dataTableOutput(ns("selection_samples_out"))
-                             )
-                      )
-                    ),
-                    tabPanel("SH selection ", value = "tab_selSH",
-                      wellPanel(style = "background-color:white;",  
-                        fluidRow(
-                          column(6,downloadButton(ns("downloadSHs"), "Download SH list"))
-                        ),
-                        fluidRow(
-                          br(),
-                          DT::dataTableOutput(ns("selection_SH_out"))
-                        )
-                      )
-                    )
+          tabPanel("SH selection ", value = "tab_selSH",
+            wellPanel(style = "background-color:white;",  
+              fluidRow(
+                column(6,downloadButton(ns("downloadSHs"), "Download SH list"))
+              ),
+              fluidRow(
+                br(),
+                DT::dataTableOutput(ns("selection_SH_out"))
+              )
+            )
+          ),
+          tabPanel("Selected samples", value = "tab_selSamples",
+            wellPanel(style = "background-color:white;",  
+              fluidRow(
+                column(6,downloadButton(ns("downloadData"), "Download metadata"))
+              ),
+              fluidRow(
+                br(),
+                DT::dataTableOutput(ns("selection_samples_out"))
+              )
+            )
           )
+        )
       )
     )
   )
@@ -124,8 +124,8 @@ geoshapeFunc <- function(input, output, session, samples) {
     selected_global$samples <- subset(global_samples, id %in% selected$locationID)
     # hide results when changed selection...
     shinyjs::hide(id = "tabs")
-    hideTab(inputId = "tabs", target = "tab_selSamples")
     hideTab(inputId = "tabs", target = "tab_selSH")
+    hideTab(inputId = "tabs", target = "tab_selSamples")
     # get info...
     output$info_selected_samples <- renderText({
       num_samples <- 0
@@ -172,8 +172,8 @@ geoshapeFunc <- function(input, output, session, samples) {
     ######################################################
     # hide results when changed selection...
     shinyjs::hide(id = "tabs")
-    hideTab(inputId = "tabs", target = "tab_selSamples")
     hideTab(inputId = "tabs", target = "tab_selSH")
+    hideTab(inputId = "tabs", target = "tab_selSamples")
     # get info...
     output$info_selected_samples <- renderText({
       num_samples <- 0
@@ -194,8 +194,8 @@ geoshapeFunc <- function(input, output, session, samples) {
     }
     if (num_samples > 0){
       shinyjs::show(id = "tabs")
-      showTab(inputId = "tabs", target = "tab_selSamples")
       showTab(inputId = "tabs", target = "tab_selSH")
+      showTab(inputId = "tabs", target = "tab_selSamples")
       # compute SH lists...
       withProgress(message = 'Searching...', {
         incProgress(1/3, detail = "getting SH names...")
@@ -220,7 +220,8 @@ geoshapeFunc <- function(input, output, session, samples) {
         DT::datatable({
           sel_SH <- selected_global$sel_SH[,c("SH","Kingdom","Phylum","Class","Order","Family","Genus","Species")] 
           sel_SH <- sel_SH %>% mutate(SH = paste0("<a href='", "/?SH=",SH,"' target='_blank'>", SH,"</a>"))
-          sel_SH <- sel_SH %>% mutate(Species = ifelse(!grepl(" sp.", Species), paste0("<a href='", "/?species=",Species,"' target='_blank'>", Species,"</a>"),Species))
+          #sel_SH <- sel_SH %>% mutate(Species = ifelse(!grepl(" sp.", Species), paste0("<a href='", "/?species=",Species,"' target='_blank'>", Species,"</a>"),Species))
+          sel_SH <- sel_SH %>% mutate(Species = ifelse(!grepl(" sp.", Species), ifelse(!grepl("unidentified", Species), paste0("<a href='", "/?species=",Species,"' target='_blank'>", Species,"</a>"),Species),Species))
           sel_SH
         }, escape = FALSE, selection = 'none')
       )
@@ -250,8 +251,8 @@ geoshapeFunc <- function(input, output, session, samples) {
   observe({ 
     if (is.null(selected_global$samples)){
       shinyjs::hide(id = "tabs")
-      hideTab(inputId = "tabs", target = "tab_selSamples")
       hideTab(inputId = "tabs", target = "tab_selSH")
+      hideTab(inputId = "tabs", target = "tab_selSamples")
     }
   })
   

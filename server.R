@@ -216,9 +216,9 @@ server <- function(session, input, output) {
   # show/hide special items...
   observe({
     if (logged_in()){
-      show("hidden")
+      shinyjs::show("hidden")
     } else {
-      hide("hidden")
+      shinyjs::hide("hidden")
     }
   })
   #################################################
