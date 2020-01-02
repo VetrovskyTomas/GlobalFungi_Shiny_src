@@ -79,7 +79,9 @@ if(!exists("global_samples")) {
   #global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
   
   # remove SH not existing in the dataset...
-  SH_list <- unique(global_variants$SH)
+  #SH_list <- unique(global_variants$SH)
+  query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_table))
+  SH_list <- unlist(sqlQuery(query))
   global_SH <- global_SH %>% filter(SH %in% SH_list)
   
   # options

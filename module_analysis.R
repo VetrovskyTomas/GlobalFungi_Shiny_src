@@ -114,8 +114,10 @@ analysisFunc <- function(input, output, session, parent) {
       input_fasta$titles <- substring(input_fasta$titles, 2)
       input_fasta$md5 <- as.character(sapply(input_fasta$sequences, digest, algo="md5", serialize=F))
       
-      
-      variants <- global_variants[which(global_variants$hash %in% input_fasta$md5),]
+      # Construct the fetching query
+      key_string <- paste0("('",paste(input_fasta$md5, collapse="','" ),"')")
+      query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string))
+      variants <- sqlQuery(query)
       
       cat(file=stderr(), "input_fasta size is ", nrow(variants), "\n")
       #print(paste0("Found variants...", nrow(variants)))

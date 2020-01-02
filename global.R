@@ -21,6 +21,7 @@ library(lazyeval) # so we can use interpret
 library(dplyr)
 library(data.table) # fast read
 library(markdown) # bring text data from markdown
+library(RMySQL)
 
 ##############
 ### GLOBAL ###
