@@ -201,7 +201,7 @@ server <- function(session, input, output) {
                          badgeLabel = "in progress", badgeColor = "red"),
                 tags$hr(),
                 # about the database
-                menuItem("About us", icon = icon("info-circle"), tabName = "fmd_aboutus"),
+                menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_aboutus"),
                 tags$hr(),
                 # url info...
                 fluidPage(
