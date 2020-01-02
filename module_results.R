@@ -103,7 +103,11 @@ resultsFunc <- function(input, output, session, variable) {
         if (type == "sequence") {
           withProgress(message = 'Searching...', {
             # search by md5 checksum...
-            variants <- global_variants[which(global_variants$hash %in% key),]
+            key_string <- paste0("('",paste(key, collapse="','" ),"')")
+            # Construct the fetching query
+            query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string))
+            variants <- sqlQuery(query)
+            
             incProgress(1/3)
             
             if (nrow(variants) > 0) {
@@ -155,7 +159,11 @@ resultsFunc <- function(input, output, session, variable) {
               })
               # filer sample based on selection...
               incProgress(1/3)
-              variants <- global_variants[which(global_variants$SH %in% text),]
+              
+              # Construct the fetching query
+              key_string <- paste0("('",paste(text, collapse="','" ),"')")
+              query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+              variants <- sqlQuery(query)
               
               # result is not empty...
               if (nrow(variants) > 0) {
@@ -184,8 +192,11 @@ resultsFunc <- function(input, output, session, variable) {
                 })
                 # filer sample based on selection...
                 incProgress(1/5)
-                variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
-
+                
+                # Construct the fetching query
+                key_string <- paste0("('",paste(SH_list$SH, collapse="','" ),"')")
+                query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+                variants <- sqlQuery(query)
                 
                 # result is not empty...
                 if (nrow(variants) > 0) {
@@ -214,7 +225,11 @@ resultsFunc <- function(input, output, session, variable) {
                   })
                   # filer sample based on selection...
                   incProgress(1/5)
-                  variants <- global_variants[which(global_variants$SH %in% SH_list$SH),]
+                  
+                  # Construct the fetching query
+                  key_string <- paste0("('",paste(SH_list$SH, collapse="','" ),"')")
+                  query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+                  variants <- sqlQuery(query)
                   
                   # result is not empty...
                   if (nrow(variants) > 0) {

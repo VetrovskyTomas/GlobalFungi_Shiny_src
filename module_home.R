@@ -35,8 +35,10 @@ homeFunc <- function(input, output, session, samples) {
   })
   #basic info...
   output$fm_info <- renderPrint({
-    return(cat(paste0("Actual number of samples in database: ", nrow(global_samples), " (",nrow(global_papers)," studies) and ",nrow(global_variants)," sequence variants")))
-    #return("Actual number of samples in database: ")
+    # contruct query
+    query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
+    # create output text
+    return(cat(paste0("Actual number of samples in database: ", nrow(global_samples), " (",nrow(global_papers)," studies) and ",sqlQuery(query)," sequence variants")))
   })
   
   output$map <- renderLeaflet({

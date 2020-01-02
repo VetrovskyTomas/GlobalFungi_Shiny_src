@@ -1,3 +1,35 @@
+# MySQL configuration
+options(mysql = list(
+  "host" = "127.0.0.1",
+  "port" = 3306,
+  "user" = "root",
+  "password" = "",
+  "db" = "fm",
+  "variants_table" = "variants"
+))
+
+sqlQuery <- function (query) {
+  # creating DB connection object with RMysql package
+  db <- dbConnect(MySQL(), dbname = options()$mysql$db, host = options()$mysql$host, 
+                  port = options()$mysql$port, user = options()$mysql$user, 
+                  password = options()$mysql$password)
+  # Construct the fetching query
+  query <- sprintf(query)
+  data <- dbGetQuery(db, query)
+  dbDisconnect(db)
+  
+  # return the dataframe
+  return(data)
+}
+
+killDbConnections <- function () {
+  all_cons <- dbListConnections(MySQL())
+  print(all_cons)
+  for(con in all_cons)
+    +  dbDisconnect(con)
+  print(paste(length(all_cons), " connections killed."))
+}
+
 if(!exists("global_samples")) {
   #################################################################################
   # python process sample FASTA script path
@@ -43,8 +75,8 @@ if(!exists("global_samples")) {
   global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
   # load sequence variants with SH...
-  global_variants <- fread(paste0(global_tables_path, "fm_sequences_vol1_test_corrected.txt"))
-  global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
+  #global_variants <- fread(paste0(global_tables_path, "fm_sequences_vol1_test_corrected.txt"))
+  #global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
   
   # remove SH not existing in the dataset...
   SH_list <- unique(global_variants$SH)

@@ -15,6 +15,7 @@ library(stringr)
 library(stringi)
 library(readxl)
 library(geoshaper)
+library(RMySQL)
 
 ##############
 ### SERVER ###
