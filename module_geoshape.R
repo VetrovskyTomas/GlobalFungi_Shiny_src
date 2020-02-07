@@ -200,11 +200,17 @@ geoshapeFunc <- function(input, output, session, samples) {
       withProgress(message = 'Searching...', {
         incProgress(1/3, detail = "getting SH names...")
         
-        samples <- strsplit(global_variants$samples, ';', fixed=TRUE)
-        indices <- which(samples %in% selected_global$samples$id)
-        SH_matches <- unique(global_variants[indices, ]$SH)
+        key_string <- paste0("('",paste(selected_global$samples$id, collapse="','" ),"')")
+        query <- paste0("SELECT * from ",options()$mysql$samples_to_sh_table," WHERE `sample` IN ",key_string)
+        result <- sqlQuery(query)
+        
+        SH_matches <- strsplit(result$SHs, ';', fixed=TRUE)
+        
+        # continue with list of SHs...
+        SH_matches <- unique(unlist(SH_matches))
+        print(paste0("Number of SH in ",length(selected_global$samples$id)," samples is ", length(SH_matches)))
+        
         selected_global$sel_SH <- global_SH[which(global_SH$SH %in% SH_matches),]
-        #print(SH_matches)
       })
       
       #

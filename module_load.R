@@ -5,7 +5,9 @@ options(mysql = list(
   "user" = "root",
   "password" = "",
   "db" = "fm",
-  "variants_table" = "variants"
+  "variants_table" = "variants",
+  "variants_annot_table" = "variants_annotated",
+  "samples_to_sh_table" = "samples_to_sh"
 ))
 
 sqlQuery <- function (query) {
@@ -14,7 +16,6 @@ sqlQuery <- function (query) {
                   port = options()$mysql$port, user = options()$mysql$user, 
                   password = options()$mysql$password)
   # Construct the fetching query
-  query <- sprintf(query)
   data <- dbGetQuery(db, query)
   dbDisconnect(db)
   
@@ -50,7 +51,7 @@ if(!exists("global_samples")) {
   
   #################################################################################
   # load samples table...
-  global_samples <- fread(paste0(global_tables_path, "fm_samples_v8_with_counts.txt"))
+  global_samples <- fread(paste0(global_tables_path, "fm_samples_123_test.txt"))
   
   # construct papers table...
   global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
@@ -71,16 +72,11 @@ if(!exists("global_samples")) {
                                       "pH", "pH_method", "total_Ca", "total_P", "total_K", "ITS1_extracted", "ITS2_extracted", "ITS_total")]
   
   # load SH table...
-  global_SH <- fread(paste0(global_tables_path, "fm_sh_07FU.txt"))
+  global_SH <- fread(paste0(global_tables_path, "fm_sh_08FU.txt"))
   global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
-  # load sequence variants with SH...
-  #global_variants <- fread(paste0(global_tables_path, "fm_sequences_vol1_test_corrected.txt"))
-  #global_variants <- global_variants[,c("hash", "marker", "samples", "abundances", "SH")]
-  
   # remove SH not existing in the dataset...
-  #SH_list <- unique(global_variants$SH)
-  query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_table))
+  query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_annot_table))
   SH_list <- unlist(sqlQuery(query))
   global_SH <- global_SH %>% filter(SH %in% SH_list)
   

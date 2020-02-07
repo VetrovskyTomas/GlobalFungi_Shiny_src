@@ -162,7 +162,7 @@ resultsFunc <- function(input, output, session, variable) {
               
               # Construct the fetching query
               key_string <- paste0("('",paste(text, collapse="','" ),"')")
-              query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+              query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `SH` IN ",key_string))
               variants <- sqlQuery(query)
               
               # result is not empty...
@@ -194,8 +194,7 @@ resultsFunc <- function(input, output, session, variable) {
                 incProgress(1/5)
                 
                 # Construct the fetching query
-                key_string <- paste0("('",paste(SH_list$SH, collapse="','" ),"')")
-                query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+                query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `species` = '",text,"'"))
                 variants <- sqlQuery(query)
                 
                 # result is not empty...
@@ -227,15 +226,13 @@ resultsFunc <- function(input, output, session, variable) {
                   incProgress(1/5)
                   
                   # Construct the fetching query
-                  key_string <- paste0("('",paste(SH_list$SH, collapse="','" ),"')")
-                  query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `SH` IN ",key_string))
+                  query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `genus` = '",text,"'"))
                   variants <- sqlQuery(query)
                   
                   # result is not empty...
                   if (nrow(variants) > 0) {
                     print(paste0("Number of seqs in ",text," is ", nrow(variants)))
                     out_data$SeqVars <- variants[,c("samples","hash", "marker")]
-                    
                     incProgress(1/5)
                     out_data$samples <- sample_tab(variants)
                   }
