@@ -4,16 +4,16 @@ homeUI <- function(id) {
   fluidPage(
     # We MUST load the ECharts javascript library in advance
     loadEChartsLibrary(),
-    #picture...
+    # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
       fluidRow(
-        column(12, style = "background-color:#0c2b37;",img(src='myImage.png', align = "left"))
+        column(12, style = "background-color:#0c2b37;",img(src='title.png', align = "left"))
       )
     ),
-    #header
+    # header
     h1(id="welcome_title", "Welcome to fungal metastudy database!"),
     verbatimTextOutput(ns("fm_info")),
-    #basic info...
+    # basic info...
     textOutput(ns("sample_counts")),
     sidebarPanel(width = "100%", style = "background-color:white;",
                 fluidRow(

@@ -20,8 +20,19 @@ options(mysql = list(
   "samples_to_sh_table" = "samples_to_sh",
   
   # table with taxonomy for SH
-  "taxonomy" = "taxonomy"
+  "taxonomy" = "taxonomy",
+  
+  # table for F&Q
+  "messages" = "messages"
 ))
+
+safeSqlQueryVal <- function (query_val) {
+  #query_val <- gsub("[\r\n]", "", query_val)
+  query_val <- gsub('"', '/', query_val)
+  query_val <- gsub("'", '/', query_val)
+  print(query_val)
+  return(query_val)
+}
 
 sqlQuery <- function (query) {
   print(query)

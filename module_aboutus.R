@@ -3,7 +3,14 @@ aboutusUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     useShinyjs(),
-    h2(id="welcome_title", "Have a question? Leave a message..."),
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(4, style = "background-color:#0c2b37;",img(src='message.png', align = "left")),
+                   column(8, h2(id="header_title", "Have a question? Leave a message..."))
+                 )
+    ),
+    # content
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
                  # inpusts...
                  textInput(ns("from"), "From:", value="from@gmail.com"),
@@ -35,8 +42,12 @@ aboutusFunc <- function(input, output, session) {
       message <- isolate(input$message)
       if (message !=""){
         # write it...
-        tab <- data.frame(email = sender, subject = isolate(input$subject), message = message, stringsAsFactors = F)
-        write.table(t(tab), file = paste0(global_messages_path, sender, "_", as.integer(Sys.time()),".msg"), quote = F, col.names = F, row.names = F)
+        query <- paste0("INSERT INTO ",options()$mysql$messages, 
+                                " (email, subject, message, date) VALUES ('", 
+                                safeSqlQueryVal(sender), "', '", safeSqlQueryVal(isolate(input$subject)), "', '", 
+                                safeSqlQueryVal(message), "', '", format(Sys.time(), "%Y %b %d %X"), "')")
+        sqlQuery(query)
+        
         # reset fields..
         reset("from")
         reset("subject")

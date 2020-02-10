@@ -52,6 +52,10 @@ h2 {
   font-family: "Calibri";font-weight: bold;color: black;font-size: 14px;
 }
 
+#header_title{
+  font-family: "Calibri";font-weight: bold;color: white;font-size: 20px;
+}
+
 /* main title */
 #welcome_title{font-family: "Calibri";font-weight: bold;color: black;font-size: 20px;}
 
