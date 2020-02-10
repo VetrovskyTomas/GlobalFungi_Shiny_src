@@ -176,8 +176,8 @@ resutsMapFunc <- function(input, output, session,  variable) {
   })
   
   observe({
-    #print(paste0("Map id: ",input$mymap_marker_click$id))
-    #s_id <- variable$samples[input$metadata_rows_selected,]$id[[1]]
-    callModule(module = resultsSampleFunc, id = "results_sample", input$mymap_marker_click$id)
+    if (!is.null(input$mymap_marker_click$id)){
+      callModule(module = resultsSampleFunc, id = "results_sample", input$mymap_marker_click$id)
+    }
   })
 }

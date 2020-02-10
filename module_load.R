@@ -5,12 +5,26 @@ options(mysql = list(
   "user" = "root",
   "password" = "",
   "db" = "fm",
+  # samples table
+  "samples" = "samples",
+  
+  # main table with all variants
   "variants_table" = "variants",
-  "variants_annot_table" = "variants_annotated",
-  "samples_to_sh_table" = "samples_to_sh"
+  
+  # tables for taxonomical search
+  "genus_table" = "genus",
+  "species_table" = "species",
+  "sh_table" = "sh",
+  
+  # table for geosearch
+  "samples_to_sh_table" = "samples_to_sh",
+  
+  # table with taxonomy for SH
+  "taxonomy" = "taxonomy"
 ))
 
 sqlQuery <- function (query) {
+  print(query)
   # creating DB connection object with RMysql package
   db <- dbConnect(MySQL(), dbname = options()$mysql$db, host = options()$mysql$host, 
                   port = options()$mysql$port, user = options()$mysql$user, 
@@ -31,63 +45,59 @@ killDbConnections <- function () {
   print(paste(length(all_cons), " connections killed."))
 }
 
-if(!exists("global_samples")) {
-  #################################################################################
-  # python process sample FASTA script path
-  global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
+#################################################################################
+# python process sample FASTA script path
+global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
-  # nucleotide database for blast
-  global_blast_db <- "/home/fungal/databases/blast_database/fm_sequences_vol1.fa"
+# nucleotide database for blast
+global_blast_db <- "/home/fungal/databases/blast_database/fm_sequences_vol1.fa"
 
-  # output path 
-  global_out_path <- "/home/fungal/databases/user_outputs/"  
+# output path 
+global_out_path <- "/home/fungal/databases/user_outputs/"  
   
-  # output path - messages
-  global_messages_path <- "/home/fungal/databases/user_outputs/" 
+# output path - messages
+global_messages_path <- "/home/fungal/databases/user_outputs/" 
     
-  # tables
-  #global_tables_path <- "/home/fungal/databases/tables/"  
-  global_tables_path <- "C:/fm_database_root/tables/"  
+# tables
+#global_tables_path <- "/home/fungal/databases/tables/"  
+global_tables_path <- "C:/fm_database_root/tables/"  
   
-  #################################################################################
-  # load samples table...
-  global_samples <- fread(paste0(global_tables_path, "fm_samples_123_test.txt"))
+#################################################################################
+# load samples table...
+query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
+global_samples <- data.table(sqlQuery(query))
+
+# construct papers table...
+global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
+global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
+
+# split title and year...
+splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title_year), '_', fixed=TRUE))
+colnames(splited_title_year) <- c("title", "year")
+global_papers <- cbind(global_papers, splited_title_year)
+global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
   
-  # construct papers table...
-  global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
-  global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
-  # write.table(global_papers,file = "fm_papers.txt", sep = "\t", quote = F, row.names = F)
-  # split title and year...
-  splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title_year), '_', fixed=TRUE))
-  colnames(splited_title_year) <- c("title", "year")
-  global_papers <- cbind(global_papers, splited_title_year)
-  global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
+# store minimal amount of information
+global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "latitude","continent", "sample_type", "ITS1_extracted", "ITS2_extracted","ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")] 
+
+ 
+# load SH table...
+query <- sprintf(paste0("SELECT * FROM ",options()$mysql$taxonomy))
+global_SH <- sqlQuery(query)
+global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+
+# remove SH not existing in the dataset...
+query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_table))
+SH_list <- unlist(sqlQuery(query))
+global_SH <- global_SH %>% filter(SH %in% SH_list)
   
-  # filter sample table...
-  global_samples <- global_samples[,c("id", "paper_id", "sample_type", "latitude", "longitude", "continent", 
-                                      "year_of_sampling", "Biome", "sequencing_platform", "target_gene", "primers", 
-                                      "elevation", "MAT", "MAP", "MAT_study", "MAP_study",
-                                      "country", "Plants", "area_sampled", "number_of_subsamples", "sample_depth", 
-                                      "total_C_content", "total_N_content", "organic_matter_content", 
-                                      "pH", "pH_method", "total_Ca", "total_P", "total_K", "ITS1_extracted", "ITS2_extracted", "ITS_total")]
+# options
+global_SH_list <- sort(global_SH$SH)
+global_species_list <- sort(unique(global_SH$Species))
+global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
+global_genus_list <- sort(unique(global_SH$Genus))
   
-  # load SH table...
-  global_SH <- fread(paste0(global_tables_path, "fm_sh_08FU.txt"))
-  global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+# load users table...
+#global_users <- fread(paste0(global_tables_path, "users.txt"))
+insert_instructions_table <- fread("metadata_instructions.txt")
   
-  # remove SH not existing in the dataset...
-  query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_annot_table))
-  SH_list <- unlist(sqlQuery(query))
-  global_SH <- global_SH %>% filter(SH %in% SH_list)
-  
-  # options
-  global_SH_list <- sort(global_SH$SH)
-  global_species_list <- sort(unique(global_SH$Species))
-  global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
-  global_genus_list <- sort(unique(global_SH$Genus))
-  
-  # load users table...
-  #global_users <- fread(paste0(global_tables_path, "users.txt"))
-  insert_instructions_table <- fread("metadata_instructions.txt")
-  
-}

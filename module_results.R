@@ -161,17 +161,16 @@ resultsFunc <- function(input, output, session, variable) {
               incProgress(1/3)
               
               # Construct the fetching query
-              key_string <- paste0("('",paste(text, collapse="','" ),"')")
-              query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `SH` IN ",key_string))
-              variants <- sqlQuery(query)
+              query <- sprintf(paste0("SELECT * from ",options()$mysql$sh_table," WHERE `sh` = '",text,"'"))
+              tax_out <- sqlQuery(query)
               
               # result is not empty...
-              if (nrow(variants) > 0) {
-                print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-                out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
-
-                incProgress(1/3)
-                out_data$samples <- sample_tab(variants)
+              if (nrow(tax_out) > 0) {
+                variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
+                print(paste0("Number of seqs in ",text," is ", length(variants)))
+                #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                incProgress(1/5)
+                out_data$samples <- sample_tab(tax_out)
               }
             })
           } else
@@ -193,17 +192,18 @@ resultsFunc <- function(input, output, session, variable) {
                 # filer sample based on selection...
                 incProgress(1/5)
                 
+                
                 # Construct the fetching query
-                query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `species` = '",text,"'"))
-                variants <- sqlQuery(query)
+                query <- sprintf(paste0("SELECT * from ",options()$mysql$species_table," WHERE `species` = '",text,"'"))
+                tax_out <- sqlQuery(query)
                 
                 # result is not empty...
-                if (nrow(variants) > 0) {
-                  print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-                  out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
-
+                if (nrow(tax_out) > 0) {
+                  variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
+                  print(paste0("Number of seqs in ",text," is ", length(variants)))
+                  #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                   incProgress(1/5)
-                  out_data$samples <- sample_tab(variants)
+                  out_data$samples <- sample_tab(tax_out)
                 }
               })
             } else
@@ -226,15 +226,16 @@ resultsFunc <- function(input, output, session, variable) {
                   incProgress(1/5)
                   
                   # Construct the fetching query
-                  query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_annot_table," WHERE `genus` = '",text,"'"))
-                  variants <- sqlQuery(query)
+                  query <- sprintf(paste0("SELECT * from ",options()$mysql$genus_table," WHERE `genus` = '",text,"'"))
+                  tax_out <- sqlQuery(query)
                   
                   # result is not empty...
-                  if (nrow(variants) > 0) {
-                    print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-                    out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                  if (nrow(tax_out) > 0) {
+                    variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
+                    print(paste0("Number of seqs in ",text," is ", length(variants)))
+                    #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                     incProgress(1/5)
-                    out_data$samples <- sample_tab(variants)
+                    out_data$samples <- sample_tab(tax_out)
                   }
                 })
               }

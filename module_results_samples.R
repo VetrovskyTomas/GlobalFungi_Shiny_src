@@ -50,6 +50,8 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
   
   observe({
     s_id <- variable$samples[input$metadata_rows_selected,]$id[[1]]
+    if (!is.null(s_id)){
     callModule(module = resultsSampleFunc, id = "results_sample", s_id)
+    }
   })
 }
