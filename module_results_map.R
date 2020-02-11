@@ -35,7 +35,7 @@ resutsMapFunc <- function(input, output, session,  variable) {
     
     map_data <- map_data[order(map_data$type),]
     #print(map_data)
-    pallete <- colorBin(palette = c('#f0ff00', '#ffce00', '#ff5a00', '#8b0000'), map_data$type, bins = c(0, .001, .01, .1, 1))
+    pallete <- colorBin(palette = c('#f0f0f0', '#ffce00', '#ff5a00', '#8b0000'), map_data$type, bins = c(0, .001, .01, .1, 1))
     
 
     # map of samples from the study...

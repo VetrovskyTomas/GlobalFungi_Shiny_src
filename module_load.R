@@ -2,8 +2,8 @@
 options(mysql = list(
   "host" = "127.0.0.1",
   "port" = 3306,
-  "user" = "root",
-  "password" = "",
+  "user" = "root", # "user" = "ubuntu",
+  "password" = "", # "password" = "ubuntu",
   "db" = "fm",
   # samples table
   "samples" = "samples",
@@ -61,18 +61,14 @@ killDbConnections <- function () {
 global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
 # nucleotide database for blast
-global_blast_db <- "/home/fungal/databases/blast_database/fm_sequences_vol1.fa"
+global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS.fa"
 
 # output path 
 global_out_path <- "/home/fungal/databases/user_outputs/"  
   
 # output path - messages
 global_messages_path <- "/home/fungal/databases/user_outputs/" 
-    
-# tables
-#global_tables_path <- "/home/fungal/databases/tables/"  
-global_tables_path <- "C:/fm_database_root/tables/"  
-  
+
 #################################################################################
 # load samples table...
 query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
@@ -109,6 +105,5 @@ global_species_list <- global_species_list[!global_species_list %in% grep(" sp."
 global_genus_list <- sort(unique(global_SH$Genus))
   
 # load users table...
-#global_users <- fread(paste0(global_tables_path, "users.txt"))
 insert_instructions_table <- fread("metadata_instructions.txt")
   

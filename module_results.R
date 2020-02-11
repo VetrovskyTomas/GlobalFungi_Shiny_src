@@ -85,7 +85,7 @@ resultsFunc <- function(input, output, session, variable) {
     out_data$samples <- NULL
     out_data$SHs <- NULL
     out_data$SeqVars <- NULL
-    
+
     # study option...
       if (variable$type == "study"){
         withProgress(message = 'Searching...', {
@@ -105,7 +105,7 @@ resultsFunc <- function(input, output, session, variable) {
             # search by md5 checksum...
             key_string <- paste0("('",paste(key, collapse="','" ),"')")
             # Construct the fetching query
-            query <- sprintf(paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string))
+            query <- paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string)
             variants <- sqlQuery(query)
             
             incProgress(1/3)
@@ -168,6 +168,7 @@ resultsFunc <- function(input, output, session, variable) {
               if (nrow(tax_out) > 0) {
                 variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
                 print(paste0("Number of seqs in ",text," is ", length(variants)))
+                out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
                 #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                 incProgress(1/5)
                 out_data$samples <- sample_tab(tax_out)
@@ -201,6 +202,7 @@ resultsFunc <- function(input, output, session, variable) {
                 if (nrow(tax_out) > 0) {
                   variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
                   print(paste0("Number of seqs in ",text," is ", length(variants)))
+                  out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
                   #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                   incProgress(1/5)
                   out_data$samples <- sample_tab(tax_out)
@@ -233,6 +235,7 @@ resultsFunc <- function(input, output, session, variable) {
                   if (nrow(tax_out) > 0) {
                     variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
                     print(paste0("Number of seqs in ",text," is ", length(variants)))
+                    out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
                     #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
                     incProgress(1/5)
                     out_data$samples <- sample_tab(tax_out)
