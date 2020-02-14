@@ -25,6 +25,11 @@ my_username <- "test"
 my_password <- "test"
 
 server <- function(session, input, output) {
+  # test mobile device
+  output$isItMobile <- renderText({
+    ifelse(input$isMobile, "mobile", "PC")
+  })
+  
   # UI for user login modal dialog
   dataModal <- function(failed = FALSE) {
     modalDialog(
@@ -141,9 +146,12 @@ server <- function(session, input, output) {
     })
   })  
   
-  #hide sidebar collabse button...  
-  shinyjs::runjs("document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';")
-  
+  #hide sidebar collabse button...
+  observe({
+    if (!input$isMobile) {
+      shinyjs::runjs("document.getElementsByClassName('sidebar-toggle')[0].style.visibility = 'hidden';")
+    }
+  })
   # set default vals...
   vals <- reactiveValues()
   vals$type <- 'none'

@@ -1,14 +1,25 @@
 ######################
 ### USER INTERFACE ###
 ######################
+mobileDetect <- function(inputId, value = 0) {
+  tagList(
+    singleton(tags$head(tags$script(src = "js/mobile.js"))),
+    tags$input(id = inputId,
+               class = "mobile-element",
+               type = "hidden")
+  )
+}
+
 itemIds <- c(team = "#team", team2 = "#team2", login = "#login")
+
 ui <- tagList(
   dashboardPage(
     dashboardHeader(title = "Fungal Metastudy Database v 0.11", titleWidth = 240,
       # dropdown...
       tags$li(class = "dropdown",
-              tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
-              tags$li(class = "dropdown", actionLink("login", textOutput("logintext"))))
+        tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
+        tags$li(class = "dropdown", fluidPage(mobileDetect('isMobile'), textOutput('isItMobile')), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
+        tags$li(class = "dropdown", actionLink("login", textOutput("logintext"))))
     ),
     # sidebar...
     dashboardSidebar(
