@@ -15,6 +15,9 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
   #namespace for dynamic input...
   ns <- session$ns  
 
+  # use taxon name for fast search
+  taxon <- text
+  
   type <- gsub(" ", "_", type)
   text <- gsub(" ", "_", text)
   
@@ -30,7 +33,7 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
   
   # Downloadable fasta of selected sequence variants...
   output$downloadSeqVars <- downloadHandler(
-    filename = "sequences.gz",
+    filename = "sequences.zip",
     content = function(file) {
       if (!is.null(data$SeqVars)){
         seqVars <- NULL
@@ -38,10 +41,13 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
         if (!"samples" %in% colnames(data$SeqVars)){
           withProgress(message = 'Getting samples info...', {
             incProgress(1/3, detail = "Preparing sequences...")
-            # search by md5 checksum...
-            key_string <- paste0("('",paste(data$SeqVars$hash, collapse="','" ),"')")
+            # search by taxon...
+            query <- paste0("SELECT * from ",options()$mysql$taxonomy," WHERE `",type,"` = '",taxon,"'")
+            taxons <- sqlQuery(query)
+            print(taxons[,paste0(type,"_id")])
+            
             # Construct the fetching query
-            query <- paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string)
+            query <- paste0("SELECT * from ",options()$mysql$variants_table," WHERE `",type,"` = '",taxons[,paste0(type,"_id")],"'")
             variants <- sqlQuery(query)
             incProgress(1/3, detail = "Processing output...")
             print(paste0("Number of seqs found is ", nrow(variants)))
@@ -75,9 +81,9 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
           system(paste0("python ", global_vars_to_fasta_py," ", outputDir,"results.fa ",outputDir,"my_samples.txt ",input$seqs_derep," ",type," ",text," ",outputDir,"out.fa"))
 
           incProgress(1/7, detail = "commpress and download")
-          system(paste0("gzip ", paste0(outputDir, "out.fa")))
+          system(paste0("zip -j ", paste0(outputDir, "out.fa.zip")," ", paste0(outputDir, "out.fa")))
 
-          file.copy(paste0(outputDir, "out.fa.gz"), file)
+          file.copy(paste0(outputDir, "out.fa.zip"), file)
           # remove folder after use...
           system(paste0("rm -rf ",outputDir))
         })
@@ -88,7 +94,11 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
   # show seq vars info...
   output$seq_vars_count <- renderText({
     if (!is.null(data$SeqVars)){
-      return(paste0("Found ", nrow(data$SeqVars), " of sequnce variants "))
+      if (!"samples" %in% colnames(data$SeqVars)){
+        return(paste0("Found ", data$SeqVars$vars, " of sequnce variants "))
+      } else {
+        return(paste0("Found ", nrow(data$SeqVars), " of sequnce variants "))
+      }
     }
   })
 }

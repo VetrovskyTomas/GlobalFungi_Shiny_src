@@ -210,7 +210,7 @@ geoshapeFunc <- function(input, output, session, samples) {
         SH_matches <- unique(unlist(SH_matches))
         print(paste0("Number of SH in ",length(selected_global$samples$id)," samples is ", length(SH_matches)))
         
-        selected_global$sel_SH <- global_SH[which(global_SH$SH %in% SH_matches),]
+        selected_global$sel_SH <- global_SH[which(global_SH$SH_id %in% SH_matches),]
       })
       
       #

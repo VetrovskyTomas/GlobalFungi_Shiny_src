@@ -20,17 +20,19 @@ resutsMapFunc <- function(input, output, session,  variable) {
   
   #namespace for dynamic input...
   ns <- session$ns
-  
 
+  samples <- isolate(variable$samples)
+  
   # actual version - map of samples from the study...
   observe({
+    print("MAP REFRESH...")
     map_data <- NULL
     # TAXON
-    if (!is.null(variable$samples$abundances)){
-      map_data <- data.frame(id = variable$samples[,"id"],
-                           longitude = variable$samples[,"longitude"],
-                           latitude = variable$samples[,"latitude"],
-                           type = variable$samples$abundances / variable$samples$ITS_total,#cut((variable$samples$abundances / variable$samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
+    if (!is.null(samples$abundances)){
+      map_data <- data.frame(id = samples[,"id"],
+                           longitude = samples[,"longitude"],
+                           latitude = samples[,"latitude"],
+                           type = samples$abundances / samples$ITS_total,#cut((samples$abundances / samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
                            stringsAsFactors = F)
     
     map_data <- map_data[order(map_data$type),]
@@ -92,10 +94,10 @@ resutsMapFunc <- function(input, output, session,  variable) {
     })
     } else {
       # STUDY
-      map_data <- data.frame(id = variable$samples[,"id"],
-                             longitude = variable$samples[,"longitude"],
-                             latitude = variable$samples[,"latitude"],
-                             #type = 0.0,#cut((variable$samples$abundances / variable$samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
+      map_data <- data.frame(id = samples[,"id"],
+                             longitude = samples[,"longitude"],
+                             latitude = samples[,"latitude"],
+                             #type = 0.0,#cut((samples$abundances / samples$ITS_total)*100.0, breaks=c(0.0, 0.1, 1.0, 10.0, 100.0)),
                              stringsAsFactors = F)
       
       # map of samples from the study...
@@ -139,45 +141,45 @@ resutsMapFunc <- function(input, output, session,  variable) {
         }
       })
     }
-  })
-  
-  # pop up text when clicked on map...
-  observe({
-    click <- input$mymap_marker_click
-    if (is.null(click)) {
-      print("null click")
-      return()
-    }
-    #print(click)
-    sample_info <- variable$samples[which(variable$samples$id %in% input$mymap_marker_click$id),]
+
+    click <- NULL
     
-    text <- paste0(sample_info[,"id"], " (", sample_info[,"ITS_total"]," ITS)")
-    if("abundances" %in% colnames(variable$samples)) {
-      text <- paste0(sample_info[,"id"], " (", sample_info[,"abundances"],"/",sample_info[,"ITS_total"],")")
-    } 
+    observeEvent(input$mymap_marker_click,{
+      click <- input$mymap_marker_click
+      if (!is.null(click)) {
+        sample_info <- samples[which(samples$id %in% click$id),]
+        
+        text <- paste0("id-",sample_info[,"id"], " (", sample_info[,"ITS_total"]," ITS)")
+        if("abundances" %in% colnames(samples)) {
+          text <- paste0("id-",sample_info[,"id"], " (", sample_info[,"abundances"],"/",sample_info[,"ITS_total"],")")
+        } 
+        
+        leafletProxy(mapId = "mymap") %>%
+          clearPopups() %>%
+          addPopups(dat = click, lat = ~lat, lng = ~lng, popup = text)
+        
+        # map sample details - clicked marker...
+        output$map_sample_info <- renderUI({
+          req(length(click) > 0)
+          resultsSampleUI(id = ns("results_sample"))
+        })
+        
+        callModule(module = resultsSampleFunc, id = "results_sample", isolate(click$id))
+      }
+      }, ignoreInit = TRUE
+    )
     
-    leafletProxy(mapId = "mymap") %>%
-      clearPopups() %>%
-      addPopups(dat = click, lat = ~lat, lng = ~lng, popup = text)
+    observe({
+      # map sample details - clicked marker...
+      if (is.null(click)) {
+      output$map_sample_info <- renderUI({
+        req(length(click) > 0)
+        resultsSampleUI(id = ns("results_sample"))
+      })
+      callModule(module = resultsSampleFunc, id = "results_sample", -1)
+      }
+    })
+    
   })
   
-  #
-  output$map_sample_table <- renderText({
-    sample_vals <- global_samples[which(global_samples$id %in% input$mymap_marker_click$id),]
-    #paste0(toString(sample_vals$id)," ",toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
-    paste(input$mymap_marker_click$id,toString(global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),"title"]))
-  })
-  
-  # map sample details - clicked row...
-  output$map_sample_info <- renderUI({
-    req(length(input$mymap_marker_click) > 0)
-    resultsSampleUI(id = ns("results_sample"))
-    #verbatimTextOutput(ns('map_sample_table'))
-  })
-  
-  observe({
-    if (!is.null(input$mymap_marker_click$id)){
-      callModule(module = resultsSampleFunc, id = "results_sample", input$mymap_marker_click$id)
-    }
-  })
 }

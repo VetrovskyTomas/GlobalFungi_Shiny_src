@@ -116,9 +116,9 @@ resultsFunc <- function(input, output, session, variable) {
                 key <- "group"
                 print(variants$SH)
               } else {
-                if (variants$SH != "-"){
+                if (variants$SH != 0){
                   output$info_table <- renderTable({
-                    sh_data <- global_SH[which(global_SH$SH %in% variants$SH),]
+                    sh_data <- global_SH[which(global_SH$id %in% variants$SH),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
                     sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
                     data.frame(sh_data)
                   }, sanitize.text.function = function(x) x)
@@ -155,7 +155,7 @@ resultsFunc <- function(input, output, session, variable) {
               # filter papers data...
               incProgress(1/3)
               output$info_table <- renderTable({
-                global_SH[which(global_SH$SH %in% text),]
+                global_SH[which(global_SH$SH %in% text),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
               })
               # filer sample based on selection...
               incProgress(1/3)
@@ -166,10 +166,8 @@ resultsFunc <- function(input, output, session, variable) {
               
               # result is not empty...
               if (nrow(tax_out) > 0) {
-                variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
-                print(paste0("Number of seqs in ",text," is ", length(variants)))
-                out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
-                #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                print(paste0("Number of seqs in ",text," is ", tax_out$vars))
+                out_data$SeqVars <- data.frame(vars = tax_out$vars, stringsAsFactors = F)
                 incProgress(1/5)
                 out_data$samples <- sample_tab(tax_out)
               }
@@ -200,10 +198,8 @@ resultsFunc <- function(input, output, session, variable) {
                 
                 # result is not empty...
                 if (nrow(tax_out) > 0) {
-                  variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
-                  print(paste0("Number of seqs in ",text," is ", length(variants)))
-                  out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
-                  #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                  print(paste0("Number of seqs in ",text," is ", tax_out$vars))
+                  out_data$SeqVars <- data.frame(vars = tax_out$vars, stringsAsFactors = F)
                   incProgress(1/5)
                   out_data$samples <- sample_tab(tax_out)
                 }
@@ -233,10 +229,8 @@ resultsFunc <- function(input, output, session, variable) {
                   
                   # result is not empty...
                   if (nrow(tax_out) > 0) {
-                    variants <- unlist(strsplit(tax_out$hashs, ';', fixed=TRUE))
-                    print(paste0("Number of seqs in ",text," is ", length(variants)))
-                    out_data$SeqVars <- data.frame(hash = variants, stringsAsFactors = F)
-                    #out_data$SeqVars <- variants[,c("samples","hash", "marker")]
+                    print(paste0("Number of seqs in ",text," is ", tax_out$vars))
+                    out_data$SeqVars <- data.frame(vars = tax_out$vars, stringsAsFactors = F)
                     incProgress(1/5)
                     out_data$samples <- sample_tab(tax_out)
                   }

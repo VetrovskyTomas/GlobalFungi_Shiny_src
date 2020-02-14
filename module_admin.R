@@ -27,7 +27,7 @@ adminFunc <- function(input, output, session) {
   observeEvent(input$refresh_tab, {
     observe(
       output$table_selected <- DT::renderDataTable({
-        query <- sprintf(paste0("SELECT * FROM ",input$select_tab))
+        query <- sprintf(paste0("SELECT * FROM ",input$select_tab," ORDER BY id DESC"))
         table <- data.table(sqlQuery(query))
       })
     )

@@ -91,13 +91,9 @@ global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "la
 # load SH table...
 query <- sprintf(paste0("SELECT * FROM ",options()$mysql$taxonomy))
 global_SH <- sqlQuery(query)
-global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","genus_id","species_id","SH_id")]
+print(nrow(global_SH))
 
-# remove SH not existing in the dataset...
-query <- sprintf(paste0("SELECT DISTINCT(SH) FROM ",options()$mysql$variants_table))
-SH_list <- unlist(sqlQuery(query))
-global_SH <- global_SH %>% filter(SH %in% SH_list)
-  
 # options
 global_SH_list <- sort(global_SH$SH)
 global_species_list <- sort(unique(global_SH$Species))
