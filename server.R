@@ -184,9 +184,9 @@ server <- function(session, input, output) {
   output$menu <- renderMenu({
     sidebarMenu(id = "menu_tabs",
                 menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
-                menuItem("Sequence Analysis", icon = icon("dna"), tabName = "fmd_analysis"),
-                menuItem("Cluster analysis", icon = icon("indent"), tabName = "fmd_analysis_group"),
-                menuItem("Search", icon = icon("search"), tabName = "fmd_search"),
+                menuItem("Taxon search", icon = icon("search"), tabName = "fmd_search"),
+                menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis"),
+                #menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis_group"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
@@ -242,7 +242,7 @@ server <- function(session, input, output) {
   callModule(module = helpFunc, id = "id_help")
   callModule(module = resultsFunc, id = "id_results", vals)
   callModule(module = aboutusFunc, id = "id_aboutus")
-  callModule(module = analysisGroupFunc, id = "id_analysis_group", parent = session)
+  #callModule(module = analysisGroupFunc, id = "id_analysis_group", parent = session)
   callModule(module = adminFunc, id = "id_admin")
   #################################################
   

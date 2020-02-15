@@ -114,11 +114,22 @@ resultsFunc <- function(input, output, session, variable) {
               # get SH info table...
               if (length(variants$SH) > 1){
                 key <- "group"
-                print(variants$SH)
+                shs <- unique(variants$SH)
+                shs <- shs[which(shs!="-")] 
+                print(paste0("Length ",length(shs)))
+                if (length(shs) > 0){
+                  out_data$SHs <- global_SH[which(global_SH$SH_id %in% shs),]
+                } else {
+                  output$info_table <- renderTable({
+                    bar_data <- data.frame(
+                      SH = c("-")
+                    )
+                  }) 
+                }
               } else {
                 if (variants$SH != 0){
                   output$info_table <- renderTable({
-                    sh_data <- global_SH[which(global_SH$id %in% variants$SH),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+                    sh_data <- global_SH[which(global_SH$SH_id %in% variants$SH),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
                     sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
                     data.frame(sh_data)
                   }, sanitize.text.function = function(x) x)

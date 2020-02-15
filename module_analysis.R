@@ -21,12 +21,14 @@ analysisUI <- function(id) {
           column(3,br(),actionButton(ns("reset_file"), 'Reset Input'))
         ),
         fluidRow(
-          column(3,selectInput(ns("search_type"), "Type:", choices = c("BLAST", "Exact"))),
-          column(6,br(),actionButton(ns("analyze_button"), label = "Analyze", icon = icon("dna")))
+          column(3,radioButtons(ns("search_type"), "Search type:", c("Exact" = "exact","BLAST" = "blast", "BLAST (group results)" = "blast_group"))),
+          column(6,uiOutput(ns('dynamic_params'))),
+          column(3,actionButton(ns("analyze_button"), label = "Search", icon = icon("dna")))
         ),
         hr(),
         # info about subbmission...
         verbatimTextOutput(ns('info_fasta')),
+        uiOutput(ns('dynamic_filters')),
         # table of results... 
         fluidRow(
           column(12,DT::dataTableOutput(ns('info_table')))
@@ -44,9 +46,29 @@ analysisFunc <- function(input, output, session, parent) {
   
   # to be shared...
   vals <- reactiveValues()
+  filtered_data <- reactiveValues()
   vals$seq_hash <- NULL
   
   
+  ##################################################################
+  # dynamic header - seq vars...
+  output$dynamic_params <- renderUI({
+    if (input$search_type == "blast_group"){
+      fluidRow(
+        column(3,
+              selectizeInput(ns("max_blast_results"),
+                       options = list(
+                         maxOptions=length(global_species_list),
+                         placeholder = 'Please select an option below'
+                       ),
+                       label = "Max of BLAST results:", choices = c(1, 10, 100, 500), width = "300px",
+                       selected = 1,
+                       multiple = FALSE # allow for multiple inputs
+                       )
+                       )
+      )
+    }
+  })
   ##################################################################
   # process fasta
   fasta_out <- function(fasta_vector, as_table) {
@@ -214,6 +236,67 @@ analysisFunc <- function(input, output, session, parent) {
     return(vals)
   }  
   #################################################
+  
+  # simulate BLAST
+  blast_group <- function(input_fasta, vals) {
+    withProgress(message = 'Running BLAST...', {
+      # generate folder for user task...
+      outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
+      system(paste("mkdir ", outputDir, sep = ""))
+      
+      write.table(x = do.call(rbind, lapply(seq(nrow(input_fasta)), function(i) t(input_fasta[i, ]))), file = paste(outputDir,"my_query.fasta", sep = ""), quote = F, col.names = F, row.names = F)
+      incProgress(1/5)
+      
+      # run blast command...
+      maxres <- input$max_blast_results
+      print(paste("Maximum of blast results:",maxres))
+      cmd_params <- paste0("-outfmt 6 -max_target_seqs ",maxres," -num_threads 2")
+      cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      system(cmd_blast)
+      incProgress(1/5)
+      
+      # Check if your blast finished...
+      blast_out <- NULL
+      if(file.exists(paste0(outputDir, "results.out"))){
+        blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+      }
+      incProgress(1/5)
+      
+      # remove folder after use...
+      system(paste0("rm -rf ",outputDir))
+      
+      # prepare output...
+      if (!is.null(blast_out)){
+        names(blast_out) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
+        blast_out <- blast_out[,c("qseqid", "sseqid", "pident", "qstart", "qend", "sstart", "send", "evalue", "bitscore")]
+      } else {
+        blast_out <- data.frame(qseqid = vector(), sseqid = vector(), hits = vector(), pident = vector(), qstart = vector(), qend = vector(), sstart = vector(), send = vector(), evalue = vector(), bitscore = vector(), stringsAsFactors = F)
+      }
+      incProgress(1/5)
+      
+      vals$blast_out <- blast_out
+      if (nrow(blast_out)>0){
+        filtered_data$blast_out <- blast_out
+      } else {
+        filtered_data$blast_out <- NULL
+      }
+      #print(filtered_data$blast_out)
+      
+      # get info results...
+      output$info_fasta <- renderText({
+        return(paste0("BLASTn resulted in ",nrow(vals$blast_out)," sequences."))
+      })
+      
+      # reder blast results table...
+      output$info_table <- DT::renderDataTable(
+        DT::datatable({
+          vals$blast_out
+        }, escape = FALSE, selection = 'none')
+      )
+      incProgress(1/5)
+    })
+    return(vals)
+  }
 
   values <- reactiveValues(
     upload_state = NULL
@@ -271,20 +354,74 @@ analysisFunc <- function(input, output, session, parent) {
       
       # 
       if (!is.null(input_fasta)) {
-        print("FASTA IS OK...")
-        #print(input_fasta)
-        #cat(file=stderr(), "input_fasta size is ", nrow(input_fasta), "\n")
-        if (input$search_type == "Exact"){
+        print(paste0("FASTA IS OK...type ",input$search_type," #of seqs. ", nrow(input_fasta) ," max res: ", input$max_blast_results))
+        
+        # exact match...
+        if (input$search_type == "exact"){
           vals <- exact(input_fasta, vals)
-        } else {
+        }
+        # blast simple...
+        if (input$search_type == "blast"){
           vals <- blast(input_fasta, vals)
         }
-        #
+        # blast group...
+        if (input$search_type == "blast_group"){
+          if (nrow(input_fasta)==1){
+          vals$seq <- input_fasta[[2]]
+          vals <- blast_group(input_fasta, vals)
+          } else {
+            alert(paste0("Sorry, BLAST for group is allowed only  for one FASTA sequence (you have ", nrow(input_fasta),")"))
+          }
+        }
       } else {
         print("ERROR: CRITERIA NOT FULFILLED...")
       }
     #}
   })
+  
+  # dynamic filters...
+  output$dynamic_filters <- renderUI({
+    if (!is.null(vals$blast_out)&&(input$search_type == "blast_group")){
+      # variables...
+      similarity <- as.numeric(vals$blast_out$pident)
+      # filters...
+      wellPanel(
+        fluidRow(
+          column(10,sliderInput(ns("similarity"), "Similarity:",
+                                min = min(similarity), max = max(similarity), value = c(min(similarity),max(similarity)), step = 0.001, sep = "")
+          )
+          ,column(2,actionButton(ns("applyFilters"), "Apply filter", icon = icon("filter")))
+        ),
+        hr(),
+        fluidRow(
+          column(2,actionButton(ns("getSamples"), "Show samples", icon = icon("dna")))
+        )
+      )
+    }
+  })
+  
+  # apply filter...
+  observeEvent(input$applyFilters, {
+    if (!is.null(vals$blast_out)){
+      filtered_data$blast_out <- isolate(vals$blast_out)
+      # similarity
+      sim <- isolate(input$similarity)
+      filtered_data$blast_out <- filtered_data$blast_out[which(as.numeric(filtered_data$blast_out$pident) >= sim[1]),]
+      filtered_data$blast_out <- filtered_data$blast_out[which(as.numeric(filtered_data$blast_out$pident) <= sim[2]),]
+      # show updated table...
+      output$info_table <- DT::renderDataTable(
+        DT::datatable({
+          filtered_data$blast_out
+        }, escape = FALSE, selection = 'none')
+      )
+      
+      # get info results...
+      output$info_fasta <- renderText({
+        return(paste0("BLASTn resulted in ",nrow(vals$blast_out)," sequences.\n After filtering ",nrow(filtered_data$blast_out)," sequences."))
+      })
+    }
+  })
+  
   
   # redirect...  
   observeEvent(input$lastClick, {
@@ -304,4 +441,18 @@ analysisFunc <- function(input, output, session, parent) {
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   }
   )
+  
+  # apply filter...
+  observeEvent(input$getSamples, {
+    print("get samples...")
+    print(filtered_data$blast_out)
+    #info about result type...
+    vals$type =  "sequence"
+    vals$key <- filtered_data$blast_out$sseqid
+    vals$text <- paste0("BLAST group result (", length(vals$key)," sequence variants) for query:\n", vals$seq) #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
+    
+    # call results...
+    callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals)) 
+    updateTabItems(session = parent, "menu_tabs", "fmd_results")    
+  })
 }

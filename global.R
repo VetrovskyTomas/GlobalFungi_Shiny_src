@@ -43,7 +43,6 @@ source("module_geoshape.R")
 
 # hidden 
 source("module_admin.R")
-source("module_analysis_group.R")
 
 # general results page 
 source("module_results.R")
