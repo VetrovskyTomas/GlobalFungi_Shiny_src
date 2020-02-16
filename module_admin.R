@@ -7,8 +7,8 @@ adminUI <- function(id) {
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
                  fluidRow(
-                   column(4, style = "background-color:#0c2b37;",img(src='admin.png', align = "left")),
-                   column(8, h2(id="header_title", "Welcome admin...", align = "left"))
+                   column(1, style = "background-color:#0c2b37;",img(src='settings.png', height = 56)),
+                   column(11, h2(id="header_title", "Welcome admin"))
                  )
     ),
     # table selector

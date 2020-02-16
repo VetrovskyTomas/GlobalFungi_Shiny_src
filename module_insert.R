@@ -1,10 +1,15 @@
 # Function for module UI
 insertUI <- function(id) {
-  ns <- NS(id) # Creates Namespace
-  
+  ns <- NS(id)
   fluidPage(
-    # App title ----
-    h1(id="welcome_title", "Insert your study"),
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(1, style = "background-color:#0c2b37;",img(src='insert.png', height = 56)),
+                   column(11, h2(id="header_title", "Insert your study"))
+                 )
+    ),
+    # content
     sidebarPanel(width = "100%", style = "background-color:white;",
       fluidRow(
         column(9,   

@@ -7,14 +7,26 @@ homeUI <- function(id) {
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
       fluidRow(
-        column(12, style = "background-color:#0c2b37;",img(src='title.png', align = "left"))
+        column(12, style = "background-color:#0c2b37;",
+          img(src='search_seq.png', height = 56),
+          img(src='search_tax.png', height = 56),
+          img(src='help.png', height = 56),
+          img(src='cite.png', height = 56),
+          img(src='geosearch.png', height = 56),
+          img(src='admin.png', height = 56),
+          img(src='info.png', height = 56),
+          img(src='insert.png', height = 56),
+          img(src='task.png', height = 56),
+          img(src='studies.png', height = 56),
+          img(src='message.png', height = 56),
+          img(src='about.png', height = 56)
+        )
       )
     ),
     # header
-    h1(id="welcome_title", "Welcome to fungal metastudy database!"),
+    h1(id="welcome_title", paste0("Welcome to ",global_info[,"name"],"!")),
     verbatimTextOutput(ns("fm_info")),
     # basic info...
-    textOutput(ns("sample_counts")),
     sidebarPanel(width = "100%", style = "background-color:white;",
                 fluidRow(
                   column(8,leafletOutput(ns("map"), height=500)),
@@ -29,17 +41,8 @@ homeUI <- function(id) {
 
 # Function for module server logic
 homeFunc <- function(input, output, session, samples) {
-  # When user clicks on "Hello" button : Update reactive variable "name"
-  getSum <- eventReactive(input$var, {
-    return(summary(global_samples[,as.numeric(input$var)]))
-  })
-  #basic info...
-  output$fm_info <- renderPrint({
-    # contruct query
-    query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
-    # create output text
-    return(cat(paste0("Actual number of samples in database: ", nrow(global_samples), " (",nrow(global_papers)," studies) and ",sqlQuery(query)," sequence variants")))
-  })
+  #namespace for dynamic input...
+  ns <- session$ns
   
   output$map <- renderLeaflet({
     leaflet(data = global_samples, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
@@ -56,16 +59,7 @@ homeFunc <- function(input, output, session, samples) {
                        fillOpacity = 0.5#, 
       ) 
   })
-    
-  #BAR chart continents...
-  output$contBar <- renderPlot({
-    tab <- as.data.frame(table(global_samples[,"sample_type"]))
-    Plot <- ggplot(data = tab, aes_string(x = tab$Var1, y = tab$Freq, fill = tab$Var1)) + geom_bar(stat = "identity", position=position_dodge())
-    Plot <- Plot + ylab("# of samples")
-    Plot <- Plot + theme_bw() + theme(panel.border = element_blank(), text =  element_text(face = "bold", size = 12), axis.title.x = element_text(margin = unit(c(5, 0, 0, 0), "mm")), axis.title.y = element_text(margin = unit(c(0, 5, 3, 0), "mm"), angle = 90), panel.grid.minor = element_blank(), panel.grid.major = element_blank(), axis.line = element_line(colour = "black")) + ggtitle(paste(input$data_type," vs # of samples"))
-    Plot
-  })
-    
+  
   observe({
     #pie chart continents...
     dat <- as.data.frame(table(global_samples[,"continent"]))
@@ -73,14 +67,20 @@ homeFunc <- function(input, output, session, samples) {
     renderPieChart(div_id = "contPie", data = dat, radius = "60%",center_x = "50%", center_y = "50%", show.legend = FALSE)
   })
   
-  #
-  output$sum <- renderPrint({
-    getSum()
+  #basic info...
+  output$fm_info <- renderPrint({
+    # create output text
+    return(cat(paste0("Database version ",global_info[,"version"], "; Release version ", global_info[,"release"], "; Last update ", global_info[,"date"],"; ", global_info[,"info"],".\n",
+      "Actual number of samples in database ", nrow(global_samples), "; Studies ",nrow(global_papers),".\n",
+      "Number of ITS sequence variants ",global_variants_count, "; Number of ITS1 sequences " , global_info[,"its1_raw_count"],"; Number of ITS2 sequences " , global_info[,"its2_raw_count"],".")
+      ))
   })
   
-  output$box <- renderPlot({
-    x<-getSum()
-    boxplot(x,col="sky blue",border="purple",main=names(global_samples[as.numeric(input$var)]))
-  })
+  # popup hint
+  # addPopover(session, 
+  #            id = ns("map"), 
+  #            title = "Sample geolocation", 
+  #            content = "Overview of samples geolocations.", 
+  #            trigger = "hover")
 
 }

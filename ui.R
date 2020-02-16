@@ -14,7 +14,7 @@ itemIds <- c(team = "#team", team2 = "#team2", login = "#login")
 
 ui <- tagList(
   dashboardPage(
-    dashboardHeader(title = "Fungal Metastudy Database v 0.11", titleWidth = 240,
+    dashboardHeader(title = paste(global_info[,"name"],global_info[,"version"]), titleWidth = 240,
       # dropdown...
       tags$li(class = "dropdown",
         tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
@@ -32,6 +32,17 @@ ui <- tagList(
     dashboardBody(
       useShinyjs(),
       # link the page style...
+      tags$head(HTML(
+        "<!-- Global site tag (gtag.js) - Google Analytics -->
+          <script async src='https://www.googletagmanager.com/gtag/js?id=UA-158613997-1'></script>
+          <script>
+          window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'UA-158613997-1');
+        </script>"
+      )),
       tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
       ),
@@ -44,13 +55,13 @@ ui <- tagList(
         tabItem("fmd_home",
                 homeUI(id = "id_home")
         ),
-        #sequence analysis
-        tabItem("fmd_analysis",
-                analysisUI(id = "id_analysis")
-        ),
         #search taxon
         tabItem("fmd_search",
                 searchUI(id = "id_search")
+        ),
+        #sequence analysis
+        tabItem("fmd_analysis",
+                analysisUI(id = "id_analysis")
         ),
         #studies
         tabItem("fmd_studies",
@@ -78,9 +89,6 @@ ui <- tagList(
         ),
         tabItem("fmd_aboutus",
                 aboutusUI(id = "id_aboutus")
-        ),
-        tabItem("fmd_analysis_group",
-                analysisGroupUI(id = "id_analysis_group")
         ),
         tabItem("fmd_admin",
                 adminUI(id = "id_admin")

@@ -3,8 +3,15 @@ resultsUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     useShinyjs(),
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(1, style = "background-color:#0c2b37;",img(src='results.png', height = 56)),
+                   column(11, h2(id="header_title", textOutput(ns("out_title"))))
+                 )
+    ),
     # title...
-    h2(id="welcome_title",textOutput(ns("out_title"))),
+    #h2(id="welcome_title",textOutput(ns("out_title"))),
     # general info panel...
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
       uiOutput(ns('dynamic_header')),

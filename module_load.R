@@ -22,6 +22,9 @@ options(mysql = list(
   # table with taxonomy for SH
   "taxonomy" = "taxonomy",
   
+  # table info
+  "info" = "info",
+  
   # table for F&Q
   "messages" = "messages"
 ))
@@ -61,15 +64,17 @@ killDbConnections <- function () {
 global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
 # nucleotide database for blast
-global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS.fa"
+global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
 
 # output path 
-global_out_path <- "/home/fungal/databases/user_outputs/"  
-  
-# output path - messages
-global_messages_path <- "/home/fungal/databases/user_outputs/" 
+global_out_path <- "/home/fungal/databases/user_outputs/"
 
 #################################################################################
+query <- sprintf(paste0("SELECT `name`,`version`,`release`,`its1_raw_count`,`its2_raw_count`,`info`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
+global_info <- data.table(sqlQuery(query))
+
+query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
+global_variants_count <- sqlQuery(query)
 # load samples table...
 query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
 global_samples <- data.table(sqlQuery(query))

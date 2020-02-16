@@ -6,8 +6,14 @@ searchUI <- function(id) {
     # We MUST load the ECharts javascript library in advance
     loadEChartsLibrary(),
     loadEChartsTheme('shine'),
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(1, style = "background-color:#0c2b37;",img(src='search_tax.png', height = 56)),
+                   column(11, h2(id="header_title", "Search by taxonomy!"))
+                 )
+    ),
     # search page...
-    h1(id="welcome_title", "Search in the database!"),
     sidebarPanel(width = "100%", style = "background-color:white;",
       tabsetPanel(id = ns("navbar"),
         tabPanel("SH",
@@ -101,11 +107,6 @@ searchFunc <- function(input, output, session, parent) {
   })
   
   observe({
-      # load SH options...
-      # updateSelectizeInput(session, "search_key_sh", 
-      #                      choices = global_SH_list, 
-      #                      server = TRUE)
-    
       # load species options...
       updateSelectizeInput(session, "search_key_species",
                            choices = global_species_list, 

@@ -6,7 +6,9 @@ resutsVariantsUI <- function(id) {
     column(2,
            textOutput(ns("seq_vars_count")),
            downloadButton(ns("downloadSeqVars"), "Download FASTA"),
-           checkboxInput(ns("seqs_derep"), "dereplicated", TRUE)
+           checkboxInput(ns("seqs_derep"), "dereplicated", TRUE),
+           bsTooltip(ns("seqs_derep"), "This checkbox allows you to have sample names in the sequence titles.",
+                     "right", options = list(container = "body"))
     )
 }
 
@@ -105,4 +107,5 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
       }
     }
   })
+  
 }

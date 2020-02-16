@@ -15,6 +15,7 @@ library(stringr)
 library(stringi)
 library(readxl)
 library(geoshaper)
+library(shinyBS)
 
 ##############
 ### SERVER ###
@@ -211,11 +212,15 @@ server <- function(session, input, output) {
                 # about the database
                 menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_aboutus"),
                 tags$hr(),
-                # url info...
+                tags$br(),
+                tags$br(),
+                # copyright...
                 fluidPage(
-                  verbatimTextOutput("urlText")
-                ),
-                fluidPage(
+                  tags$img(
+                    src = "nick.png",
+                    style = 'position: absolute'
+                  ),
+                  tags$style(type='text/css', '#copyright {background-color: rgb(30,40,44); color: rgb(184,199,206);}'), 
                   verbatimTextOutput("copyright")
                 )
     )
@@ -246,28 +251,15 @@ server <- function(session, input, output) {
   callModule(module = adminFunc, id = "id_admin")
   #################################################
   
-  # info about connection...
-  output$urlText <- renderText({
-    paste(sep = "",
-          "# sessions:", users$count, "\n",
-          "# sessions max:", users$max, "\n",
-          "# unique users:", length(users$IPs), "\n",
-          "protocol: ", session$clientData$url_protocol, "\n",
-          "host: ", session$clientData$url_hostname, "\n",
-          "path: ", session$clientData$url_pathname, "\n",
-          "port: ",     session$clientData$url_port,     "\n",
-          "search: ",   session$clientData$url_search,   "\n"
-    )
-  })
-  
   # copyright...
   output$copyright <- renderText({
     paste(sep = "",
-          "    site design    \n",
-          "         &         \n",
-          "    programming    \n",
-          "  Tomas Vetrovsky  \n",
-          "     (c) 2019      \n")
+    "         site design  \n",
+    "              &       \n",
+    "         programming  \n",
+    "       Tomas Vetrovsky\n",
+    "                      \n",
+    "             (c) 2020 \n")
   })
   
 }

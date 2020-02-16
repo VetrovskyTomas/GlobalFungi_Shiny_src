@@ -1,11 +1,15 @@
 # Function for module UI
 analysisUI <- function(id) {
   ns <- NS(id)
-  
   fluidPage(
     useShinyjs(),
-    h1(id="welcome_title", "Analyze sequences!"),
-    
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(1, style = "background-color:#0c2b37;",img(src='search_seq.png', height = 56)),
+                   column(11, h2(id="header_title", "Search by sequence!"))
+                 )
+    ),
     # Sidebar panel for inputs ----
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
         #text area for pasting the sequence...

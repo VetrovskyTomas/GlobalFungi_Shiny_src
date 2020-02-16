@@ -3,7 +3,14 @@ geoshapeUI <- function(id) {
   ns <- NS(id) # Creates Namespace
   fluidPage(
     useShinyjs(),
-    h1(id="welcome_title", "Geosearch!"),
+    # picture
+    sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
+                 fluidRow(
+                   column(1, style = "background-color:#0c2b37;",img(src='geosearch.png', height = 56)),
+                   column(11, h2(id="header_title", "Geosearch!"))
+                 )
+    ),
+    # content
     sidebarPanel(width = "100%", style = "background-color:white;",
       fluidRow(
         leafletOutput(ns("mymap"), height=500)
