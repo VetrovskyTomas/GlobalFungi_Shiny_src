@@ -171,6 +171,14 @@ server <- function(session, input, output) {
       callModule(module = resultsFunc, id = "id_results", vals)
       updateTabItems(session, "menu_tabs", "fmd_results")
     } else 
+    # paper redirection by link...
+    if (!is.null(query[['paper']])) {
+      vals$type <- 'study'
+      vals$text <- query[['paper']]
+      print(paste0("The url query paper value is ", vals$text))
+      callModule(module = resultsFunc, id = "id_results", vals)
+      updateTabItems(session, "menu_tabs", "fmd_results")
+    } else   
     # species redirection by link...
     if (!is.null(query[['species']])) {
       vals$type <- 'species'
@@ -184,13 +192,15 @@ server <- function(session, input, output) {
   #
   output$menu <- renderMenu({
     sidebarMenu(id = "menu_tabs",
+                tags$style(HTML("hr {margin-top: 0.5em; margin-bottom: 0.5em;}")),
                 menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
                 menuItem("Taxon search", icon = icon("search"), tabName = "fmd_search"),
                 menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis"),
-                #menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis_group"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
+                tags$hr(),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
+                menuItem("About FunGlobe", icon = icon("globe-americas"), tabName = "fmd_aboutus"),
                 menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
                 ###########################
                 hidden(tags$div(
@@ -206,13 +216,12 @@ server <- function(session, input, output) {
                 #result page...
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
+                menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
                 menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
                          badgeLabel = "in progress", badgeColor = "red"),
                 tags$hr(),
-                # about the database
-                menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_aboutus"),
+                menuItem("Collaborators", icon = icon("people-carry"), tabName = "fmd_collaborators"),
                 tags$hr(),
-                tags$br(),
                 tags$br(),
                 # copyright...
                 fluidPage(
@@ -246,9 +255,10 @@ server <- function(session, input, output) {
   callModule(module = citeFunc, id = "id_cite")
   callModule(module = helpFunc, id = "id_help")
   callModule(module = resultsFunc, id = "id_results", vals)
+  callModule(module = messageFunc, id = "id_message")
   callModule(module = aboutusFunc, id = "id_aboutus")
-  #callModule(module = analysisGroupFunc, id = "id_analysis_group", parent = session)
   callModule(module = adminFunc, id = "id_admin")
+  callModule(module = collaboratorsFunc, id = "id_collaborators")
   #################################################
   
   # copyright...

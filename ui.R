@@ -14,7 +14,7 @@ itemIds <- c(team = "#team", team2 = "#team2", login = "#login")
 
 ui <- tagList(
   dashboardPage(
-    dashboardHeader(title = paste(global_info[,"name"],global_info[,"version"]), titleWidth = 240,
+    dashboardHeader(title = paste(global_info[,"name"],global_info[,"version"]), titleWidth = 200,
       # dropdown...
       tags$li(class = "dropdown",
         tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
@@ -87,11 +87,21 @@ ui <- tagList(
         tabItem("fmd_results",
                 resultsUI(id = "id_results")
         ),
+        # about us
         tabItem("fmd_aboutus",
                 aboutusUI(id = "id_aboutus")
         ),
+        # settings
         tabItem("fmd_admin",
                 adminUI(id = "id_admin")
+        ),
+        # settings
+        tabItem("fmd_message",
+                messageUI(id = "id_message")
+        ),
+        # settings
+        tabItem("fmd_collaborators",
+                collaboratorsUI(id = "id_collaborators")
         )
       )
     )

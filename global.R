@@ -39,7 +39,9 @@ source("module_studies.R")
 source("module_cite.R")
 source("module_help.R")
 source("module_aboutus.R")
+source("module_message.R")
 source("module_geoshape.R")
+source("module_collaborators.R")
 
 # hidden 
 source("module_admin.R")

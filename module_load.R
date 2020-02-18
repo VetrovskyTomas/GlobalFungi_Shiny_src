@@ -4,7 +4,7 @@ options(mysql = list(
   "port" = 3306,
   "user" = "root", # "user" = "ubuntu",
   "password" = "", # "password" = "ubuntu",
-  "db" = "fm",
+  "db" = "fm", # "db" = "fmd",
   # samples table
   "samples" = "samples",
   
@@ -66,11 +66,17 @@ global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
 # nucleotide database for blast
 global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
 
+# sample sequences path 
+global_samples_path <- "/home/fungal/databases/samples_fasta/"
+
 # output path 
 global_out_path <- "/home/fungal/databases/user_outputs/"
 
+# blast cpus
+global_blast_nproc <- "2"
+
 #################################################################################
-query <- sprintf(paste0("SELECT `name`,`version`,`release`,`its1_raw_count`,`its2_raw_count`,`info`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
+query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its1_raw_count`,`its2_raw_count`,`info`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
 global_info <- data.table(sqlQuery(query))
 
 query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
@@ -81,6 +87,8 @@ global_samples <- data.table(sqlQuery(query))
 
 # construct papers table...
 global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
+# this will be changed in future...
+global_papers$submitted_by <- rep("FunGlobe", nrow(global_papers))
 global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
 
 # split title and year...

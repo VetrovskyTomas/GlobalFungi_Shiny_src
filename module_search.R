@@ -19,7 +19,7 @@ searchUI <- function(id) {
         tabPanel("SH",
           br(),
           textInput(inputId = ns("search_key_sh"),
-            placeholder = "Enter your text",
+            placeholder = "Enter SH, e.g: SH1509013.08FU",
             label = "Select SH:", 
             width = "300px"
           )

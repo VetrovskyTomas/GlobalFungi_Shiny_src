@@ -19,7 +19,9 @@ homeUI <- function(id) {
           img(src='task.png', height = 56),
           img(src='studies.png', height = 56),
           img(src='message.png', height = 56),
-          img(src='about.png', height = 56)
+          img(src='about.png', height = 56),
+          img(src='aboutus.png', height = 56),
+          img(src='collaborators.png', height = 56)
         )
       )
     ),
@@ -70,7 +72,7 @@ homeFunc <- function(input, output, session, samples) {
   #basic info...
   output$fm_info <- renderPrint({
     # create output text
-    return(cat(paste0("Database version ",global_info[,"version"], "; Release version ", global_info[,"release"], "; Last update ", global_info[,"date"],"; ", global_info[,"info"],".\n",
+    return(cat(paste0("Database version ",global_info[,"version"], "; Release version ", global_info[,"release"],"; Unite version ",global_info[,"unite_version"], "; Last update ", global_info[,"date"],"; ", global_info[,"info"],".\n",
       "Actual number of samples in database ", nrow(global_samples), "; Studies ",nrow(global_papers),".\n",
       "Number of ITS sequence variants ",global_variants_count, "; Number of ITS1 sequences " , global_info[,"its1_raw_count"],"; Number of ITS2 sequences " , global_info[,"its2_raw_count"],".")
       ))

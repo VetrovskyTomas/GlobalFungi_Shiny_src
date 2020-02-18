@@ -122,10 +122,15 @@ resultsFunc <- function(input, output, session, variable) {
               if (length(variants$SH) > 1){
                 key <- "group"
                 shs <- unique(variants$SH)
-                shs <- shs[which(shs!="-")] 
-                print(paste0("Length ",length(shs)))
+                shs <- shs[which(shs != 0)]
+                print(shs)
                 if (length(shs) > 0){
                   out_data$SHs <- global_SH[which(global_SH$SH_id %in% shs),]
+                  output$info_table <- renderTable({
+                    bar_data <- data.frame(
+                      SH = c(paste0(length(shs)," SH detected - see SH list below"))
+                    )
+                  })
                 } else {
                   output$info_table <- renderTable({
                     bar_data <- data.frame(

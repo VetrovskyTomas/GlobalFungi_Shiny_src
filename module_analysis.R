@@ -5,10 +5,12 @@ analysisUI <- function(id) {
     useShinyjs(),
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
-                 fluidRow(
-                   column(1, style = "background-color:#0c2b37;",img(src='search_seq.png', height = 56)),
-                   column(11, h2(id="header_title", "Search by sequence!"))
-                 )
+      #div(style = "padding: 0px 0px;margin-top:-1em;margin-bottom:0em;",
+      fluidRow(
+        column(1, style = "background-color:#0c2b37;",img(src='search_seq.png', height = 56)),
+        column(11, h2(id="header_title", "Search by sequence!"))
+      )
+      #)
     ),
     # Sidebar panel for inputs ----
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
@@ -22,7 +24,7 @@ analysisUI <- function(id) {
         # Input: Select a file ----
         fluidRow(
           column(9,fileInput(ns("fasta_file"), "Choose FASTA file", multiple = FALSE, accept = c("text/plain",".fasta",".fa",".fas"))),
-          column(3,br(),actionButton(ns("reset_file"), 'Reset Input'))
+          column(3,br(),actionButton(ns("reset_file"), 'Reset/Clear Input'))
         ),
         fluidRow(
           column(3,radioButtons(ns("search_type"), "Search type:", c("Exact" = "exact","BLAST" = "blast", "BLAST (group results)" = "blast_group"))),
@@ -183,15 +185,21 @@ analysisFunc <- function(input, output, session, parent) {
       incProgress(1/5)
 
       # run blast command...
-      cmd_params <- "-outfmt 6 -max_target_seqs 1 -num_threads 2"
+      cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 1 -num_threads ", global_blast_nproc)
       cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
       # Check if your blast finished...
       blast_out <- NULL
-      if(file.exists(paste0(outputDir, "results.out"))){
-        blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+      filename <- paste0(outputDir, "results.out")
+      if(file.exists(filename)){
+        info = file.info(filename)
+        if (info$size == 0){
+          print(paste0("File ", filename, " is empty!"))
+        } else {
+          blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+        }
       }
       incProgress(1/5)
 
@@ -254,15 +262,21 @@ analysisFunc <- function(input, output, session, parent) {
       # run blast command...
       maxres <- input$max_blast_results
       print(paste("Maximum of blast results:",maxres))
-      cmd_params <- paste0("-outfmt 6 -max_target_seqs ",maxres," -num_threads 2")
+      cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs ",maxres," -num_threads ", global_blast_nproc)
       cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
       # Check if your blast finished...
       blast_out <- NULL
-      if(file.exists(paste0(outputDir, "results.out"))){
-        blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+      filename <- paste0(outputDir, "results.out")
+      if(file.exists(filename)){
+        info = file.info(filename)
+        if (info$size == 0){
+          print(paste0("File ", filename, " is empty!"))
+        } else {
+          blast_out <- read.delim(file = paste0(outputDir, "results.out"), header = F)
+        }
       }
       incProgress(1/5)
       
@@ -314,6 +328,7 @@ analysisFunc <- function(input, output, session, parent) {
   
   observeEvent(input$reset_file, {
     print("Clicked reset...")
+    updateTextInput(session,"textSeq", value="")
     values$upload_state <- 'reset'
     enable("textSeq")
     reset("fasta_file")
@@ -385,7 +400,7 @@ analysisFunc <- function(input, output, session, parent) {
   
   # dynamic filters...
   output$dynamic_filters <- renderUI({
-    if (!is.null(vals$blast_out)&&(input$search_type == "blast_group")){
+    if (!is.null(filtered_data$blast_out)&&(input$search_type == "blast_group")){
       # variables...
       similarity <- as.numeric(vals$blast_out$pident)
       # filters...
