@@ -64,7 +64,14 @@ resultsFunc <- function(input, output, session, variable) {
   if (is.null(key)||(key=="")){
     key <- text
   }
- 
+
+  # tracking traffic...
+  tracking_traffic <- function(category, value) {
+    query <- paste0("INSERT INTO ",options()$mysql$traffic, 
+      " (session, category, value) VALUES (",global_session,", '", category, "', '", value, "')")
+    sqlQuery(query)
+  }
+  
   # get samples tab funtion...
   sample_tab <- function(variants) {
     samples <- strsplit(variants$samples, ';', fixed=TRUE)
@@ -96,6 +103,9 @@ resultsFunc <- function(input, output, session, variable) {
     # study option...
       if (variable$type == "study"){
         withProgress(message = 'Searching...', {
+          # tracking...
+          tracking_traffic(type, text)
+          
           # filter papers data...
           incProgress(1/3)
           output$info_table <- renderTable({
@@ -107,7 +117,7 @@ resultsFunc <- function(input, output, session, variable) {
         })
       } else
         # sequence option...  
-        if (type == "sequence") {
+        if ((type == "sequence")||(type == "blast")||(type == "blast_group")) {
           withProgress(message = 'Searching...', {
             # search by md5 checksum...
             key_string <- paste0("('",paste(key, collapse="','" ),"')")
@@ -118,8 +128,11 @@ resultsFunc <- function(input, output, session, variable) {
             incProgress(1/3)
             
             if (nrow(variants) > 0) {
+              # tracking...
+              tracking_traffic(type, length(variants$SH))
               # get SH info table...
               if (length(variants$SH) > 1){
+                # group of variants
                 key <- "group"
                 shs <- unique(variants$SH)
                 shs <- shs[which(shs != 0)]
@@ -139,6 +152,7 @@ resultsFunc <- function(input, output, session, variable) {
                   }) 
                 }
               } else {
+                # single variant
                 if (variants$SH != 0){
                   output$info_table <- renderTable({
                     sh_data <- global_SH[which(global_SH$SH_id %in% variants$SH),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
@@ -175,6 +189,8 @@ resultsFunc <- function(input, output, session, variable) {
           # SH option...  
           if (type == "SH") {
             withProgress(message = 'Searching...', {
+              # tracking...
+              tracking_traffic(type, text)
               # filter papers data...
               incProgress(1/3)
               output$info_table <- renderTable({
@@ -199,6 +215,8 @@ resultsFunc <- function(input, output, session, variable) {
             # species option...  
             if (type == "species") {
               withProgress(message = 'Searching...', {
+                # tracking...
+                tracking_traffic(type, text)
                 # get all SH based on species...
                 incProgress(1/5)
                 SH_list <- global_SH[which(global_SH$Species %in% text),]
@@ -231,6 +249,8 @@ resultsFunc <- function(input, output, session, variable) {
               # genus option...  
               if (type == "genus") {
                 withProgress(message = 'Searching...', {
+                  # tracking...
+                  tracking_traffic(type, text)
                   # get all SH based on genus...
                   incProgress(1/5)
                   SH_list <- global_SH[which(global_SH$Genus %in% text),]

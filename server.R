@@ -124,26 +124,23 @@ server <- function(session, input, output) {
 
   # someone started session...
   onSessionStart = isolate({
-    len <- length(users$IPs)
-    IP <- session$request[["REMOTE_ADDR"]]
-    print(IP)
-    users$IPs <- c( users$IPs , IP)
-    users$IPs <- unique(users$IPs)
-    
-    users$count = users$count + 1
-    if (users$count > users$max){
-      users$max = users$max + 1
-    }
-    
-    # if (length(users$IPs)>len){
-    #   write.table(users$IPs,file = "IP_addresses.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    global_session <<- global_session + 1
+    # len <- length(users$IPs)
+    # IP <- session$request[["REMOTE_ADDR"]]
+    # print(IP)
+    # users$IPs <- c( users$IPs , IP)
+    # users$IPs <- unique(users$IPs)
+    # 
+    # users$count = users$count + 1
+    # if (users$count > users$max){
+    #   users$max = users$max + 1
     # }
   })
   
   # someone ended session...
   onSessionEnded(function() {
     isolate({
-      users$count = users$count - 1
+      # users$count = users$count - 1
     })
   })  
   

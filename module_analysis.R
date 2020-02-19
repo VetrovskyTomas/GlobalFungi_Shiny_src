@@ -54,8 +54,23 @@ analysisFunc <- function(input, output, session, parent) {
   vals <- reactiveValues()
   filtered_data <- reactiveValues()
   vals$seq_hash <- NULL
+  vals$type <- NULL
+  vals$text <- NULL
+  vals$key <- NULL
   
+  search <- reactiveValues(search_type = NULL)
   
+  selected.rows <- reactiveValues(index = NULL)
+  
+  observeEvent(input$lastClick, {
+    selected.rows$index <- as.numeric(strsplit(isolate(input$lastClickId), "_")[[1]][2])
+  })
+  
+  # show results...
+  show_results <- function(vals) {
+    callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals))
+    updateTabItems(session = parent, "menu_tabs", "fmd_results")
+  }
   ##################################################################
   # dynamic header - seq vars...
   output$dynamic_params <- renderUI({
@@ -136,6 +151,7 @@ analysisFunc <- function(input, output, session, parent) {
   
   # run EXACT
   exact <- function(input_fasta, vals) {
+    print("exact...........")
     withProgress(message = 'Running exact search...', {
       # modify fasta dataframe...
       
@@ -176,6 +192,7 @@ analysisFunc <- function(input, output, session, parent) {
   
   # run BLAST
   blast <- function(input_fasta, vals) {
+    print("blast...........")
     withProgress(message = 'Running BLAST...', {
       # generate folder for user task...
       outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
@@ -251,6 +268,7 @@ analysisFunc <- function(input, output, session, parent) {
   
   # simulate BLAST
   blast_group <- function(input_fasta, vals) {
+    print("blast group...........")
     withProgress(message = 'Running BLAST...', {
       # generate folder for user task...
       outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
@@ -320,6 +338,10 @@ analysisFunc <- function(input, output, session, parent) {
     upload_state = NULL
   )
   
+  observeEvent(input$search_type, {
+    search$search_type <- isolate(input$search_type)
+  })
+  
   observeEvent(input$fasta_file, {
     print("File uploaded...")
     values$upload_state <- 'uploaded'
@@ -347,7 +369,6 @@ analysisFunc <- function(input, output, session, parent) {
   # analyze...
   observeEvent(input$analyze_button, {
       input_fasta <- NULL
-
       # load fasta from file...
       if (!is.null(file_input())) {
         # reading from file...
@@ -370,24 +391,26 @@ analysisFunc <- function(input, output, session, parent) {
           print("empty...")
         }
       }
-      
       # 
       if (!is.null(input_fasta)) {
         print(paste0("FASTA IS OK...type ",input$search_type," #of seqs. ", nrow(input_fasta) ," max res: ", input$max_blast_results))
         
         # exact match...
-        if (input$search_type == "exact"){
-          vals <- exact(input_fasta, vals)
+        if (search$search_type == "exact"){
+          vals$type <- "sequence"
+          vals <- isolate(exact(input_fasta, vals))
         }
         # blast simple...
-        if (input$search_type == "blast"){
-          vals <- blast(input_fasta, vals)
+        if (search$search_type == "blast"){
+          vals$type <- "blast"
+          vals <- isolate(blast(input_fasta, vals))
         }
         # blast group...
-        if (input$search_type == "blast_group"){
+        if (search$search_type == "blast_group"){
           if (nrow(input_fasta)==1){
+          vals$type <- "blast_group"
           vals$seq <- input_fasta[[2]]
-          vals <- blast_group(input_fasta, vals)
+          vals <- isolate(blast_group(input_fasta, vals))
           } else {
             alert(paste0("Sorry, BLAST for group is allowed only  for one FASTA sequence (you have ", nrow(input_fasta),")"))
           }
@@ -395,7 +418,6 @@ analysisFunc <- function(input, output, session, parent) {
       } else {
         print("ERROR: CRITERIA NOT FULFILLED...")
       }
-    #}
   })
   
   # dynamic filters...
@@ -422,6 +444,7 @@ analysisFunc <- function(input, output, session, parent) {
   # apply filter...
   observeEvent(input$applyFilters, {
     if (!is.null(vals$blast_out)){
+      print("apply filter...")
       filtered_data$blast_out <- isolate(vals$blast_out)
       # similarity
       sim <- isolate(input$similarity)
@@ -441,37 +464,47 @@ analysisFunc <- function(input, output, session, parent) {
     }
   })
   
-  
   # redirect...  
   observeEvent(input$lastClick, {
-    selectedRow <- as.numeric(strsplit(input$lastClickId, "_")[[1]][2])
+    # to be shared...
+    data <- reactiveValues()
+    data$type <- isolate(vals$type)
+    data$text <- 'No results yet!'
+    data$key <- ''
+    #
+    if (!is.null(selected.rows$index)){
+      print("redirect...")
+      selectedRow <- selected.rows$index
+      
+      print(paste("selectedRow",selectedRow))
+      # get md5 hash...
+      md5_hash <- toString(vals$seq_hash[selectedRow,"sseqid"])
+      print(md5_hash)
+      
+      #info about result type...
+      data$text <- paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
+      #pass code of the study...
+      data$key <- md5_hash
+      # call results...
+      show_results(data)
+    }
+  }, ignoreInit = TRUE)
   
-    print(paste("selectedRow",selectedRow))
-    # get md5 hash...
-    md5_hash <- toString(vals$seq_hash[selectedRow,"sseqid"])
-    print(md5_hash)
-    
-    #info about result type...
-    vals$type =  "sequence"
-    vals$text <- paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
-    #pass code of the study...
-    vals$key <- md5_hash
-    callModule(session = parent, module = resultsFunc, id = "id_results", vals)
-    updateTabItems(session = parent, "menu_tabs", "fmd_results")
-  }
-  )
-  
-  # apply filter...
+  # show samples...
   observeEvent(input$getSamples, {
+    # to be shared...
+    data <- reactiveValues()
+    data$type <- isolate(vals$type)
+    data$text <- 'No results yet!'
+    data$key <- ''
+    #
     print("get samples...")
-    print(filtered_data$blast_out)
+    #print(filtered_data$blast_out)
     #info about result type...
-    vals$type =  "sequence"
-    vals$key <- filtered_data$blast_out$sseqid
-    vals$text <- paste0("BLAST group result (", length(vals$key)," sequence variants) for query:\n", vals$seq) #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
-    
+    data$key <- filtered_data$blast_out$sseqid
+    data$text <- paste0("BLAST group result (", length(vals$key)," sequence variants) for query:\n", vals$seq) #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
     # call results...
-    callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals)) 
-    updateTabItems(session = parent, "menu_tabs", "fmd_results")    
+    show_results(data)
   })
+  
 }

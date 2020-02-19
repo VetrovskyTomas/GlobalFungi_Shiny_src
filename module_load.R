@@ -25,6 +25,9 @@ options(mysql = list(
   # table info
   "info" = "info",
   
+  # table info
+  "traffic" = "traffic",
+  
   # table for F&Q
   "messages" = "messages"
 ))
@@ -76,6 +79,18 @@ global_out_path <- "/home/fungal/databases/user_outputs/"
 global_blast_nproc <- "2"
 
 #################################################################################
+# tracking get last session count
+query <- sprintf(paste0("SELECT `session` FROM ",options()$mysql$traffic," ORDER BY id DESC LIMIT 1;"))
+session <- data.table(sqlQuery(query))
+if (nrow(session)>0){
+  global_session <- as.numeric(session)
+} else {
+  global_session <- 1
+}
+print(paste0("Current session number ",global_session))
+
+
+# database info
 query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its1_raw_count`,`its2_raw_count`,`info`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
 global_info <- data.table(sqlQuery(query))
 

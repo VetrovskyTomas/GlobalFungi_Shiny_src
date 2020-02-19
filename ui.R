@@ -31,18 +31,8 @@ ui <- tagList(
     # body...
     dashboardBody(
       useShinyjs(),
-      # link the page style...
-      tags$head(HTML(
-        "<!-- Global site tag (gtag.js) - Google Analytics -->
-          <script async src='https://www.googletagmanager.com/gtag/js?id=UA-158613997-1'></script>
-          <script>
-          window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        
-        gtag('config', 'UA-158613997-1');
-        </script>"
-      )),
+      tags$head(includeScript("google-analytics.js")),
+      tags$head(tags$link(rel="shortcut icon", href="geosearch.png")),
       tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
       ),
