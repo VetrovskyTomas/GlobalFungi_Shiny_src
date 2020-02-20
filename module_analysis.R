@@ -82,7 +82,7 @@ analysisFunc <- function(input, output, session, parent) {
                          maxOptions=length(global_species_list),
                          placeholder = 'Please select an option below'
                        ),
-                       label = "Max of BLAST results:", choices = c(1, 10, 100, 500), width = "300px",
+                       label = "Max of BLAST results:", choices = c(10, 50, 100, 500), width = "300px",
                        selected = 1,
                        multiple = FALSE # allow for multiple inputs
                        )
@@ -402,13 +402,13 @@ analysisFunc <- function(input, output, session, parent) {
         }
         # blast simple...
         if (search$search_type == "blast"){
-          vals$type <- "blast"
+          vals$type <- "single-blast"
           vals <- isolate(blast(input_fasta, vals))
         }
         # blast group...
         if (search$search_type == "blast_group"){
           if (nrow(input_fasta)==1){
-          vals$type <- "blast_group"
+          vals$type <- "multi-blast"
           vals$seq <- input_fasta[[2]]
           vals <- isolate(blast_group(input_fasta, vals))
           } else {
@@ -499,10 +499,9 @@ analysisFunc <- function(input, output, session, parent) {
     data$key <- ''
     #
     print("get samples...")
-    #print(filtered_data$blast_out)
     #info about result type...
-    data$key <- filtered_data$blast_out$sseqid
-    data$text <- paste0("BLAST group result (", length(vals$key)," sequence variants) for query:\n", vals$seq) #paste0(vals$seq_hash[selectedRow,"qseqid"]," BEST SIMILARITY: ",vals$seq_hash[selectedRow,"pident"],"\n",vals$seq_hash[selectedRow,"sequence"])
+    data$key <- unique(filtered_data$blast_out$sseqid)
+    data$text <- paste0("BLAST group result (", length(data$key)," sequence variants) for query:\n", vals$seq)
     # call results...
     show_results(data)
   })

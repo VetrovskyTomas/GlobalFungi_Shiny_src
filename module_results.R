@@ -117,7 +117,7 @@ resultsFunc <- function(input, output, session, variable) {
         })
       } else
         # sequence option...  
-        if ((type == "sequence")||(type == "blast")||(type == "blast_group")) {
+        if ((type == "sequence")||(type == "single-blast")||(type == "multi-blast")) {
           withProgress(message = 'Searching...', {
             # search by md5 checksum...
             key_string <- paste0("('",paste(key, collapse="','" ),"')")
