@@ -101,7 +101,7 @@ resultsFunc <- function(input, output, session, variable) {
     out_data$SeqVars <- NULL
 
     # study option...
-      if (variable$type == "study"){
+      if (type == "study"){
         withProgress(message = 'Searching...', {
           # tracking...
           tracking_traffic(type, text)
