@@ -161,10 +161,9 @@ resutsMapFunc <- function(input, output, session,  variable) {
         # map sample details - clicked marker...
         output$map_sample_info <- renderUI({
           req(length(click) > 0)
+          callModule(module = resultsSampleFunc, id = "results_sample", isolate(click$id))
           resultsSampleUI(id = ns("results_sample"))
         })
-        
-        callModule(module = resultsSampleFunc, id = "results_sample", isolate(click$id))
       }
       }, ignoreInit = TRUE
     )
@@ -174,9 +173,9 @@ resutsMapFunc <- function(input, output, session,  variable) {
       if (is.null(click)) {
       output$map_sample_info <- renderUI({
         req(length(click) > 0)
+        callModule(module = resultsSampleFunc, id = "results_sample", -1)
         resultsSampleUI(id = ns("results_sample"))
       })
-      callModule(module = resultsSampleFunc, id = "results_sample", -1)
       }
     })
     

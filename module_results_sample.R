@@ -22,20 +22,22 @@ resultsSampleUI <- function(id) {
 }
 
 # Function for module server logic
-resultsSampleFunc <- function(input, output, session, sample_id) {
-
+resultsSampleFunc <- function(input, output, session, id) {
+  #namespace for dynamic input...
+  ns <- session$ns  
+  
+  sample_id <- isolate(id)
+    if (sample_id > -1){
     query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples," WHERE `id` = '",sample_id,"'"))
     sample <- data.table(sqlQuery(query))
     
     print(paste0("sample details ",sample_id))
-    
-    #namespace for dynamic input...
-    ns <- session$ns  
+    #print(sample)
+    #print(sample[,"sample_name"])
     
     # table basic
     output$sample_table_basic <- renderTable({
-      sample_vals <- sample[which(sample$id %in% sample_id), 
-                                    c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", "continent", "country", "country",
+      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", "continent", "country", "country",
                                       "sample_name", "sample_type", "Biome", "Biome_detail", "area_sampled", "number_of_subsamples", "sample_depth",
                                       "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description")]
       colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", "Mean annual temperature study (\u00B0C)", "Mean annual precipitation study (mm)","Continent", "Country", "Location",
@@ -49,8 +51,7 @@ resultsSampleFunc <- function(input, output, session, sample_id) {
     
     # table advance
     output$sample_table_advance <- renderTable({
-      sample_vals <- sample[which(sample$id %in% sample_id), 
-                                    c("sequencing_platform", "target_gene", "extraction_DNA_mass", "extraction_DNA_size", "extraction_DNA_method",
+      sample_vals <- sample[,c("sequencing_platform", "target_gene", "extraction_DNA_mass", "extraction_DNA_size", "extraction_DNA_method",
                                       "primers", "primers_sequence", "total_C_content", "total_N_content", "organic_matter_content",
                                       "pH", "pH_method", "total_Ca", "total_P", "total_K", "plants_dominant", "plants_all", "sample_info")]
       colnames(sample_vals) <- c("Sequencing platform", "Target marker", "Sample size for DNA extraction (g)", "Sample size for DNA extraction (other)", "DNA extraction method",
@@ -84,4 +85,5 @@ resultsSampleFunc <- function(input, output, session, sample_id) {
         file.copy(paste0(global_samples_path,"sample_", sample_id ,".fa.gz"), file)
       }
     )
+    }
 }

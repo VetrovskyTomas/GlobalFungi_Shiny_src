@@ -46,17 +46,17 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
     }
   )
   
-  
 
   # show additional
-  observeEvent(input$metadata_rows_selected,{
+  observeEvent(input$metadata_cell_clicked,{
+    s_id <- reactiveVal()
     s_id <- samples[input$metadata_rows_selected,]$id[[1]]
     if (!is.null(s_id)){
       output$sample_info <- renderUI({
         req(length(input$metadata_cell_clicked) > 0)
+        callModule(module = resultsSampleFunc, id = "results_sample", isolate(s_id))
         resultsSampleUI(id = ns("results_sample"))
       })
-      callModule(module = resultsSampleFunc, id = "results_sample", s_id)
     }
   }, ignoreInit = TRUE)
 }
