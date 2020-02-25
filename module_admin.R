@@ -1,22 +1,42 @@
 # Function for module UI
 adminUI <- function(id) {
   ns <- NS(id)
-  
   fluidPage(
+    # We MUST load the ECharts javascript library in advance
+    loadEChartsLibrary(),
+    loadEChartsTheme('shine'),    
     useShinyjs(),
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
-                 fluidRow(
-                   column(1, style = "background-color:#0c2b37;",img(src='settings.png', height = 56)),
-                   column(11, h2(id="header_title", "Welcome admin"))
-                 )
+      fluidRow(
+        column(1, style = "background-color:#0c2b37;",img(src='settings.png', height = 56)),
+        column(11, h2(id="header_title", "Welcome admin"))
+      )
     ),
-    # table selector
-    sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
-        # inputs...
-        selectInput(ns('select_tab'),'Select table',choice = c("messages")),
-        actionButton(ns("refresh_tab"), "Refresh", icon = icon("redo")),
-        DT::dataTableOutput(ns("table_selected"))
+    # panels...
+    sidebarPanel(width = "100%", style = "background-color:white;",
+      tabsetPanel(id = ns("navbar"),
+        tabPanel("Messages",br(),
+          selectInput(ns('select_tab'),'Select table',choice = c("messages")),
+          actionButton(ns("refresh_mess"), "Refresh table", icon = icon("redo")),
+          DT::dataTableOutput(ns("table_selected"))                                     
+        ),
+        tabPanel("Traffic",br(),
+          fluidRow(
+            column(3,selectInput(ns('select_traffic_type'),'Select traffic type',choice = c("genus","species","SH"))),
+            column(6,uiOutput(ns('dynamic_filters'))),
+            column(3,actionButton(ns("refresh_traff"), "Refresh traffic", icon = icon("redo")))
+          ),
+          fluidRow(
+            column(3,DT::dataTableOutput(ns("table_data"))),
+            column(9,tags$div(id = "graph", style="width: 100%;height:300px;"), deliverChart(div_id = ns("graph")))
+          ),
+          fluidRow(
+            column(3,DT::dataTableOutput(ns("table_data_search"))),
+            column(9,tags$div(id = "graph_search", style="width: 100%;height:300px;"), deliverChart(div_id = ns("graph_search")))
+          )
+        )
+      )
     )
   )
 }
@@ -24,13 +44,70 @@ adminUI <- function(id) {
 # Function for module server logic
 adminFunc <- function(input, output, session) {
   
-  observeEvent(input$refresh_tab, {
-    observe(
+  #namespace for dynamic input...
+  ns <- session$ns
+  
+  # refresh message table...
+  observeEvent(input$refresh_mess, {
       output$table_selected <- DT::renderDataTable({
-        query <- sprintf(paste0("SELECT * FROM ",input$select_tab," ORDER BY id DESC"))
-        table <- data.table(sqlQuery(query))
+        table <- data.table(sqlQuery(paste0("SELECT * FROM ",input$select_tab," ORDER BY id DESC")))
       })
+  })
+  
+  # dynamic filters for traffic...
+  output$dynamic_filters <- renderUI({
+    date_from <- sqlQuery(paste0("SELECT `date` FROM ",options()$mysql$traffic," ORDER BY date ASC LIMIT 1;"))
+    date_to <- sqlQuery(paste0("SELECT `date` FROM ",options()$mysql$traffic," ORDER BY date DESC LIMIT 1;"))
+    
+    date_from <- sqlQuery(paste0("SELECT DATE('",date_from,"')"))
+    date_to <- sqlQuery(paste0("SELECT DATE('",date_to,"')"))
+    
+    date_to <- as.Date.character(date_to) + 1
+    
+    print(paste0("Date from ",date_from," to ",date_to))
+    dateRangeInput(ns("daterange"), "Date range:", start = date_from, end = date_to)
+  })  
+  
+  # refresh traffic charts...
+  observeEvent(input$refresh_traff, {
+    traffic_type <- isolate(input$select_traffic_type)
+    daterange <- isolate(input$daterange)
+    # taxonomy search overview...
+    bar_data <- sqlQuery(
+      paste0("SELECT * FROM ",options()$mysql$traffic," WHERE date >= '",daterange[1],"' AND date <= '",daterange[2],"' AND `category` = '",traffic_type,"'")
     )
+    if (nrow(bar_data)>0){
+      #prepare data...
+      dat <- as.data.frame(table(bar_data[,"value"]))
+      colnames(dat) <- c(traffic_type, "value")
+      # get table...
+      output$table_data <- DT::renderDataTable({
+        table <- dat
+      })
+      colnames(dat) <- c("name", "value")
+      #renderPieChart(div_id = "graph", data = dat, radius = "60%",center_x = "50%", center_y = "50%", show.legend = FALSE)
+      renderPieChart(div_id = "graph", data = dat, show.legend = FALSE)
+    } else {
+      renderGauge(div_id = "graph", gauge_name = "No data within selected range...",rate = 0)
+    }
+    # search overview...
+    dat_category <- sqlQuery(
+      paste0("SELECT `category` FROM ",options()$mysql$traffic," WHERE date >= '",daterange[1],"' AND date <= '",daterange[2],"'")
+    )
+    if (nrow(dat_category)>0){
+      dat_category <- as.data.frame(table(dat_category[,"category"]))
+      #prepare data...
+      #dat <- as.data.frame(table(bar_data[,"value"]))
+      colnames(dat_category) <- c("category", "value")
+      # get table...
+      output$table_data_search <- DT::renderDataTable({
+        table <- dat_category
+      })
+      colnames(dat_category) <- c("name", "value")
+      renderPieChart(div_id = "graph_search", data = dat_category, show.legend = FALSE)
+    } else {
+      renderGauge(div_id = "graph_search", gauge_name = "No data within selected range...",rate = 0)
+    }
   })
   
 }

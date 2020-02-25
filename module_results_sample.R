@@ -8,6 +8,7 @@ resultsSampleUI <- function(id) {
       column(4,tableOutput(ns('sample_table_advance'))),
       column(4,tableOutput(ns('sample_table_paper')), 
              uiOutput(ns('dynamic_button')),
+             br(),
              downloadButton(ns("downloadSeqs"), "Download sequences")
       )
     ),
@@ -37,11 +38,11 @@ resultsSampleFunc <- function(input, output, session, id) {
     
     # table basic
     output$sample_table_basic <- renderTable({
-      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", "continent", "country", "country",
-                                      "sample_name", "sample_type", "Biome", "Biome_detail", "area_sampled", "number_of_subsamples", "sample_depth",
+      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", "continent", "country", "location",
+                                      "sample_name", "sample_type", "Biome", "Biome_detail", "area_sampled", "area_GPS", "number_of_subsamples", "sample_depth",
                                       "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description")]
       colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", "Mean annual temperature study (\u00B0C)", "Mean annual precipitation study (mm)","Continent", "Country", "Location",
-                                 "Sample ID in study","Sample type","Biome (ENVO root)","Biome (ENVO)", "Area covered by sampling (m2)", "Number of subsamples", "Sampling depth (cm)",
+                                 "Sample ID in study","Sample type","Biome (ENVO root)","Biome (ENVO)", "Area covered by sampling (m2)", "Area represented by GPS (m2)", "Number of subsamples", "Sampling depth (cm)",
                                  "Sampling year", "Sampling manth", "Sampling day", "Sampling info", "Sample description")
       sample_vals[sample_vals == "NA_"] <- "NA"
       sample_vals <- data.frame(variable = rownames(t(sample_vals)), values = t(sample_vals))

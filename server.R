@@ -81,24 +81,16 @@ server <- function(session, input, output) {
   })
   ##############################################################
   
-  # usesrs login...
-  observeEvent(input$login, {
-    if(logged_in()) {
-      logged_in(FALSE)
-    } else {
-      showModal(dataModal())
-    }
-  })
-  
   # show "Login" or "Logout" depending on whether logged out or in
-  output$logintext <- renderText({
-    if(logged_in()) return("Logout here.")
-    return("Login here")
+  shinyjs::onclick("login_img",  if(logged_in()) {
+    logged_in(FALSE)
+  } else {
+    showModal(dataModal())
   })
   
   # show text of logged in user
   output$logged_user <- renderText({
-    if(logged_in()) return("User is logged in.")
+    if(logged_in()) return("Admin is logged in :)")
     return("")
   })
   
@@ -125,16 +117,6 @@ server <- function(session, input, output) {
   # someone started session...
   onSessionStart = isolate({
     global_session <<- global_session + 1
-    # len <- length(users$IPs)
-    # IP <- session$request[["REMOTE_ADDR"]]
-    # print(IP)
-    # users$IPs <- c( users$IPs , IP)
-    # users$IPs <- unique(users$IPs)
-    # 
-    # users$count = users$count + 1
-    # if (users$count > users$max){
-    #   users$max = users$max + 1
-    # }
   })
   
   # someone ended session...
@@ -205,7 +187,9 @@ server <- function(session, input, output) {
                   sidebarMenu(
                   tags$hr(),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
-                           badgeLabel = "admin", badgeColor = "orange")
+                           badgeLabel = "admin", badgeColor = "orange"),
+                  menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
+                           badgeLabel = "in progress", badgeColor = "red")
                   )
                 )),
                 ###########################
@@ -214,12 +198,11 @@ server <- function(session, input, output) {
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
                 menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
-                menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                         badgeLabel = "in progress", badgeColor = "red"),
+                # menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
+                #          badgeLabel = "in progress", badgeColor = "red"),
                 tags$hr(),
                 menuItem("Collaborators", icon = icon("people-carry"), tabName = "fmd_collaborators"),
                 tags$hr(),
-                tags$br(),
                 # copyright...
                 fluidPage(
                   tags$img(

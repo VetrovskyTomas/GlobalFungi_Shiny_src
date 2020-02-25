@@ -101,9 +101,9 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
   output$seq_vars_count <- renderText({
     if (!is.null(data$SeqVars)){
       if (!"samples" %in% colnames(data$SeqVars)){
-        return(paste0("Found ", data$SeqVars$vars, " of sequnce variants "))
+        return(paste0(data$SeqVars$vars, " sequence variant(s) found "))
       } else {
-        return(paste0("Found ", nrow(data$SeqVars), " of sequnce variants "))
+        return(paste0(nrow(data$SeqVars), " sequence variant(s) found "))
       }
     }
   })
