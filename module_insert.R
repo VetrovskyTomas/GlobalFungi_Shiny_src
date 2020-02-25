@@ -49,7 +49,7 @@ insertFunc <- function(input, output, session) {
   study$metadata <- NULL
   study$correct <- FALSE
 
-  activate tables by steps...
+  # activate tables by steps...
   observe({
     # basic form
     if (!is.null(study$info)){
