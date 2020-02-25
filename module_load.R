@@ -128,6 +128,3 @@ global_species_list <- sort(unique(global_SH$Species))
 global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
 global_genus_list <- sort(unique(global_SH$Genus))
   
-# load users table...
-insert_instructions_table <- fread("metadata_instructions.txt")
-  

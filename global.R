@@ -33,7 +33,6 @@ source("module_load.R", local = TRUE)
 # load module functions
 source("module_home.R")
 source("module_search.R")
-source("module_insert.R")
 source("module_analysis.R")
 source("module_studies.R")
 source("module_cite.R")
@@ -42,6 +41,13 @@ source("module_aboutus.R")
 source("module_message.R")
 source("module_geoshape.R")
 source("module_collaborators.R")
+
+# insert
+source("module_insert.R")
+source("module_insert_intro.R")
+source("module_insert_basicinfo.R")
+source("module_insert_metadata.R")
+source("module_insert_upload.R")
 
 # hidden 
 source("module_admin.R")

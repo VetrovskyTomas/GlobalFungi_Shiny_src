@@ -4,20 +4,35 @@ insertUI <- function(id) {
   fluidPage(
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
-                 fluidRow(
-                   column(1, style = "background-color:#0c2b37;",img(src='insert.png', height = 56)),
-                   column(11, h2(id="header_title", "Insert your study"))
-                 )
+      fluidRow(
+        column(1, style = "background-color:#0c2b37;",img(src='insert.png', height = 56)),
+        column(11, h2(id="header_title", "Insert your study"))
+      )
     ),
-    # content
-    sidebarLayout(
-      sidebarPanel(width = 12,    
-                   fluidRow(
-                     column(12, "...under-construction...")
-                   )
-      ),
-      # Main panel for outputs ----
-      mainPanel()
+    # progress...
+    sidebarPanel(id = ns("progress"), width = "100%", style = "background-color:white;",
+      fluidRow(  
+        column(6,verbatimTextOutput(ns('info_general'))),
+        column(3, verbatimTextOutput(ns('info_progress'))),
+        column(3,actionButton(ns("buttSubmit"), label = "Submit your study", icon = icon("microscope")))
+      )
+    ),
+    # content tabls
+    sidebarPanel(id = ns("panel"), width = "100%", style = "background-color:white;",
+      tabsetPanel(id = ns("tabs"),
+        tabPanel("Introduction", value = "tab_intro",
+          insertIntroUI(id = ns("insert_intro"))
+        ),
+        tabPanel("Basic info", value = "tab_basic",
+          insertBasicUI(id = ns("insert_basic"))
+        ),
+        tabPanel("Metadata", value = "tab_metadata",
+          insertMetadataUI(id = ns("insert_metadata"))
+        ),
+        tabPanel("Data upload", value = "tab_upload",
+          insertUploadUI(id = ns("insert_upload"))
+        )
+      )
     )
   )
 }
@@ -25,207 +40,89 @@ insertUI <- function(id) {
 # server logic to read selected file ----
 insertFunc <- function(input, output, session) {
   #
+  ns <- session$ns
+  
+  # create storage for study info
+  study <- reactiveValues()
+  study$info <- NULL
+  study$basic <- NULL
+  study$metadata <- NULL
+  study$correct <- FALSE
+
+  activate tables by steps...
+  observe({
+    # basic form
+    if (!is.null(study$info)){
+      print("Basic form is shown...")
+      showTab(inputId = "tabs", target = "tab_basic")
+      updateTabsetPanel(session, "tabs", selected = "tab_basic")
+      ###############################################################
+      # metadata form
+      if (!is.null(study$basic)){
+        print("Metadata form is shown...")
+        showTab(inputId = "tabs", target = "tab_metadata")
+        updateTabsetPanel(session, "tabs", selected = "tab_metadata")
+        #*******************************************************************
+        # upload form
+        if (!is.null(study$metadata)){
+          print("Upload form is shown...")
+          showTab(inputId = "tabs", target = "tab_upload")
+          updateTabsetPanel(session, "tabs", selected = "tab_upload")
+          #---------------------------------------------
+          if (study$correct){
+            study$info <- "DONE :)"
+          }
+          #---------------------------------------------
+        }
+        #*******************************************************************
+      }
+      ###############################################################
+      } else {
+      print("Forms are hidden...")
+      hideTab(inputId = "tabs", target = "tab_basic")
+      hideTab(inputId = "tabs", target = "tab_metadata")
+      hideTab(inputId = "tabs", target = "tab_upload")
+      updateTabsetPanel(session, "tabs", selected = "tab_intro")
+    }
+  })
+  
+  observe({
+    shinyjs::disable("buttSubmit")
+    callModule(module = insertIntroFunc, id = "insert_intro", study)
+    callModule(module = insertBasicFunc, id = "insert_basic", study)
+    callModule(module = insertMetadataFunc, id = "insert_metadata", study)
+    callModule(module = insertUploadFunc, id = "insert_upload", study)
+  })
+  
+  # show filtered samples count info...
+  output$info_general <- renderText({
+    if (!is.null(study$info)){
+      study$info
+    } else {
+      "Please read the instruction bellow."
+    }
+  })  
+  
+  # show progress...
+  output$info_progress <- renderText({
+    if (!is.null(study$basic)){
+      "BASIC INFO OK"
+    } else {
+      "BASIC INFO XXX"
+    }
+  })
+  
+  # try to submit the study...
+  observeEvent(input$buttSubmit, {
+    print("Try to submit the study...")
+    
+    # generate folder for user task...
+    outputDir <- paste0(global_out_path,"study_", as.integer(Sys.time()),"/")
+    system(paste("mkdir ", outputDir, sep = ""))
+    
+    # successful submition...
+    output$info_general <- renderText({
+      return(paste0("Your study was submited successfuly\n"))
+    })
+  })
 }
-# # Function for module UI
-# insertUI <- function(id) {
-#   ns <- NS(id)
-#   fluidPage(
-#     # picture
-#     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
-#                  fluidRow(
-#                    column(1, style = "background-color:#0c2b37;",img(src='insert.png', height = 56)),
-#                    column(11, h2(id="header_title", "Insert your study"))
-#                  )
-#     ),
-#     # content
-#     sidebarPanel(width = "100%", style = "background-color:white;",
-#       fluidRow(
-#         column(9,   
-#           tabsetPanel(id = ns("navbar"),
-#             tabPanel("How to submit your study!",
-#               br(),
-#               wellPanel(
-#                 fluidRow(
-#                   h2("First step...")
-#                 )
-#               )
-#               ),
-#             tabPanel("1. Study info",
-#               br(),
-#               wellPanel(
-#               fluidRow(
-#                 h2("Study info"),
-#                 fluidRow(
-#                   column(12, "Please fill all the fields...")
-#                 ),
-#                 br(),
-#                 textInput(inputId = ns("study_title"), label = "Title", width = "100%"),
-#                 textInput(inputId = ns("study_authors"), label = "All authors", width = "300px", placeholder = "e.g.: Vetrovsky, T., Baldrian, P. and Morais, D."),
-#                 textInput(inputId = ns("study_year"), label = "Year of publication", width = "300px"),
-#                 textInput(inputId = ns("study_journal"), label = "Journal", width = "300px"),
-#                 textInput(inputId = ns("study_doi"), label = "DOI of the paper", width = "300px"),
-#                 textInput(inputId = ns("study_contributor"), label = "Contributor Name", width = "300px"),
-#                 textInput(inputId = ns("study_email"), label = "Contributor E-mail", width = "300px"),
-#                 textInput(inputId = ns("study_affiliation"), label = "Contributor Affiliation", width = "300px")
-#                 )
-#               )
-#               ),
-#             tabPanel("2. Samples metadata",
-#               br(),
-#               wellPanel(
-#                 fluidRow(
-#                   downloadButton(ns("buttTemplate"), label = "Download metadata template (xlsx)")
-#                 ),
-#                 fluidRow(
-#                   column(12, "Please use dot . as floating point!"),
-#                   tableOutput(ns('instructions_table')),
-#                   fileInput(ns('fileXLSX'), 'Choose xlsx file',accept = c(".xlsx"))
-#                 ),
-#                 fluidRow(
-#                   tableOutput(ns('contents'))
-#                 )
-#               )
-#             ),
-#             tabPanel("3. Data upload",
-#               br(),               
-#               wellPanel(
-#                 fluidRow(
-#                   fileInput(ns('filesFASTQ'), 'Choose FASTQ files', accept = c(".FASTQ",".fastq",".fq"), multiple = TRUE)
-#                 ),
-#                 fluidRow(
-#                   #verbatimTextOutput(ns('upload_content'))
-#                   tableOutput(ns("files"))
-#                 )
-#               )
-#             )
-#           )
-#         ),
-#         column(3,  
-#           uiOutput(ns('dynamic_info'))
-#         )
-#       )
-#     )
-#   )
-# }
-# 
-# # Define server logic to read selected file ----
-# insertFunc <- function(input, output, session) {
-#   
-#   # namespace for dynamic input...
-#   ns <- session$ns
-#   
-#   #
-#   options(shiny.maxRequestSize=100*1024^2)
-#  
-#   #
-#   output$contents <- renderTable({
-#     req(input$fileXLSX)
-#     inFile <- input$fileXLSX
-#     read_excel(inFile$datapath, 1)
-#   })
-#   
-#   # #
-#   # fastqs<-reactive({
-#   #   rbindlist(lapply(input$filesFASTQ$datapath, fread),
-#   #             use.names = TRUE, fill = TRUE)
-#   # })
-#   # #
-#   # observe({
-#   #   output$upload_content <- renderText(nrow(fastqs()))
-#   #   print(paste0("Files uploaded ",nrow(fastqs())))
-#   # })
-#   
-#   # output$upload_content <- renderTable({
-#   #   req(input$filesFASTQ)
-#   #   print(rbindlist(lapply(input$filesFASTQ$datapath, fread),
-#   #             use.names = TRUE, fill = TRUE))
-#   # })
-#   
-#   # observeEvent(input$filesFASTQ, {
-#   #   inFile <- input$filesFASTQ
-#   #   if (is.null(inFile))
-#   #     return()
-#   #   file.copy(inFile$datapath, file.path("c:/Temp", inFile$name) )
-#   # })
-#   
-#   output$files <- renderTable({
-#     input$filesFASTQ
-#     })
-#   
-#   #
-#   output$instructions_table <- renderTable(insert_instructions_table)
-#   
-#   output$buttTemplate <- downloadHandler(
-#     filename = "TemplateMetadata.xlsx",
-#     content = function(file) {
-#       file.copy(paste0("TemplateMetadata.xlsx"), file)
-#     })
-#   
-#   # check if inputs are correct...
-#   study_input <- reactive({
-#     if (input$study_title == "") {
-#       return("Title field is empty!")
-#     } else if (input$study_authors == "") {
-#       return("Authors field is empty!")
-#     } else if (input$study_year == "") {
-#       return("Year field is empty!")
-#     } else if (input$study_journal == "") {
-#       return("Journal field is empty!")
-#     } else if (input$study_doi == "") {
-#       return("DOI field is empty!")
-#     } else if (input$study_contributor == "") {
-#       return("Contributor field is empty!")
-#     } else if (input$study_email == "") {
-#       return("Email field is empty!")
-#     } else if (input$study_affiliation == "") {
-#       return("Affiliation field is empty!")
-#     }
-#     return("")
-#   })
-#   
-#   # try to submit the study...
-#   observeEvent(input$buttSubmit, {
-#     print("Try to submit the study...")
-#     print(paste0("Try to submit the study... ",input$study_title))
-#     
-#     # check if inputs are correct...
-#     if (study_input() != "") {
-#       alert(paste0("Missing value in study form - ",study_input()))
-#       output$info_check <- renderText({
-#         return(paste0("Missing value in study form - ",study_input(),"\n"))
-#       })
-#       return(NULL)
-#     }
-#     
-#     # generate folder for user task...
-#     outputDir <- paste0(global_out_path,"study_", as.integer(Sys.time()),"/")
-#     system(paste("mkdir ", outputDir, sep = ""))
-#     
-#     # successful submition...
-#     output$info_check <- renderText({
-#       return(paste0("Your study was submited successfuly\n"))
-#     })
-#     
-#   })
-# 
-#   # dynamic colorful panel...
-#   #observe({
-#     output$dynamic_info <- renderUI({
-#       if (study_input() != "") {
-#         wellPanel(id = "w1",
-#         tags$style("#w1 {background-color:#c90000;}"),
-#         verbatimTextOutput(ns('info_check')),
-#         h2("Check & Submit"),
-#         actionButton(ns("buttSubmit"), label = "Submit")
-#         )
-#       } else {
-#         wellPanel(id = "w1",
-#         tags$style("#w1 {background-color:#00a30c;}"),
-#         verbatimTextOutput(ns('info_check')),
-#         h2("Check & Submit"),
-#         actionButton(ns("buttSubmit"), label = "Submit")
-#         )
-#       }
-#     })
-#   #})
-# }
