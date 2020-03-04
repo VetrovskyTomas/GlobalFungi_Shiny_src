@@ -120,7 +120,7 @@ resultsFunc <- function(input, output, session, variable) {
             # search by md5 checksum...
             key_string <- paste0("('",paste(key, collapse="','" ),"')")
             # Construct the fetching query
-            query <- paste0("SELECT * from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string)
+            query <- paste0("SELECT `samples`,`abundances`,`SH`,`marker`,`sequence` from ",options()$mysql$variants_table," WHERE `hash` IN ",key_string)
             variants <- sqlQuery(query)
             
             incProgress(1/3)
@@ -169,7 +169,7 @@ resultsFunc <- function(input, output, session, variable) {
               
               # get samples table...
               print(paste0("Number of seqs in ",text," is ", nrow(variants)))
-              out_data$SeqVars <- variants[,c("samples", "hash", "marker")]
+              out_data$SeqVars <- variants[,c("samples", "marker", "sequence")]
               
               incProgress(1/3)
               out_data$samples <- sample_tab(variants)

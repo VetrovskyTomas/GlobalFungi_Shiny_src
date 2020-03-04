@@ -83,7 +83,7 @@ resultsSampleFunc <- function(input, output, session, id) {
     output$downloadSeqs <- downloadHandler(
       filename = paste0(sample_id,"_sequences.zip"),
       content = function(file) {
-        file.copy(paste0(global_samples_path,"sample_", sample_id ,".fa.gz"), file)
+        file.copy(paste0(global_samples_path, sample_id,"_sample.zip"), file)
       }
     )
     }

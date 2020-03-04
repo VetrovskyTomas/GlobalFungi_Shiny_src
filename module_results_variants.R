@@ -50,45 +50,34 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
             print(taxid)
             
             # Construct the fetching query
-            query <- paste0("SELECT * from ",options()$mysql$variants_table," WHERE `",type,"` = '",taxid,"'")
-            variants <- sqlQuery(query)
+            query <- paste0("SELECT `samples`,`marker`,`sequence` from ",options()$mysql$variants_table," WHERE `",type,"` = '",taxid,"'")
+            seqVars <- data.frame(sqlQuery(query))
             incProgress(1/3, detail = "Processing output...")
-            print(paste0("Number of seqs found is ", nrow(variants)))
-            seqVars <- variants[,c("samples", "hash", "marker")]
+            print(paste0("Number of seqs found is ", nrow(seqVars)))
+            #seqVars <- variants[,c("samples", "hash", "marker")]
           })
         } else {
           seqVars <- data$SeqVars
         }
         ##################################################
         withProgress(message = 'Extracting sequences:', {
-          incProgress(1/7, detail = "Creation of folder...")
+          incProgress(1/5, detail = "Creation of folder...")
           # generate folder for user task...
           outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
           system(paste("mkdir ", outputDir, sep = "")) #for linux
-          incProgress(1/7, detail = "Writting info...")
+          incProgress(1/5, detail = "Writting info...")
           # write fasta titles...
-          input_titles <- data.frame(titles = seqVars[,"hash"], stringsAsFactors = F)
-          write.table(input_titles,file = paste0(outputDir,"my_titles.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE)
-          # run command...
-          incProgress(1/7, detail = "Running blastdbcmd...")
-          cmd_blast <- paste0("blastdbcmd -db ", global_blast_db, " -line_length 2000 -entry_batch ", outputDir, "my_titles.txt > ", outputDir,"results.fa")
-          print(cmd_blast)
-          system(cmd_blast)
+          #input_titles <- data.frame(titles = seqVars[,"hash"], stringsAsFactors = F)
+          write.table(seqVars,file = paste0(outputDir,"seq_info.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, sep="\t")
           
-          # linearize fasta...
-          incProgress(1/7, detail = "Formating FASTA...")
-          fasta_file <- scan(file = paste0(outputDir, "results.fa"), character(), quote = "")
-
-          # write samples table...
-          incProgress(1/7, detail = "Formating info...")
-          write.table(seqVars,file = paste0(outputDir,"my_samples.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE)
           # python
-          system(paste0("python ", global_vars_to_fasta_py," ", outputDir,"results.fa ",outputDir,"my_samples.txt ",input$seqs_derep," ",type," ",text," ",outputDir,"out.fa"))
+          incProgress(1/5, detail = "Generating FASTA...")
+          system(paste0("python ", global_vars_to_fasta_py," ", outputDir,"seq_info.txt ",input$seqs_derep," ",type," ",text," ",outputDir,"out.fa"))
 
-          incProgress(1/7, detail = "Commpressing FASTA...")
+          incProgress(1/5, detail = "Commpressing FASTA...")
           system(paste0("zip -j ", paste0(outputDir, "out.fa.zip")," ", paste0(outputDir, "out.fa")))
           # download
-          incProgress(1/7, detail = "Downloading FASTA...")
+          incProgress(1/5, detail = "Downloading FASTA...")
           file.copy(paste0(outputDir, "out.fa.zip"), file)
           # remove folder after use...
           system(paste0("rm -rf ",outputDir))

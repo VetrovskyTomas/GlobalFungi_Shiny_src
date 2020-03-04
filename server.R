@@ -190,8 +190,8 @@ server <- function(session, input, output) {
                            badgeLabel = "admin", badgeColor = "orange"),
                   menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
                            badgeLabel = "in progress", badgeColor = "red")
-                  )
-                )),
+                ))
+                ),
                 ###########################
                 tags$hr(),
                 #result page...
@@ -211,6 +211,13 @@ server <- function(session, input, output) {
                   ),
                   tags$style(type='text/css', '#copyright {background-color: rgb(30,40,44); color: rgb(184,199,206);}'), 
                   verbatimTextOutput("copyright")
+                ),
+                tags$hr(),
+                fluidPage(
+                  actionButton("elixir_butt", label = NULL, 
+                    style = "width: 144px; height: 64px; background: url('elixir_button.png');  background-size: cover; background-position: center;",
+                    onclick = paste0("window.open('https://www.elixir-czech.cz/')")
+                  )
                 )
     )
   })

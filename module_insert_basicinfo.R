@@ -20,9 +20,12 @@ insertBasicUI <- function(id) {
     ),  
     fluidRow(
       column(12, textAreaInput(inputId = ns("study_affiliation"), label = "Contributor Affiliation", height = "32px"))
-    )
     ),
-    fluidRow(column(12, actionButton(ns("buttStart"), label = "Process basic info", icon = icon("microchip"))))
+    fluidRow(
+      column(8, checkboxInput(inputId = ns("study_confirm"), label = "Here I am confirming that I am first or corresponding author of the study.", FALSE)),
+      column(4, actionButton(ns("buttStart"), label = "Process basic info", icon = icon("microchip")))
+    )
+    )
   )
 }
 

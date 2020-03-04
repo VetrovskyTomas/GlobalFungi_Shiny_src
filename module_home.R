@@ -27,7 +27,9 @@ homeUI <- function(id) {
     ),
     # header
     h1(id="welcome_title", paste0("Welcome to ",global_info[,"name"],"!")),
-    verbatimTextOutput(ns("fm_info")),
+    fluidRow(
+      column(12,verbatimTextOutput(ns("fm_info")))
+    ),
     # basic info...
     sidebarPanel(width = "100%", style = "background-color:white;",
                 fluidRow(
