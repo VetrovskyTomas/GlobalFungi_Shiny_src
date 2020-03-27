@@ -79,7 +79,7 @@ resutsMapFunc <- function(input, output, session,  variable) {
                            stroke = T,
                            fillOpacity = 1,
                            group = "selected samples"
-          ) %>% fitBounds(~min(map_data$longitude), ~min(map_data$latitude), ~max(map_data$longitude), ~max(map_data$latitude)) %>% 
+          ) %>% fitBounds(~min(map_data$longitude)-0.001, ~min(map_data$latitude)-0.001, ~max(map_data$longitude)+0.001, ~max(map_data$latitude)+0.001) %>% 
           addLegend("topright", pal = pallete, values = map_data$type,
                     labFormat = labelFormat(
                       suffix = " %", between = " - ",

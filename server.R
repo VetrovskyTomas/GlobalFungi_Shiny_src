@@ -1,22 +1,3 @@
-library(shiny)
-library(shinydashboard)
-library(shinyjs)
-library(ggplot2)
-library(plyr)
-library(dplyr)
-library(data.table) # fast read
-library(leaflet) # interactive world map
-library(leaflet.extras)
-library(sp)
-library(DT)
-library(ECharts2Shiny)
-library(digest)
-library(stringr)
-library(stringi)
-library(readxl)
-library(geoshaper)
-library(shinyBS)
-
 ##############
 ### SERVER ###
 ##############
@@ -179,7 +160,7 @@ server <- function(session, input, output) {
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
                 tags$hr(),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
-                menuItem("About FunGlobe", icon = icon("globe-americas"), tabName = "fmd_aboutus"),
+                menuItem(paste0("About ",global_info[,"name"]), icon = icon("globe-americas"), tabName = "fmd_aboutus"),
                 menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
                 ###########################
                 hidden(tags$div(
@@ -187,9 +168,7 @@ server <- function(session, input, output) {
                   sidebarMenu(
                   tags$hr(),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
-                           badgeLabel = "admin", badgeColor = "orange"),
-                  menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                           badgeLabel = "in progress", badgeColor = "red")
+                           badgeLabel = "admin", badgeColor = "orange")
                 ))
                 ),
                 ###########################
@@ -198,8 +177,8 @@ server <- function(session, input, output) {
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
                 menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
-                # menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                #          badgeLabel = "in progress", badgeColor = "red"),
+                menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
+                         badgeLabel = "in progress", badgeColor = "red"),
                 tags$hr(),
                 menuItem("Collaborators", icon = icon("people-carry"), tabName = "fmd_collaborators"),
                 tags$hr(),
@@ -213,12 +192,7 @@ server <- function(session, input, output) {
                   verbatimTextOutput("copyright")
                 ),
                 tags$hr(),
-                fluidPage(
-                  actionButton("elixir_butt", label = NULL, 
-                    style = "width: 144px; height: 64px; background: url('elixir_button.png');  background-size: cover; background-position: center;",
-                    onclick = paste0("window.open('https://www.elixir-czech.cz/')")
-                  )
-                )
+                uiOutput('dynamic_content')
     )
   })
   
@@ -251,12 +225,23 @@ server <- function(session, input, output) {
   # copyright...
   output$copyright <- renderText({
     paste(sep = "",
-    "         site design  \n",
-    "              &       \n",
-    "         programming  \n",
-    "       Tomas Vetrovsky\n",
-    "                      \n",
-    "             (c) 2020 \n")
+          "        site design  \n",
+          "             &       \n",
+          "        programming  \n",
+          "      Tomas Vetrovsky\n",
+          "                     \n",
+          "            (c) 2020 \n")
   })
+  
+  delay(500,
+  output$dynamic_content <- renderUI({
+    fluidPage(
+      actionButton("elixir_butt", label = NULL, 
+                   style = "width: 144px; height: 64px; background: url('elixir_button.png');  background-size: cover; background-position: center;",
+                   onclick = paste0("window.open('https://www.elixir-czech.cz/')")
+      )
+    )
+  })
+  )
   
 }

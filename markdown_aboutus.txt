@@ -1,11 +1,10 @@
-﻿![alt text](www/aboutus.png "How to use...") 
-## About FunGlobe
-<p style="text-align: justify">
-The idea of "FunGlobe" is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing and to allow basic operations with the database. 
-This idea was concieved by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the FunGlobe team. 
-It should support the FAIR data principles: to make data Findable, Accessible, Interoperable and Reusable and provide a convenient access to the wealth of information on fungal communities. 
-It covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plants and others. 
-"FunGlobe" invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. 
-All these authors – if they prefere – become "FunGlobe" collaborators, supporting the accessibility of their results to others. Contact: funglobe@biomed.cas.cz. 
-</p>
+﻿Thanks to the recent of next-generation-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. 
+<br>
+<br>
+Webpage: https://globalfungi.com 
+<br>
+<br>
+Contact: info@globalfungi.com
+
+
 

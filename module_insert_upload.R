@@ -3,15 +3,14 @@ insertUploadUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     fluidRow(
-      #column(6,actionButton(ns('filechoose'),label = "Pick a file")),
       column(9, fileInput(ns('fileupload'),label = "Upload selected files", multiple = TRUE)),
-      column(3, br(), actionButton(ns('reset'), 'Reset Input'))
+      column(3, br(), actionButton(ns('reset'), 'Reset Input', icon = icon("broom")))
     ),
+    fluidRow(column(12, actionButton(ns("buttStart"), label = "Process metadata", icon = icon("microchip")))),
+    br(),
     fluidRow(
+      column(12,"Uploaded file(s):"),
       column(12,verbatimTextOutput(ns('summary')))
-    ),
-    fluidRow(
-      column(12,tableOutput(ns('files')))
     )
   )
 }
@@ -24,14 +23,6 @@ insertUploadFunc <- function(input, output, session, study) {
   
   options(shiny.maxRequestSize=10000*1024^2)
   
-  # path <- reactiveValues(
-  #   pth=NULL
-  # )
-  # 
-  # observeEvent(input$filechoose,{
-  #   path$pth <- rbind(path$pth, file.choose())
-  # })  
-    
   values <- reactiveValues(
     upload_state = NULL
   )  
@@ -65,12 +56,18 @@ insertUploadFunc <- function(input, output, session, study) {
   })
   
   output$summary <- renderText({
-    return(paste("Uploaded file:", file_input()$name))
+    return(paste0(file_input()$name," ", file_input()$datapath, " ", round(file_input()$size/1000000, digits = 2), " MB\n"))
   })  
   
-  output$files <- renderTable({
-    if (!is.null(study$files)){
-      study$files
+  observeEvent(input$buttStart, {
+    if (nrow(file_input()) == 0) {
+      alert(paste0("Missing value - ",study_input()))
+      study$info <- paste0("Missing value - ",check_inputs,"\n")
+    } else {
+      print("You processed the upload...")
+      study$info <- paste0("Upload is finished for ",nrow(file_input())," files...")
+      study$upload$data <- file_input()
+      study$upload$test <- "OK"
     }
   })
   

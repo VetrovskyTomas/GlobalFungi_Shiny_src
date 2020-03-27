@@ -13,8 +13,7 @@ insertUI <- function(id) {
     sidebarPanel(id = ns("progress"), width = "100%", style = "background-color:white;",
       fluidRow(  
         column(6,verbatimTextOutput(ns('info_general'))),
-        column(3, verbatimTextOutput(ns('info_progress'))),
-        column(3,actionButton(ns("buttSubmit"), label = "Submit your study", icon = icon("microscope")))
+        column(6, verbatimTextOutput(ns('info_progress')))
       )
     ),
     # content tabls
@@ -31,6 +30,23 @@ insertUI <- function(id) {
         ),
         tabPanel("Data upload", value = "tab_upload",
           insertUploadUI(id = ns("insert_upload"))
+        ),
+        tabPanel("Overview", value = "tab_overview",
+            fluidPage(
+              br(),
+              fluidRow(
+                #column(6,actionButton(ns('filechoose'),label = "Pick a file")),
+                column(12, "ALL SEEMS TO BE CORRECT - NOW YOU CAN SUBMIT THE STUDY!")
+              ),
+              br(),
+              fluidRow(  
+                column(12,verbatimTextOutput(ns('info_over')))
+              ),
+              br(),
+              fluidRow(
+                column(3,actionButton(ns("buttSubmit"), label = "Submit your study", icon = icon("microscope")))
+              )
+          )
         )
       )
     )
@@ -69,8 +85,13 @@ insertFunc <- function(input, output, session) {
           showTab(inputId = "tabs", target = "tab_upload")
           updateTabsetPanel(session, "tabs", selected = "tab_upload")
           #---------------------------------------------
-          if (study$correct){
-            study$info <- "DONE :)"
+          if (!is.null(study$upload)){
+            shinyjs::enable("buttSubmit")
+            showTab(inputId = "tabs", target = "tab_overview")
+            updateTabsetPanel(session, "tabs", selected = "tab_overview")
+            # if (study$correct){
+            #   study$info <- "DONE :)"
+            # }
           }
           #---------------------------------------------
         }
@@ -82,6 +103,7 @@ insertFunc <- function(input, output, session) {
       hideTab(inputId = "tabs", target = "tab_basic")
       hideTab(inputId = "tabs", target = "tab_metadata")
       hideTab(inputId = "tabs", target = "tab_upload")
+      hideTab(inputId = "tabs", target = "tab_overview")
       updateTabsetPanel(session, "tabs", selected = "tab_intro")
     }
   })
@@ -106,7 +128,14 @@ insertFunc <- function(input, output, session) {
   # show progress...
   output$info_progress <- renderText({
     if (!is.null(study$basic)){
-      "BASIC INFO OK"
+      info = "BASIC INFO"
+      if (!is.null(study$metadata)){
+        info = paste0(info,"BASIC INFO & METADATA")
+        if (!is.null(study$upload)){
+          info = paste0(info,"BASIC INFO & METADATA & UPLOAD")
+        }
+      }
+      paste0(info," OK")
     } else {
       "BASIC INFO XXX"
     }
@@ -125,4 +154,20 @@ insertFunc <- function(input, output, session) {
       return(paste0("Your study was submited successfuly\n"))
     })
   })
+  
+  output$info_over <- renderText(
+    paste0(
+      "Title: ", study$basic$study_title, "\n",
+      "Authors: ", study$basic$study_authors, "\n",
+      "Year: ", study$basic$study_year, "\n",
+      "Journal: ", study$basic$study_journal, "\n",
+      "DOI: ", study$basic$study_doi, "\n",
+      "Contributor: ", study$basic$study_contributor, "\n",
+      "E-mail: ", study$basic$study_email, "\n",
+      "Affiliation: ", study$basic$study_affiliation, "\n",
+      "------------------------------------------------------------------------------------\n",
+      "Samples: ", nrow(study$metadata$data), "\n",
+      "------------------------------------------------------------------------------------\n",
+      "Files: ", nrow(study$upload$data), "\n")
+  )  
 }

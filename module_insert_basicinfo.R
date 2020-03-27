@@ -52,6 +52,8 @@ insertBasicFunc <- function(input, output, session, study) {
         return("Email field is empty!")
       } else if (input$study_affiliation == "") {
         return("Affiliation field is empty!")
+      } else if (input$study_confirm == FALSE) {
+        return("We need your confirmation!")
       }
       return("")
     })
@@ -64,7 +66,18 @@ insertBasicFunc <- function(input, output, session, study) {
     } else {
       print("You processed the basic info...")
       study$info <- "You processed the basic info..."
+      
       study$basic$test <- "OK"
+      study$basic$study_title <- input$study_title
+      study$basic$study_authors <- input$study_authors
+      study$basic$study_year <- input$study_year
+      study$basic$study_journal <- input$study_journal
+      study$basic$study_doi <- input$study_doi
+      study$basic$study_contributor <- input$study_contributor
+      study$basic$study_email <- input$study_email
+      study$basic$study_affiliation <- input$study_affiliation
+      
+      print(study$basic)
     }
   })
 }

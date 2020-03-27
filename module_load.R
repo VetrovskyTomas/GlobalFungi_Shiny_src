@@ -103,7 +103,8 @@ global_samples <- data.table(sqlQuery(query))
 # construct papers table...
 global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
 # this will be changed in future...
-global_papers$submitted_by <- rep("FunGlobe", nrow(global_papers))
+
+global_papers$submitted_by <- rep(global_info[,"name"], nrow(global_papers))
 global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
 
 # split title and year...

@@ -1,40 +1,41 @@
 ﻿## List of Collaborators
-<p style="text-align: justify">
-Petr Baldrian<br>
-Petr Kohout<br>
-Daniel Morais<br>
-Clémentine Lepinay<br>
-Martin Kopecký<br>
-Antonin Machac<br>
-Matěj Man<br>
-Vendula Brabcová<br>
-Jinlyung Choi<br>
-Lenka Meszárošová<br>
-Zander Rainier Human<br>
-Salvador Lladó<br>
-Rubén López-Mondéjar<br>
-Tijana Martinović<br>
-Tereza Mašínová<br>
-Diana Navrátilová<br>
-Iñaki Odriozola<br>
-Martina Štursová<br>
-Karel Švec<br>
-Vojtěch Tláskal<br>
-Michaela Urbanová<br>
-Joe Wan<br>
-Lucia Žifčáková<br>
-Adina Howe<br>
-Joshua Ladau<br>
-Kabir Gabriel Peay<br>
-David Storch<br>
-Jan Wild<br>
-Lenka Michalcikova<br>
-Sandra Holla<br>
-Camelia Algora Gallardo<br>
-Jana Voriskova<br>
-Sarah Piche<br>
-Mayuko Joumura<br>
-Květa Fialová<br>
-...
-</p>
+
+
+- Barbara Doreen Bahnmann - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Daniel Morais - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Diana Navrátilová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Federica D'Alò - University of Tuscia - Italy
+- Iñaki Odriozola - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Jana Kvasničková  - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Jana Voříšková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Karel Švec - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Květa Bílohnědá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Lenka Meszárošová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Lenka Michalčíková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Lucia Žifčáková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Lukáš Vlk - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Martina Štursová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Mayuko Jomura - Nihon University - Japan
+- Michaela Urbanová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Miroslav Kolařík - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Petr Baldrian - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Petr Kohout - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Rubén López-Mondéjar - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Salvador Lladó - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Sandra Awokunle Hollá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Sarah Piché-Choquette - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Sunil Mundra - United Arab Emirates University - United Arab Emirates
+- Tereza Mašínová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Tereza Michalová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Tijana Martinović - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Tomáš Větrovský - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Vendula Brabcová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Vojtěch Tláskal - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Zander Rainier Human - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+
+
+This work was supported by the Czech Science Foundation and the ELIXIR CZ.
+
 

@@ -38,12 +38,34 @@ resultsSampleFunc <- function(input, output, session, id) {
     
     # table basic
     output$sample_table_basic <- renderTable({
-      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", "MAT_study", "MAP_study", "continent", "country", "location",
-                                      "sample_name", "sample_type", "Biome", "Biome_detail", "area_sampled", "area_GPS", "number_of_subsamples", "sample_depth",
-                                      "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description")]
-      colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", "Mean annual temperature study (\u00B0C)", "Mean annual precipitation study (mm)","Continent", "Country", "Location",
-                                 "Sample ID in study","Sample type","Biome (ENVO root)","Biome (ENVO)", "Area covered by sampling (m2)", "Area represented by GPS (m2)", "Number of subsamples", "Sampling depth (cm)",
-                                 "Sampling year", "Sampling manth", "Sampling day", "Sampling info", "Sample description")
+      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", 
+                               "continent",
+                               "country", 
+                               "location",
+                               "sample_type", 
+                               "Biome", 
+                               "Biome_detail", 
+                               "MAT_study", 
+                               "MAP_study",
+                               "sample_name",
+                               "area_sampled", 
+                               "area_GPS", "number_of_subsamples", "sample_depth",
+                               "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description")]
+      colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", 
+                               "Continent", 
+                               "Country", 
+                               "Location",
+                               "Sample type",
+                               "Biome",
+                               "Biome (ENVO)",
+                               "MAT (\u00B0C) study", 
+                               "MAP (mm) study",
+                               "Sample ID in study",
+                               "Area covered by sampling (m2)",
+                               "Area represented by GPS (m2)", 
+                               "Number of subsamples", 
+                               "Sampling depth (cm)",
+                               "Sampling year", "Sampling month", "Sampling day", "Sampling info", "Sample description")
       sample_vals[sample_vals == "NA_"] <- "NA"
       sample_vals <- data.frame(variable = rownames(t(sample_vals)), values = t(sample_vals))
       names(sample_vals) <- c("Variable", " ")
@@ -53,11 +75,28 @@ resultsSampleFunc <- function(input, output, session, id) {
     # table advance
     output$sample_table_advance <- renderTable({
       sample_vals <- sample[,c("sequencing_platform", "target_gene", "extraction_DNA_mass", "extraction_DNA_size", "extraction_DNA_method",
-                                      "primers", "primers_sequence", "total_C_content", "total_N_content", "organic_matter_content",
-                                      "pH", "pH_method", "total_Ca", "total_P", "total_K", "plants_dominant", "plants_all", "sample_info")]
+                               "primers", "primers_sequence", 
+                               "pH", 
+                               "pH_method", 
+                               "organic_matter_content",
+                               "total_C_content", 
+                               "total_N_content",
+                               "total_P", 
+                               "total_Ca", 
+                               "total_K", 
+                               "plants_dominant", 
+                               "plants_all", "sample_info")]
       colnames(sample_vals) <- c("Sequencing platform", "Target marker", "Sample size for DNA extraction (g)", "Sample size for DNA extraction (other)", "DNA extraction method",
-                                 "Primers", "Primer sequences", "C content (%)", "N content (%)", "Org. matter content (%)",
-                                 "pH", "pH method", "Ca content (ppm)", "P total (ppm)", "K total (ppm)", "Dominant plant(s)", "Other plant(s)", "Additionel sample info")
+                                "Primers", "Primer sequences", 
+                                "pH", 
+                                "pH method",
+                                "Org. matter content (%)",
+                                "Organic C content (%)", 
+                                "N content (%)", 
+                                "Total P content (ppm)",
+                                "Ca content (ppm)",
+                                "K content (ppm)", 
+                                "Dominant plant(s)", "Other plants", "Additional sample info")
       sample_vals[sample_vals == "NA_"] <- "NA"
       sample_vals <- data.frame(variable = rownames(t(sample_vals)), values = t(sample_vals))
       names(sample_vals) <- c("Variable", " ")

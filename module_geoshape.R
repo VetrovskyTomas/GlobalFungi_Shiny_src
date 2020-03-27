@@ -17,7 +17,7 @@ geoshapeUI <- function(id) {
       ),
       br(),
       fluidRow(
-        column(2,actionButton(ns("buttonSH"), "Analize SH", icon =icon("sitemap"))),
+        column(2,actionButton(ns("buttonSH"), "Analyze SH", icon =icon("sitemap"))),
         column(10,verbatimTextOutput(ns('info_selected_samples')))
       ),
         sidebarPanel(width = "100%", style = "background-color:white;",

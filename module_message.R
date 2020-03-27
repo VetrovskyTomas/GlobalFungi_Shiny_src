@@ -15,7 +15,7 @@ messageUI <- function(id) {
                  # inpusts...
                  textInput(ns("from"), "From:", value="from@gmail.com"),
                  textInput(ns("subject"), "Subject:", value=""),
-                 textAreaInput(ns("message"), "Write you message here:","", width="100%", height = "200px"),
+                 textAreaInput(ns("message"), "Write your message here:","", width="100%", height = "200px"),
                  actionButton(ns("send"), "Send mail")
     )
   )

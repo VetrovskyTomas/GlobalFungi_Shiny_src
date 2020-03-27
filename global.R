@@ -10,18 +10,27 @@
 # install.packages("seqRFLP")
 # install.packages("shinyalert")
 
-library(shiny)
-library(shinydashboard)
-library(shinyjs)
-library(leaflet) # interactive world map
-library(DT)
+library(leaflet.extras)
 library(ECharts2Shiny)
 library(plyr)
-library(lazyeval) # so we can use interpret
-library(dplyr)
-library(data.table) # fast read
-library(markdown) # bring text data from markdown
+library(data.table)
+library(shiny)
+#library(ggplot2)
 library(RMySQL)
+library(digest)
+library(shinydashboard)
+library(stringr)
+library(leaflet)
+library(markdown)
+library(readxl)
+library(shinyBS)
+library(DT)
+library(lazyeval)
+library(stringi)
+library(shinyjs)
+library(sp)
+library(dplyr)
+library(geoshaper)
 
 ##############
 ### GLOBAL ###

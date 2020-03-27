@@ -16,7 +16,7 @@ analysisUI <- function(id) {
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
         #text area for pasting the sequence...
         textAreaInput(ns("textSeq"), 
-          "Paste you sequence", 
+          "Paste your sequence", 
           "CCGAAGTACAGGCCCTCTCGTAGGGCTAAACTTCCACCCTTTGTTTATCATACCATGTTGCTTTGGCGAGACGTCCTCGGACCACCGGCCCTCGGGCGGGTGCGCGCTCGCCAGAGAAAAATCAAACCCAAACCATTTTAGTAGTAGTCTGAAAACAAGTTTCAATTATTA", 
           width="100%",
           height = "200px"),
@@ -27,9 +27,9 @@ analysisUI <- function(id) {
           column(3,br(),actionButton(ns("reset_file"), 'Reset/Clear Input'))
         ),
         fluidRow(
-          column(3,radioButtons(ns("search_type"), "Search type:", c("Exact" = "exact","BLAST" = "blast", "BLAST (group results)" = "blast_group"))),
-          column(6,uiOutput(ns('dynamic_params'))),
-          column(3,actionButton(ns("analyze_button"), label = "Search", icon = icon("dna")))
+          column(5,radioButtons(ns("search_type"), "Search type:", c("Exact hit (input 1-100 sequences)" = "exact","BLAST - best hit (input 1-100 sequences)" = "blast", "BLAST - group results (input 1 sequence)" = "blast_group"))),
+          column(5,uiOutput(ns('dynamic_params'))),
+          column(2,actionButton(ns("analyze_button"), label = "Search", icon = icon("dna")))
         ),
         hr(),
         # info about subbmission...
@@ -388,7 +388,7 @@ analysisFunc <- function(input, output, session, parent) {
             input_fasta <- get_fasta(data.frame(titles = ">query", sequences = as.character(seq), stringsAsFactors = F))
           }
         } else {
-          print("empty...")
+          alert(paste0("Input FASTA sequence is empty!!!"))
         }
       }
       # 

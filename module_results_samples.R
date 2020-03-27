@@ -25,10 +25,10 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
   observe({
     print("SAMPLES REFRESH...")
     table_samples <- samples[,c("id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
-    col_names <- c("ID", "primers", "longitude", "latitude", "type", "ITS tot.", "Biome", "MAT", "MAP", "pH", "year")
+    col_names <- c("Sample ID", "Primers", "Longitude", "Latitude", "Sample type", "ITS total", "Biome", "MAT (\u00B0C) CHELSA", "MAP (mm) CHELSA", "pH", "Sampling year")
     if("abundances" %in% colnames(samples)) {
       table_samples <- samples[,c("id", "primers", "longitude", "latitude", "sample_type", "abundances", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
-      col_names <- c("ID", "primers", "longitude", "latitude", "type", "ITS obs.", "ITS tot.", "Biome", "MAT", "MAP", "pH", "year")
+      col_names <- c("Sample ID", "Primers", "Longitude", "Latitude", "Sample type", "ITS observed", "ITS total", "Biome", "MAT (\u00B0C)", "MAP (mm)", "pH", "Sampling year")
     }
     
     # table with samples metadata...

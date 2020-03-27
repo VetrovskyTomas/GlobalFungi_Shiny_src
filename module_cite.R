@@ -13,7 +13,7 @@ citeUI <- function(id) {
     sidebarLayout(
       sidebarPanel(width = 12,    
         fluidRow(
-          column(12, "Morais, D. et al. (2019) Best fungal database ever., Nature & Science 433 (1-2), 401-413")
+          column(12, "Vìtrovský, T. et al. (2020) GlobalFungi: Global database of fungal records from high-throughput-sequencing metabarcoding studies. Scientific Data")
         )
       ),
       # Main panel for outputs ----

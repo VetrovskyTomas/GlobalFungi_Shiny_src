@@ -58,7 +58,7 @@ searchUI <- function(id) {
     # breakdown of search options
     sidebarPanel(width = "100%", style = "background-color:white;",
         fluidRow(
-          column(6, h2("Beakdown of search options"))
+          column(6, h2("Breakdown of search options"))
         ),
         fluidRow(
           column(6, 
