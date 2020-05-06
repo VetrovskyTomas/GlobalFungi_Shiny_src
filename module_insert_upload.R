@@ -2,16 +2,19 @@
 insertUploadUI <- function(id) {
   ns <- NS(id)
   fluidPage(
-    fluidRow(
-      column(9, fileInput(ns('fileupload'),label = "Upload selected files", multiple = TRUE)),
-      column(3, br(), actionButton(ns('reset'), 'Reset Input', icon = icon("broom")))
-    ),
-    fluidRow(column(12, actionButton(ns("buttStart"), label = "Process metadata", icon = icon("microchip")))),
     br(),
     fluidRow(
-      column(12,"Uploaded file(s):"),
+      column(1, style = "background-color:white;",img(src='upload.png', height = 64)),
+      column(8, fileInput(ns('fileupload'),label = "Upload selected files", multiple = TRUE)),
+      column(3, br(), actionButton(ns('reset'), 'Reset Input', icon = icon("broom")))
+    ),
+    fluidRow(
+      column(12,"File(s) prepared for upload:"),
       column(12,verbatimTextOutput(ns('summary')))
-    )
+    ),
+    br(),
+    fluidRow(column(12, actionButton(ns("buttStart"), label = "Upload sequence data", icon = icon("microchip")))),
+    br()
   )
 }
 
@@ -56,7 +59,10 @@ insertUploadFunc <- function(input, output, session, study) {
   })
   
   output$summary <- renderText({
-    return(paste0(file_input()$name," ", file_input()$datapath, " ", round(file_input()$size/1000000, digits = 2), " MB\n"))
+    #return(paste0(file_input()$name," ", file_input()$datapath, " ", round(file_input()$size/1000000, digits = 2), " MB\n"))
+    if (!is.null(file_input()$name)){
+      return(paste0(file_input()$name," ", round(file_input()$size/1000000, digits = 2), " MB\n"))
+    }
   })  
   
   observeEvent(input$buttStart, {
@@ -65,6 +71,19 @@ insertUploadFunc <- function(input, output, session, study) {
       study$info <- paste0("Missing value - ",check_inputs,"\n")
     } else {
       print("You processed the upload...")
+      #*******************************************
+      # generate folder for study data...
+      
+      outputDir <- paste0(global_out_path, study$key, "/")
+      print(outputDir)
+      system(paste("mkdir ", outputDir, sep = ""))
+      
+      for (x in c(1:length(file_input()$datapath))) {
+        cmd <- paste0("mv ",file_input()$datapath[x]," ",outputDir, file_input()$name[x])
+        print(cmd)
+        system(cmd)
+      }
+      #*******************************************
       study$info <- paste0("Upload is finished for ",nrow(file_input())," files...")
       study$upload$data <- file_input()
       study$upload$test <- "OK"

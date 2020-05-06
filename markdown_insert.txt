@@ -5,7 +5,7 @@ We believe that there are several motivations to submit your data. First, your d
 
 __How to submit your study?__
 
-The sample(s) submitted in the GlobalFungi database should follow some eligibility criteria (see below). Once you are sure that the sample(s) in your study are eligible, you can fill some general information about you and the study from which the sample(s) come from (you can find below how to fill the “Basic info” section). Then, you are welcome to add as much metadata as possible about the sample(s) that you are submitting (you can find below how to fill the metadata in the “Metadata fields description” section): please feel free to add even these data that were not published. Finally, the sequencing data corresponding to your sample(s) should be uploaded.
+The sample(s) submitted in the GlobalFungi database should follow some eligibility criteria (see below). Once you are sure that the sample(s) in your study are eligible, you can fill some general information about you and the study from which the sample(s) come from. Then, you are welcome to add as much metadata as possible about the sample(s) that you are submitting (you can find below how to fill the metadata in the “Metadata fields description” section): please feel free to add even these data that were not published. Finally, the sequencing data corresponding to your sample(s) should be uploaded.
 
 Note: The GlobalFungi database is not a data repository but a database that aims to collect sequencing data and their corresponding metadata about the fungal diversity worldwide. By entering your sequencing data and metadata in the GlobalFungi database, you give a permit to the GlobalFungi team to process your data and incorporate them into the database in one of the upcoming releases. 
 
@@ -19,25 +19,9 @@ __Eligibility criteria__
 - Sequencing primers target at least the whole ITS1 or ITS2 regions of rRNA and the primers used are general for fungi (so, exclude, for example, studies using specific primers for Glomeromycota or other subgroup of fungi). 
 - Sequencing data must result from high-throughput sequencing methods (includes the data from all the available sequencing platforms, i.e., Illumina, 454 Roche, PacBio, Ion Torrent, SOLiD and Oxford Nanopore).
 - Links to the raw sequencing data corresponding to each sample must be provided (ideally in FASTA or FASTQ format, i.e., after quality trimming but before the bioinformatic processing): note that the sequencing data should be unambiguously assigned to your samples. If the sequencing data of all your samples are merged into one file, please provide the barcodes and/or the mapping file. Optimally, sample identities should be included in the FASTQ/FASTA header.
-- For each sample, precise GPS coordinates has to be provided.
+- For each sample, precise GPS coordinates have to be provided.
 
 - The paper with the analysis of your samples is published and sequencing data are publicly available in a repository. Please note that the GlobalFungi Team reserves the right to add public data from published papers and sequencing data after three months of the publication of your paper online.
-
-<br>
-
-__Basic info__
-
-
-|     VARIABLE       |     OPTIONS             |     HINTS                                                                                                                                        |
-|--------------------|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-|    Title           |    TEXT - Mandatory!    |    Enter the   full title of the study from which the sample(s) come from.                                                                       |
-|    Authors         |    TEXT - Mandatory!    |    Enter the complete list of   authors of the study from which the sample(s) come from (e.g., Vetrovsky, T.,   Baldrian, P. and Morais, D.).    |
-|    Year            |    TEXT - Mandatory!    |    Enter the   year of publication of the study from which the sample(s) come from.                                                              |
-|    Journal         |    TEXT - Mandatory!    |    Enter the   full name of the journal of the study from which the sample(s) come from.                                                         |
-|    DOI             |    TEXT - Mandatory!    |    Enter the   digital object identifier (DOI) of the study from which the sample(s) come   from.                                                |
-|    Contact         |    TEXT - Mandatory!    |    Enter the   contact e-mail of the corresponding author.                                                                                       |
-|    Submitted by    |    TEXT - Mandatory!    |    Enter the   name and e-mail of the person submitting the sample(s).                                                                           |
-
 
 <br>
 

@@ -9,7 +9,7 @@ my_password <- "test"
 server <- function(session, input, output) {
   # test mobile device
   output$isItMobile <- renderText({
-    ifelse(input$isMobile, "mobile", "PC")
+    ifelse(input$isMobile, "mobile", "NOTE: optimal usability would be achieved using Firefox or Chrome on PC")
   })
   
   # UI for user login modal dialog
@@ -146,7 +146,14 @@ server <- function(session, input, output) {
       print(paste0("The url query species value is ", vals$text))
       callModule(module = resultsFunc, id = "id_results", vals)
       updateTabItems(session, "menu_tabs", "fmd_results")
-    }
+    } else   
+      # study submission redirection by link...
+      if (!is.null(query[['study']])) {
+        vals$key <- query[['study']]
+        print(paste0("The url query study value is ", vals$text))
+        callModule(module = insertFunc, id = "id_insert", vals)
+        updateTabItems(session, "menu_tabs", "fmd_insert")
+      }
   })
   
   #
@@ -177,8 +184,7 @@ server <- function(session, input, output) {
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
                 menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
-                menuItem("Insert your study", icon = icon("file-upload"), tabName = "fmd_insert",
-                         badgeLabel = "in progress", badgeColor = "red"),
+                menuItem("Submit your study", icon = icon("file-upload"), tabName = "fmd_insert", badgeColor = "red"),
                 tags$hr(),
                 menuItem("Collaborators", icon = icon("people-carry"), tabName = "fmd_collaborators"),
                 tags$hr(),
@@ -212,7 +218,7 @@ server <- function(session, input, output) {
   callModule(module = searchFunc, id = "id_search", parent = session)
   callModule(module = studiesFunc, id = "id_studies", parent = session)
   callModule(module = geoshapeFunc, id = "id_geoshape")
-  callModule(module = insertFunc, id = "id_insert")
+  callModule(module = insertFunc, id = "id_insert", vals)
   callModule(module = citeFunc, id = "id_cite")
   callModule(module = helpFunc, id = "id_help")
   callModule(module = resultsFunc, id = "id_results", vals)
@@ -225,12 +231,12 @@ server <- function(session, input, output) {
   # copyright...
   output$copyright <- renderText({
     paste(sep = "",
-          "        site design  \n",
-          "             &       \n",
-          "        programming  \n",
-          "      Tomas Vetrovsky\n",
-          "                     \n",
-          "            (c) 2020 \n")
+          "       site design  \n",
+          "            &       \n",
+          "       programming  \n",
+          "     Tomas Vetrovsky\n",
+          "      Daniel Morais \n",
+          "        (c) 2020    \n")
   })
   
   delay(500,

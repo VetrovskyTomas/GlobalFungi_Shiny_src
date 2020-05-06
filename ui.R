@@ -14,12 +14,12 @@ itemIds <- c(team = "#team", team2 = "#team2", login = "#login")
 
 ui <- tagList(
   dashboardPage(
-    dashboardHeader(title = paste(global_info[,"name"],global_info[,"version"]), titleWidth = 200,
+    dashboardHeader(title = paste(global_info[,"name"]," Database"), titleWidth = 200,
       # dropdown...
       tags$li(class = "dropdown",
         tags$li(class = "dropdown", textOutput("logged_user"), style = "padding-top: 15px; padding-bottom: 15px; color: white;"),
         tags$li(class = "dropdown", actionLink("login", textOutput("logintext")))),
-        tags$li(class = "dropdown", fluidPage(mobileDetect('isMobile'), textOutput('isItMobile')), style = "padding-top: 15px; padding-bottom: 15px; color: gray;"),
+        tags$li(class = "dropdown", fluidPage(mobileDetect('isMobile'), textOutput('isItMobile')), style = "padding-top: 15px; padding-bottom: 15px; color: lightgray;"),
         tags$li(class = "dropdown", img(id="login_img",src='login.png', height = 52))
     ),
     # sidebar...

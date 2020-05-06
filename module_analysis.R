@@ -130,6 +130,11 @@ analysisFunc <- function(input, output, session, parent) {
       alert(paste0("Too long sequence - ",max(nchar(fasta_data$sequences))," bp. Maximum length of sequences is 4000 bp!"))
       return(NULL)
     }
+    # test length...
+    if (max(nchar(fasta_data$sequences)) < 40){
+      alert(paste0("Too short sequence - ",max(nchar(fasta_data$sequences))," bp. Minimum length of sequences is 40 bp!"))
+      return(NULL)
+    }
     # get info about FASTA...
     output$info_fasta <- renderText({
       seq_num <- nrow(fasta_data)

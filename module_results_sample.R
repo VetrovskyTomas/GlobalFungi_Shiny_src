@@ -86,7 +86,7 @@ resultsSampleFunc <- function(input, output, session, id) {
                                "total_K", 
                                "plants_dominant", 
                                "plants_all", "sample_info")]
-      colnames(sample_vals) <- c("Sequencing platform", "Target marker", "Sample size for DNA extraction (g)", "Sample size for DNA extraction (other)", "DNA extraction method",
+      colnames(sample_vals) <- c("Sequencing platform", "Target marker", "Sample mass for DNA extraction (g)", "Sample size for DNA extraction (other)", "DNA extraction method",
                                 "Primers", "Primer sequences", 
                                 "pH", 
                                 "pH method",

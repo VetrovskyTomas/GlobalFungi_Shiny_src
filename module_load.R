@@ -29,19 +29,25 @@ options(mysql = list(
   "traffic" = "traffic",
   
   # table for F&Q
-  "messages" = "messages"
+  "messages" = "messages",
+  
+  # inserted studies
+  "study" = "study",
+  
+  # inserted metadata
+  "metadata" = "metadata"
 ))
 
 safeSqlQueryVal <- function (query_val) {
   #query_val <- gsub("[\r\n]", "", query_val)
   query_val <- gsub('"', '/', query_val)
   query_val <- gsub("'", '/', query_val)
-  print(query_val)
+  #print(query_val)
   return(query_val)
 }
 
 sqlQuery <- function (query) {
-  print(query)
+  #print(query)
   # creating DB connection object with RMysql package
   db <- dbConnect(MySQL(), dbname = options()$mysql$db, host = options()$mysql$host, 
                   port = options()$mysql$port, user = options()$mysql$user, 
@@ -91,7 +97,7 @@ print(paste0("Current session number ",global_session))
 
 
 # database info
-query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its1_raw_count`,`its2_raw_count`,`info`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
+query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its1_raw_count`,`its2_raw_count`,`info`,`citation`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
 global_info <- data.table(sqlQuery(query))
 
 query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))

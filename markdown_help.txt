@@ -1,6 +1,6 @@
 ﻿![alt text](www/about.png "How to use...")
 
-## How to use the Fungal Metastudy Web Server
+## How to use the GlobalFungi Database
 
 
 The GlobalFungi Database aims to join the efforts of the scientific community to collect fungal diversity data worldwide, to make them accessible and useful. For a complete information about the content and assembly of the database, please see this paper:
@@ -17,7 +17,7 @@ Větrovský et al. 2019. A meta-analysis of global fungal distribution reveals c
 <br>
 __How can I search in the GlobalFungi database?__	
 
-The web-based user interface at __https://globalfungi.com__ provides a quick yet complex access to the data in the GlobalFungi Database. It provides __search__ in the database by name of a fungal taxon on species or genus level or the search for a Species Hypothesis number. Besides that, users can also BLAST their own ITS1 or ITS2 __sequences__ against the database and to retrieve best hits. The complete list of studies included in the database is provided as well. For those interested in regional mycoflora, the function __geosearch__ provides list of SHs occurring in all samples within geographical defined area. Finally, for those who want to contribute, there is the __insert study__ option. For more details, please, see below.
+The web-based user interface at __http://globalfungi.com__ provides a quick yet complex access to the data in the GlobalFungi Database. It provides __search__ in the database by name of a fungal taxon on species or genus level or the search for a Species Hypothesis number. Besides that, users can also BLAST their own ITS1 or ITS2 __sequences__ against the database and to retrieve best hits. The complete list of studies included in the database is provided as well. For those interested in regional mycoflora, the function __geosearch__ provides list of SHs occurring in all samples within geographical defined area. Finally, for those who want to contribute, there is the __insert study__ option. For more details, please, see below.
 
 <br>
 __Taxon search__
@@ -45,6 +45,6 @@ __Results__
 Results of your last search can be always found on this page. 
 
 <br>
-__Insert your study__
+__Submit your study__
 
 Here you can learn how to submit your data and perform the submission

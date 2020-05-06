@@ -19,7 +19,7 @@ searchUI <- function(id) {
         tabPanel("SH",
           br(),
           textInput(inputId = ns("search_key_sh"),
-            placeholder = "Enter SH, e.g: SH1509013.08FU",
+            placeholder = "Enter SH (98.5%), e.g: SH1509013.08FU",
             label = "Select SH:", 
             width = "300px"
           )
@@ -121,7 +121,7 @@ searchFunc <- function(input, output, session, parent) {
   observe({
     # make bar chart...
     bar_data <- data.frame(
-      name = c("SH","Species","Genus"),
+      name = c("SH (98.5%)","Species","Genus"),
       value = c(length(global_SH_list),length(global_species_list),length(global_genus_list))
     )
     rownames(bar_data) <- bar_data[,1]

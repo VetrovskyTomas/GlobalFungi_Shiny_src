@@ -13,7 +13,7 @@ citeUI <- function(id) {
     sidebarLayout(
       sidebarPanel(width = 12,    
         fluidRow(
-          column(12, "Vìtrovský, T. et al. (2020) GlobalFungi: Global database of fungal records from high-throughput-sequencing metabarcoding studies. Scientific Data")
+          column(12, global_info[,"citation"])
         )
       ),
       # Main panel for outputs ----
