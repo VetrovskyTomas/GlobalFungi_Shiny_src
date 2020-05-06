@@ -27,7 +27,7 @@ analysisUI <- function(id) {
           column(3,br(),actionButton(ns("reset_file"), 'Reset/Clear Input'))
         ),
         fluidRow(
-          column(5,radioButtons(ns("search_type"), "Search type:", c("Exact hit (input 1-100 sequences)" = "exact","BLAST - best hit (input 1-100 sequences)" = "blast", "BLAST - group results (input 1 sequence)" = "blast_group"))),
+          column(5,radioButtons(ns("search_type"), "Search type:", c("Exact hit (input 1-100 sequences; only complete ITS1 or ITS2)" = "exact","BLAST - best hit (input 1-100 sequences; ITS1 or ITS2)" = "blast", "BLAST - group results (input 1 sequence; ITS1 or ITS2)" = "blast_group"))),
           column(5,uiOutput(ns('dynamic_params'))),
           column(2,actionButton(ns("analyze_button"), label = "Search", icon = icon("dna")))
         ),
