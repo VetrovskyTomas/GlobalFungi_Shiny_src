@@ -280,6 +280,7 @@ resultsFunc <- function(input, output, session, variable) {
     
     #################################################################
     if (!is.null(out_data$samples)){
+      out_data$filter <- FALSE
       callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", out_data)
       callModule(module = resutsMatMapFunc, id = "results_matmap", out_data)
       callModule(module = resutspHFunc, id = "results_ph", out_data)
@@ -362,6 +363,7 @@ resultsFunc <- function(input, output, session, variable) {
       if (!is.null(out_data$samples)){
         withProgress(message = 'Filtering...', {
           filtered_data <- reactiveValues()
+          filtered_data$filter <- TRUE
           filtered_data$samples <- isolate(out_data$samples)
           
           # filter by singletons...

@@ -19,14 +19,16 @@ resutsMapFunc <- function(input, output, session,  variable) {
   #namespace for dynamic input...
   ns <- session$ns
 
+  filtered <- isolate(variable$filter)
   samples <- isolate(variable$samples)
   
   # actual version - map of samples from the study...
   observe({
     # clean map
-    leafletProxy(mapId = "mymap") %>% clearPopups() %>% clearMarkers() %>% clearControls() %>% setView(lat = 0, lng = 0, zoom = 0)
-    
-    print(paste0("MAP REFRESH...", nrow(samples)))
+    if (!filtered) {
+      leafletProxy(mapId = "mymap") %>% clearPopups() %>% clearMarkers() %>% clearControls() %>% setView(lat = 0, lng = 0, zoom = 0)
+    }
+    print(paste0("MAP REFRESH...", nrow(samples), " FILTERED ",filtered))
     map_data <- NULL
     pallete <- NULL
     # TAXON
