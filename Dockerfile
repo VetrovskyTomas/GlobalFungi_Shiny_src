@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     libssh2-1-dev
 
+#sudo apt install default-jre
+#sudo apt install default-jdk
+
 # install R packages required 
 # (change it dependeing on the packages you need)
 RUN R -e "install.packages('shiny', repos='http://cran.rstudio.com/')"
@@ -37,6 +40,7 @@ RUN R -e "install.packages('lazyeval', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('sp', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('shinyBS', repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('mailR', repos='http://cran.rstudio.com/')"
 #RUN R -e "devtools::install_github('RedOakStrategic/geoshaper')"
 
 # Copy configuration files into the Docker image

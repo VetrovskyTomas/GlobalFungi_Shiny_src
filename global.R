@@ -30,6 +30,7 @@ library(shinyjs)
 library(sp)
 library(dplyr)
 library(geoshaper)
+library(mailR)
 
 ##############
 ### GLOBAL ###

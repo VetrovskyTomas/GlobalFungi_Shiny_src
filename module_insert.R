@@ -196,27 +196,48 @@ insertFunc <- function(input, output, session, variable) {
           })
           
           # send email...
-          # generate folder for user task...
-          outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
-          print(outputDir)
-          system(paste("mkdir ", outputDir, sep = ""))
-          # send email
-          x <- paste0("From: info@globalfungi.com\n",
-            "Subject: Submit your study\n\n",
-            "Dear User,\n\n",
-            "Please follow this link to finish your submission:\n\n",
-            "http://globalfungi.com/?study=",study$basic$study_hash,"\n\n",
-            "Best\n",
-            "Your ",global_info[,"name"],"Database Team\n")
-          print(x)
-          write.table(x, file = paste(outputDir,"email.txt", sep = ""), quote = F, col.names = F, row.names = F)
-          cmd <- paste0("sendmail ",study$basic$study_email,"  < ",outputDir,"email.txt")
-          print(cmd)
-          system(cmd)
-          # remove folder after use...
-          system(paste0("rm -rf ",outputDir))
+          # # generate folder for user task...
+          # outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
+          # print(outputDir)
+          # system(paste("mkdir ", outputDir, sep = ""))
+          # # send email
+          # x <- paste0("From: info@globalfungi.com\n",
+          #   "Subject: Submit your study\n\n",
+          #   "Dear User,\n\n",
+          #   "Please follow this link to finish your submission:\n\n",
+          #   "http://globalfungi.com/?study=",study$basic$study_hash,"\n\n",
+          #   "Best\n",
+          #   "Your ",global_info[,"name"],"Database Team\n")
+          # print(x)
+          # write.table(x, file = paste(outputDir,"email.txt", sep = ""), quote = F, col.names = F, row.names = F)
+          # cmd <- paste0("sendmail ",study$basic$study_email,"  < ",outputDir,"email.txt")
+          # print(cmd)
+          # system(cmd)
+          # # remove folder after use...
+          # system(paste0("rm -rf ",outputDir))
           
-          ######################
+          #################
+          # EMAIL - START #
+          #################
+          bodytext <- paste0("Dear User,\n\n",
+                             "Please follow this link to finish your submission:\n\n",
+                             "http://globalfungi.com/?study=",study$basic$study_hash,"\n\n",
+                             "Best\n",
+                             "Your ",global_info[,"name"],"Database Team\n")
+          
+          sender <- "info@globalfungi.com"
+          recipients <- c(study$basic$study_email)
+          send.mail(from = sender,
+                    to = recipients,
+                    subject="Submit your study",
+                    body = bodytext,
+                    smtp = list(host.name = "email09.active24.com", port = 465, 
+                                user.name="info@globalfungi.com", passwd="ea4XRNz0XT", ssl=TRUE),
+                    authenticate = TRUE,
+                    send = TRUE)
+          ###############
+          # EMAIL - END #
+          ###############
           hideTab(inputId = "tabs", target = "tab_basic")
           showTab(inputId = "tabs", target = "tab_email")
           updateTabsetPanel(session, "tabs", selected = "tab_email")
