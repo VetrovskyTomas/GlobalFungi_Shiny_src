@@ -19,6 +19,8 @@ adminUI <- function(id) {
         tabPanel("Messages",br(),
           selectInput(ns('select_tab'),'Select table',choice = c("messages")),
           actionButton(ns("refresh_mess"), "Refresh table", icon = icon("redo")),
+          br(),
+          br(),
           DT::dataTableOutput(ns("table_selected"))                                     
         ),
         tabPanel("Traffic",br(),
@@ -35,6 +37,12 @@ adminUI <- function(id) {
             column(3,DT::dataTableOutput(ns("table_data_search"))),
             column(9,tags$div(id = "graph_search", style="width: 100%;height:300px;"), deliverChart(div_id = ns("graph_search")))
           )
+        ),
+        tabPanel("Submissions",br(),
+          actionButton(ns("refresh_studies"), "Refresh table", icon = icon("redo")),
+          br(),
+          br(),
+          DT::dataTableOutput(ns("table_studies"))                                     
         )
       )
     )
@@ -47,12 +55,54 @@ adminFunc <- function(input, output, session) {
   #namespace for dynamic input...
   ns <- session$ns
   
+  # add buttons...
+  shinyInput <- function(FUN, len, id, label, ...) {
+    inputs <- character(len)
+    for (i in seq_len(len)) {
+      inputs[i] <- as.character(FUN(paste0(id, i), label[i], ...))
+    }
+    inputs
+  }  
+  
   # refresh message table...
   observeEvent(input$refresh_mess, {
       output$table_selected <- DT::renderDataTable({
         table <- data.table(sqlQuery(paste0("SELECT * FROM ",input$select_tab," ORDER BY id DESC")))
       })
   })
+  
+  # refresh studies table...
+  observeEvent(input$refresh_studies, {
+    output$table_studies <- DT::renderDataTable(
+      DT::datatable({
+      table <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$study," ORDER BY date DESC")))
+      
+      resList <- paste(sqlQuery(paste0("SELECT COUNT(*) FROM ",options()$mysql$metadata," WHERE `paper_study` = '",table$hash,"'")))
+      print(resList)
+      
+      table$paper <- paste(table$title, "<br/>", table$authors, "<br/>", table$journal, " ", table$volume, ": ", table$pages, "(", table$year,")<br/>", table$doi, "<br/>", table$repository)
+      table$person <- paste(table$contributor, "<br/>", table$affiliation_institute, "<br/>", table$affiliation_country, "<br/>", table$ORCID,"<br/>", table$email)
+      table$collaboration <- paste("include to GFD: ",table$include, "<br/>", "coauthor: ",table$coauthor)
+      table$status <- paste("e-mail valid: ",table$email_confirmed, "<br/>", "finished: ",table$submission_finished)
+      table$samples <- paste(sqlQuery(paste0("SELECT COUNT(*) FROM ",options()$mysql$metadata," WHERE `paper_study` = '",table$hash,"'")))
+      table = subset(table, select = c(hash, person, paper, collaboration, status, samples))
+      table$hash <- shinyInput(actionButton, nrow(table), 'button_', label = table[,"hash"],
+                                     onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
+                                                      "Shiny.onInputChange('", ns("lastClick"), "', Math.random())"))
+      table
+      }, escape = FALSE, selection = 'none')
+    )
+  })
+  
+  # study table button...  
+  observeEvent(input$lastClick, {
+    index <- as.numeric(strsplit(isolate(input$lastClickId), "_")[[1]][2])
+    if (!is.null(index)){
+      print("redirect...")
+      selectedRow <- index
+      print(paste("selectedRow",selectedRow))
+    }
+  }, ignoreInit = TRUE)
   
   # dynamic filters for traffic...
   output$dynamic_filters <- renderUI({

@@ -192,29 +192,8 @@ insertFunc <- function(input, output, session, variable) {
             paste0("Thank you for your interest in ",global_info[,"name"]," Database!\n\n",
                   "Verification e-mail was sent to your address: ",study$basic$study_email,"\n\n",
                   "It may take few minutes.\n\n",
-                  "Please continue with submission through recieved link.")
+                  "Please continue with submission through received link.")
           })
-          
-          # send email...
-          # # generate folder for user task...
-          # outputDir <- paste0(global_out_path,"responses_", as.integer(Sys.time()),"/")
-          # print(outputDir)
-          # system(paste("mkdir ", outputDir, sep = ""))
-          # # send email
-          # x <- paste0("From: info@globalfungi.com\n",
-          #   "Subject: Submit your study\n\n",
-          #   "Dear User,\n\n",
-          #   "Please follow this link to finish your submission:\n\n",
-          #   "http://globalfungi.com/?study=",study$basic$study_hash,"\n\n",
-          #   "Best\n",
-          #   "Your ",global_info[,"name"],"Database Team\n")
-          # print(x)
-          # write.table(x, file = paste(outputDir,"email.txt", sep = ""), quote = F, col.names = F, row.names = F)
-          # cmd <- paste0("sendmail ",study$basic$study_email,"  < ",outputDir,"email.txt")
-          # print(cmd)
-          # system(cmd)
-          # # remove folder after use...
-          # system(paste0("rm -rf ",outputDir))
           
           #################
           # EMAIL - START #
@@ -224,17 +203,7 @@ insertFunc <- function(input, output, session, variable) {
                              "http://globalfungi.com/?study=",study$basic$study_hash,"\n\n",
                              "Best\n",
                              "Your ",global_info[,"name"],"Database Team\n")
-          
-          sender <- "info@globalfungi.com"
-          recipients <- c(study$basic$study_email)
-          send.mail(from = sender,
-                    to = recipients,
-                    subject="Submit your study",
-                    body = bodytext,
-                    smtp = list(host.name = "email09.active24.com", port = 465, 
-                                user.name="info@globalfungi.com", passwd="ea4XRNz0XT", ssl=TRUE),
-                    authenticate = TRUE,
-                    send = TRUE)
+          sendEmail("info@globalfungi.com", c(study$basic$study_email),"Submit your study", bodytext)
           ###############
           # EMAIL - END #
           ###############

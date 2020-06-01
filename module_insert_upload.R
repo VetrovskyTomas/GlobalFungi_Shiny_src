@@ -45,7 +45,16 @@ insertUploadFunc <- function(input, output, session, study) {
     
   observeEvent(input$reset, {
     reset('fileupload')
+    shinyjs::disable("buttStart")
     values$upload_state <- 'reset'
+  })
+  
+  observe({
+    if (is.null(study$files)){
+      shinyjs::disable("buttStart")
+    } else {
+      shinyjs::enable("buttStart")
+    }
   })
   
   file_input <- reactive({

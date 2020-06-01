@@ -10,7 +10,10 @@ insertBasicUI <- function(id) {
       column(6, textInput(inputId = ns("study_contributor"), label = "Name and Surname of the contributor:"))
     ),
     fluidRow(
-      column(6, textInput(inputId = ns("study_email"), label = "e-mail:"))
+      column(6, textInput(inputId = ns("study_email1"), label = "e-mail:"))
+    ),
+    fluidRow(
+      column(6, textInput(inputId = ns("study_email2"), label = "confirm your e-mail:"))
     ),
     fluidRow(
       column(12, textAreaInput(inputId = ns("study_affiliation_institute"), label = "Primary affiliation - institution:", height = "32px"))
@@ -95,8 +98,12 @@ insertBasicFunc <- function(input, output, session, study) {
         return("DOI field is empty!")
       } else if (input$study_contributor == "") {
         return("Contributor field is empty!")
-      } else if (input$study_email == "") {
+      } else if (input$study_email1 == "") {
         return("Email field is empty!")
+      } else if (input$study_email2 == "") {
+        return("Email confirmation field is empty!")
+      } else if (input$study_email1 != input$study_email2) {
+        return("Email address has a typo!")
       } else if (input$study_affiliation_institute == "") {
         return("Affiliation institute field is empty!")
       } else if (input$study_affiliation_country == "") {
@@ -116,30 +123,16 @@ insertBasicFunc <- function(input, output, session, study) {
   observeEvent(input$buttStart, {
     check_inputs <- study_input()
     if (check_inputs != "") {
-      alert(paste0("Missing value - ",study_input()))
+      alert(paste0("Missing/incorrect value - ",study_input()))
       study$info <- paste0("Missing value - ",check_inputs,"\n")
     } else {
       print("You processed the basic info...")
-      
-      ###############################################################################
-      # study$info <- "You processed the basic info..."
-      # study$basic$time <- format(Sys.time(), "%Y %b %d %X")
-      # study$basic$study_title <- input$study_title
-      # study$basic$study_authors <- input$study_authors
-      # study$basic$study_year <- input$study_year
-      # study$basic$study_journal <- input$study_journal
-      # study$basic$study_doi <- input$study_doi
-      # study$basic$study_contributor <- input$study_contributor
-      # study$basic$study_email <- input$study_email
-      # study$basic$study_affiliation_institute <- input$study_affiliation_institute
-      # study$basic$study_affiliation_country <- input$study_affiliation_country
-      #print(study$basic)
       
       time <- format(Sys.time(), "%Y %b %d %X")
       md5 <- as.character(sapply(paste(time, input$study_contributor, input$study_title), digest, algo="md5", serialize=F))
       print(md5)
       
-      study$basic$study_email <- input$study_email
+      study$basic$study_email <- input$study_email1
       study$basic$study_hash <- md5
       
       # # write it...

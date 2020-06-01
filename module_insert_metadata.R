@@ -7,18 +7,19 @@ insertMetadataUI <- function(id) {
         br(),
         h2(id="section_title", "1) Download and fill template table (don't change the headers)"),
         br(),
-        downloadButton(ns("buttTemplate"), label = "Download metadata template (xlsx)"),
-        br()
+        downloadButton(ns("buttTemplate"), label = "Download metadata template (xlsx)")
       ),
       column(6,
         br(),
         h2(id="section_title", "2) Insert filled template table (xlsx file)"),
         fileInput(ns('fileXLSX'), '',accept = c(".xlsx")),
-        br()
       )
     ),
     fluidRow(
-      column(3, actionButton(ns("buttStart"), label = "Process metadata", icon = icon("microchip")))
+      column(6, 
+        h2(id="section_title", "3) Click below to validate your submission"),
+        br(),
+        actionButton(ns("buttStart"), label = "Process metadata", icon = icon("microchip")))
     ),
     fluidRow(
       column(12, br(), verbatimTextOutput(ns('info_errors')))

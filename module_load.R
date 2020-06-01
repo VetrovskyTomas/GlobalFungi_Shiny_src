@@ -46,6 +46,17 @@ safeSqlQueryVal <- function (query_val) {
   return(query_val)
 }
 
+sendEmail <- function (sender, recipients,subjtext, bodytext) {
+  send.mail(from = sender,
+            to = recipients,
+            subject=subjtext,
+            body = bodytext,
+            smtp = list(host.name = "email09.active24.com", port = 465, 
+                        user.name="info@globalfungi.com", passwd="ea4XRNz0XT", ssl=TRUE),
+            authenticate = TRUE,
+            send = TRUE)
+}
+
 sqlQuery <- function (query) {
   #print(query)
   # creating DB connection object with RMysql package
@@ -77,6 +88,9 @@ global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
 
 # sample sequences path 
 global_samples_path <- "/home/fungal/databases/samples_fasta/"
+
+# variant sequences path 
+global_variants_path <- "/home/fungal/databases/variants_fasta/"
 
 # output path 
 global_out_path <- "/home/fungal/databases/user_outputs/"
