@@ -57,7 +57,7 @@ insertBasicUI <- function(id) {
       column(12, checkboxInput(inputId = ns("study_confirm_2"), label = "I declare that the sequencing data from my samples are publicly available in an online repository", FALSE))
     ),
     fluidRow(
-      column(12, checkboxInput(inputId = ns("study_confirm_3"), label = "I give my consent to the GlobalFungi team to make any sample data / metadata that I submit permanently publicly visible on the database webpage (http://globalfungi.com)", FALSE))
+      column(12, checkboxInput(inputId = ns("study_confirm_3"), label = "I give my consent to the GlobalFungi team to make any sample data / metadata that I submit permanently publicly visible on the database webpage (https://globalfungi.com)", FALSE))
     ),
     fluidRow(
       column(12, checkboxInput(inputId = ns("study_confirm_4"), label = "I give my consent to the GlobalFungi team to contact me by e-mail in case that there are some queries about my sequencing data / metadata", FALSE))
@@ -69,7 +69,7 @@ insertBasicUI <- function(id) {
     ),
     fluidRow(
       column(12, selectizeInput(ns("study_coauthor"), 
-        label = "When my data are posted online in one of the new releases of the database, I wish to become one of the co-authors within a 'GlobalFungi Group Author' list and agree to share my e-mail, affiliation and ORCID for the potential submission of papers in publications describing the database content, its development, or metastudies using the whole database", 
+        label = "When my data are posted online in one of the new releases of the database, I wish my name to appear at the 'GlobalFungi Group Author' list. For that purpose, I agree to share my e-mail, affiliation and ORCID for the potential submission of papers in publications describing the database content, its development, or metastudies using the whole database should it include the 'GlobalFungi Group Author'", 
         choices = c("YES","NO"), width = "300px", selected = 1, multiple = FALSE))
     ),
     
@@ -140,7 +140,7 @@ insertBasicFunc <- function(input, output, session, study) {
                       " (hash, contributor, email, affiliation_institute, affiliation_country, ORCID, title, authors, year, journal, volume, pages, doi, repository, include, coauthor, email_confirmed, submission_finished, date) VALUES ('",
                       md5, "', '", 
                       safeSqlQueryVal(input$study_contributor), "', '",
-                      safeSqlQueryVal(input$study_email), "', '",
+                      safeSqlQueryVal(input$study_email1), "', '",
                       safeSqlQueryVal(input$study_affiliation_institute), "', '",
                       safeSqlQueryVal(input$study_affiliation_country), "', '",
                       safeSqlQueryVal(input$study_ORCID), "', '",

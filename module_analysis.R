@@ -17,7 +17,8 @@ analysisUI <- function(id) {
         #text area for pasting the sequence...
         textAreaInput(ns("textSeq"), 
           "Paste your sequence", 
-          "CCGAAGTACAGGCCCTCTCGTAGGGCTAAACTTCCACCCTTTGTTTATCATACCATGTTGCTTTGGCGAGACGTCCTCGGACCACCGGCCCTCGGGCGGGTGCGCGCTCGCCAGAGAAAAATCAAACCCAAACCATTTTAGTAGTAGTCTGAAAACAAGTTTCAATTATTA", 
+          "",
+          placeholder = "CCGAAGTACAGGCCCTCTCGTAGGGCTAAACTTCCACCCTTTGTTTATCATACCATGTTGCTTTGGCGAGACGTCCTCGGACCACCGGCCCTCGGGCGGGTGCGCGCTCGCCAGAGAAAAATCAAACCCAAACCATTTTAGTAGTAGTCTGAAAACAAGTTTCAATTATTA",
           width="100%",
           height = "200px"),
         
@@ -208,7 +209,7 @@ analysisFunc <- function(input, output, session, parent) {
 
       # run blast command...
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 1 -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
@@ -286,7 +287,7 @@ analysisFunc <- function(input, output, session, parent) {
       maxres <- input$max_blast_results
       print(paste("Maximum of blast results:",maxres))
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs ",maxres," -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       

@@ -24,19 +24,33 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
     text <- "variant"
   }
   
-  if (type == ""){
+  if ((type == "")||(type == "sequence")||(type == "single-blast")||(type == "multi-blast")) {
     type <- "sequence"
   }
   
   print(paste0("Resuts Variants Func - ",type, " ", text, " - samples ",("samples" %in% colnames(data$SeqVars))))
   
-  # downlooad sequence variants FASTA
-  output$downloadFASTA <- downloadHandler(
-    filename = paste0(type,"_",text,".zip"),
-    content = function(file) {
-      file.copy(paste0(global_variants_path, type,"_",text,".zip"), file)
-    }
-  )
+  if (type == "sequence"){
+    output$downloadFASTA <- downloadHandler(
+      filename = paste0(type,".fasta"),
+      content = function(file) {
+        #>e770bf38a768561247b4fd234c884834|SampleID_2224|genus_Abortiporus|marker_ITS2|abund_1_total_103388
+        data$SeqVars$title <- paste0(">",data$SeqVars$hash,"|SampleIDs_",data$SeqVars$samples,"|marker_",data$SeqVars$marker)
+        X <- data$SeqVars[,c("title", "sequence")]
+        print(X)
+        D <- do.call(rbind, lapply(seq(nrow(X)), function(i) t(X[i, ])))
+        write.table(D,  file, row.names = FALSE, col.names = FALSE, quote = FALSE)
+      }
+    )
+  } else {
+    # download sequence variants FASTA for taxa...
+    output$downloadFASTA <- downloadHandler(
+      filename = paste0(type,"_",text,".zip"),
+      content = function(file) {
+        file.copy(paste0(global_variants_path, type,"_",text,".zip"), file)
+      }
+    )
+  }
   
   # show seq vars info...
   output$seq_vars_count <- renderText({

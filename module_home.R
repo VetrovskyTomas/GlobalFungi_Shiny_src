@@ -30,6 +30,13 @@ homeUI <- function(id) {
     fluidRow(
       column(12,verbatimTextOutput(ns("fm_info")))
     ),
+    # tutorials
+    fluidRow(
+      column(12,img(src='tutorial.png', height = 64),
+        actionButton(ns("buttUse"), label = "How to use it (tutorial)", icon = icon("youtube"), onclick = paste0("window.open('https://www.youtube.com/watch?v=0_opE1hOXwY')")),
+        actionButton(ns("buttSubmit"), label = "How to Submit your Study (tutorial)", icon = icon("youtube"), onclick = paste0("window.open('https://www.youtube.com/watch?v=HmGyr26Hhso')"))
+      )
+    ),
     # basic info...
     sidebarPanel(width = "100%", style = "background-color:white;",
                 fluidRow(

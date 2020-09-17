@@ -1,11 +1,14 @@
 # Install R version 3.5
-FROM r-base:3.4.4
+#FROM r-base:3.4.4
 
-# get shiny serves plus tidyverse packages image
+
+# get shiny server plus tidyverse packages image
 FROM rocker/shiny-verse:latest
 
 # Install Ubuntu packages
+
 RUN apt-get update && apt-get install -y \
+  apt-utils debconf debconf-utils \
     sudo \
     pandoc \
     pandoc-citeproc \
@@ -13,10 +16,15 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev \
     libxt-dev \
     libssl-dev \
-    libssh2-1-dev
-
-#sudo apt install default-jre
-#sudo apt install default-jdk
+    libssh2-1-dev \
+  ncbi-blast+ \
+  libxml2-dev \
+  libmariadbclient-dev \
+  libbz2-dev \
+  libpcre3-dev \
+  liblzma-dev \
+  zlib1g-dev \  
+  openjdk-8-jdk-headless
 
 # install R packages required 
 # (change it dependeing on the packages you need)
@@ -40,12 +48,14 @@ RUN R -e "install.packages('lazyeval', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('sp', repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('shinyBS', repos='http://cran.rstudio.com/')"
+RUN R CMD javareconf
 RUN R -e "install.packages('mailR', repos='http://cran.rstudio.com/')"
-#RUN R -e "devtools::install_github('RedOakStrategic/geoshaper')"
+RUN R -e "devtools::install_github('RedOakStrategic/geoshaper')"
+
+RUN mkdir --parents /home/fungal/databases
 
 # Copy configuration files into the Docker image
 COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
-COPY /app /srv/shiny-server/
 
 # copy the app to the image
 COPY /app /srv/shiny-server/
@@ -56,9 +66,13 @@ EXPOSE 3838
 # Copy further configuration files into the Docker image
 COPY shiny-server.sh /usr/bin/shiny-server.sh
 
+RUN adduser --system --disabled-password --group shiny
+
 # allow permission
 RUN sudo chown -R shiny:shiny /srv/shiny-server
 
+#RUN apt-get install -y mariadb-client
+
 # run app
-#RUN ["chmod", "+x", "/usr/bin/shiny-server.sh"]
-CMD ["/usr/bin/shiny-server.sh"]
+RUN ["chmod", "+x", "/usr/bin/shiny-server.sh"]
+CMD "/usr/bin/shiny-server.sh"

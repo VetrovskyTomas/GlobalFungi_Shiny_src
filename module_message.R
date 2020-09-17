@@ -48,6 +48,9 @@ messageFunc <- function(input, output, session) {
                                 safeSqlQueryVal(message), "', '", format(Sys.time(), "%Y %b %d %X"), "')")
         sqlQuery(query)
         
+        # send email to global fungi...
+        sendEmail(safeSqlQueryVal(sender), "info@globalfungi.com", safeSqlQueryVal(isolate(input$subject)), safeSqlQueryVal(message))
+
         # reset fields..
         reset("from")
         reset("subject")
