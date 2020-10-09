@@ -163,8 +163,11 @@ server <- function(session, input, output) {
                 menuItem("Home", icon = icon("home"), tabName = "fmd_home"),
                 menuItem("Taxon search", icon = icon("search"), tabName = "fmd_search"),
                 menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis"),
-                menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
+                menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
+                tags$hr(),
+                #result page...
+                menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
                 menuItem(paste0("About ",global_info[,"name"]), icon = icon("globe-americas"), tabName = "fmd_aboutus"),
@@ -179,9 +182,6 @@ server <- function(session, input, output) {
                 ))
                 ),
                 ###########################
-                tags$hr(),
-                #result page...
-                menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
                 tags$hr(),
                 menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
                 menuItem("Submit your study", icon = icon("file-upload"), tabName = "fmd_insert", badgeColor = "red"),
