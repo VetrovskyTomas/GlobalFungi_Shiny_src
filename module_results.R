@@ -435,8 +435,8 @@ resultsFunc <- function(input, output, session, variable) {
         sample_years <- as.numeric(out_data$samples$year_of_sampling)
         year_na <- NA %in% sample_years
         sample_years=sample_years[!is.na(sample_years)]
-        sample_biomes <- unique(out_data$samples$Biome)
-        sample_types <- unique(out_data$samples$sample_type)
+        sample_biomes <- sort(unique(out_data$samples$Biome))
+        sample_types <- sort(unique(out_data$samples$sample_type))
         # filters...
         fluidRow(
           column(2,checkboxGroupInput(ns("sample_single"), 

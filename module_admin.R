@@ -42,7 +42,8 @@ adminUI <- function(id) {
           actionButton(ns("refresh_studies"), "Refresh table", icon = icon("redo")),
           br(),
           br(),
-          DT::dataTableOutput(ns("table_studies"))                                     
+          DT::dataTableOutput(ns("table_studies")),
+          downloadButton(ns("downloadData"), "Download", style = "visibility: hidden;")
         )
       )
     )
@@ -76,23 +77,32 @@ adminFunc <- function(input, output, session) {
     output$table_studies <- DT::renderDataTable(
       DT::datatable({
       table <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$study," ORDER BY date DESC")))
-      
-      resList <- paste(sqlQuery(paste0("SELECT COUNT(*) FROM ",options()$mysql$metadata," WHERE `paper_study` = '",table$hash,"'")))
-      print(resList)
-      
+      # set number of samples
+      mylist <- c()
+      for (i in 1:nrow(table)) {
+        query <- paste0("SELECT COUNT(*) FROM ",options()$mysql$metadata," WHERE `paper_study` = '",table[i,"hash"],"'")
+        mylist <- c(mylist, sqlQuery(query))
+      }
+      table$samples <- mylist
+      # rest...
       table$paper <- paste(table$title, "<br/>", table$authors, "<br/>", table$journal, " ", table$volume, ": ", table$pages, "(", table$year,")<br/>", table$doi, "<br/>", table$repository)
       table$person <- paste(table$contributor, "<br/>", table$affiliation_institute, "<br/>", table$affiliation_country, "<br/>", table$ORCID,"<br/>", table$email)
       table$collaboration <- paste("include to GFD: ",table$include, "<br/>", "coauthor: ",table$coauthor)
       table$status <- paste("e-mail valid: ",table$email_confirmed, "<br/>", "finished: ",table$submission_finished)
-      table$samples <- paste(sqlQuery(paste0("SELECT COUNT(*) FROM ",options()$mysql$metadata," WHERE `paper_study` = '",table$hash,"'")))
-      table = subset(table, select = c(hash, person, paper, collaboration, status, samples))
-      table$hash <- shinyInput(actionButton, nrow(table), 'button_', label = table[,"hash"],
-                                     onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
-                                                      "Shiny.onInputChange('", ns("lastClick"), "', Math.random())"))
+      # metadata button
+      table$hash_butt <- ifelse(table$samples>0,shinyInput(actionButton, nrow(table), 'button_', label = table[,"hash"],
+                                                           onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
+                                                                            "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),table$hash)
+      
+      table = subset(table, select = c(hash_butt, samples, person, paper, collaboration, status))
+
       table
       }, escape = FALSE, selection = 'none')
     )
   })
+  
+  study_hash <- ""
+  data <- NULL
   
   # study table button...  
   observeEvent(input$lastClick, {
@@ -101,8 +111,44 @@ adminFunc <- function(input, output, session) {
       print("redirect...")
       selectedRow <- index
       print(paste("selectedRow",selectedRow))
+      # get metadata table
+      table <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$study," ORDER BY date DESC")))
+      study_hash <<- table[selectedRow,"hash"]
+      print(paste("hash",study_hash))
+      data <<- sqlQuery(paste0("SELECT * FROM ",options()$mysql$metadata," WHERE `paper_study` = '",study_hash,"'"))
+      shinyjs::runjs(paste0("document.getElementById('",ns("downloadData"),"').click();"))
     }
   }, ignoreInit = TRUE)
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste0("data-", study_hash, ".csv")
+    },
+    content = function(file) {
+      # combine it with basic info
+      table <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$study," WHERE `hash` = '",study_hash,"'")))
+
+      data <- cbind(study_year = unlist(rep(table[,"year"],times=nrow(data))),data)
+      
+      data <- cbind(doi = unlist(rep(table[,"doi"],times=nrow(data))),data)
+      data <- cbind(pages = unlist(rep(table[,"pages"],times=nrow(data))),data)
+      data <- cbind(volume = unlist(rep(table[,"volume"],times=nrow(data))),data)
+      data <- cbind(journal = unlist(rep(table[,"journal"],times=nrow(data))),data)
+      data <- cbind(title = unlist(rep(table[,"title"],times=nrow(data))),data)
+      
+      data <- cbind(include_as_collab = unlist(rep(table[,"include"],times=nrow(data))),data)
+      data <- cbind(group_author = unlist(rep(table[,"coauthor"],times=nrow(data))),data)
+      
+      data <- cbind(ORCID = unlist(rep(table[,"ORCID"],times=nrow(data))),data)
+      data <- cbind(aff_country = unlist(rep(table[,"affiliation_country"],times=nrow(data))),data)
+      data <- cbind(aff_institute = unlist(rep(table[,"affiliation_institute"],times=nrow(data))),data)
+      
+      data <- cbind(email = unlist(rep(table[,"email"],times=nrow(data))),data)
+      data <- cbind(contributor = unlist(rep(table[,"contributor"],times=nrow(data))),data)
+      # write it...
+      write.csv2(data, file, row.names = FALSE, dec = ".", sep = "\t", quote = FALSE)
+    }
+  )
   
   # dynamic filters for traffic...
   output$dynamic_filters <- renderUI({
