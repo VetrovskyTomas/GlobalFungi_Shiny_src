@@ -231,11 +231,20 @@ insertFunc <- function(input, output, session, variable) {
   })
   
   output$info_over <- renderText(
-    paste0(
-      "------------------------------------------------------------------------------------\n",
-      "Number of Samples: ", study$metadata$num_of_samples, "\n",
-      "------------------------------------------------------------------------------------\n",
-      "Number of Files: ", nrow(study$upload$data), "\n")
+    if (!is.null(study$upload$data)) {
+      paste0(
+        "------------------------------------------------------------------------------------\n",
+        "Number of Samples: ", study$metadata$num_of_samples, "\n",
+        "------------------------------------------------------------------------------------\n",
+        "Number of Files: ", nrow(study$upload$data), "\n")
+    } else {
+      paste0(
+        "------------------------------------------------------------------------------------\n",
+        "Number of Samples: ", study$metadata$num_of_samples, "\n",
+        "------------------------------------------------------------------------------------\n",
+        "Number of Files: 0\n")
+    }
+    
   ) 
 
 }

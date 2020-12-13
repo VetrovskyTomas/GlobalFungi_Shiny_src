@@ -52,7 +52,7 @@ insertMetadataFunc <- function(input, output, session, study) {
   
   observeEvent(input$buttStart, {
     if (!is.null(metadata$datapath)){
-    metatable <- as.data.frame(read_excel(metadata$datapath, 1))
+    metatable <- as.data.frame(read_excel(metadata$datapath, 1, col_names = FALSE))
     if (nrow(metatable)>1){
       info = ""
       print(paste0("Table contans ", (length(metatable[,1])-1), " sample rows."))
@@ -74,6 +74,7 @@ insertMetadataFunc <- function(input, output, session, study) {
         sel <- ""
         if (x %in% select_vals){
           str <- metatable[1,x]
+          #print(str)
           sel <- substr(str, str_locate(str, ": ")+2, nchar(str))
           sel_list <- unlist(strsplit(sel, "[/]")) 
           #print(sel_list)
@@ -81,7 +82,7 @@ insertMetadataFunc <- function(input, output, session, study) {
         #############
         if (x %in% nonoptional_vals){
           print(paste0("**** Show column: ", colnames(metatable[x])," ********"))
-          for (y in c(2:nrow(metatable))) {
+          for (y in c(3:nrow(metatable))) {
             #print(metatable[y,x])
             if (!is.na(metatable[y,x])){
               if (x %in% select_vals){
@@ -116,7 +117,7 @@ insertMetadataFunc <- function(input, output, session, study) {
         print("You processed the metadata...")
         study$info <- "You processed the metadata..."
         
-        study$metadata$num_of_samples <- nrow(metatable)-1
+        study$metadata$num_of_samples <- nrow(metatable)-2
         study$metadata$data <- metatable
         
         info <- ""
@@ -132,7 +133,7 @@ insertMetadataFunc <- function(input, output, session, study) {
         #INSERT THE METADATA...
         withProgress(message = 'Saving metadata', {
         
-          for (x in c(2:nrow(metatable))) {
+          for (x in c(3:nrow(metatable))) {
             incProgress(1/(nrow(metatable)-1))
 
             query <- paste0("INSERT INTO ",options()$mysql$metadata,

@@ -35,7 +35,10 @@ options(mysql = list(
   "study" = "study",
   
   # inserted metadata
-  "metadata" = "metadata"
+  "metadata" = "metadata",
+  
+  # inserted metadata
+  "maillist" = "maillist"
 ))
 
 safeSqlQueryVal <- function (query_val) {
@@ -63,10 +66,11 @@ sqlQuery <- function (query) {
   db <- dbConnect(MySQL(), dbname = options()$mysql$db, host = options()$mysql$host, 
                   port = options()$mysql$port, user = options()$mysql$user, 
                   password = options()$mysql$password)
+  # set charset
+  rs <- dbSendQuery(db, 'set character set "latin1"')
   # Construct the fetching query
   data <- dbGetQuery(db, query)
   dbDisconnect(db)
-  
   # return the dataframe
   return(data)
 }
@@ -93,7 +97,7 @@ global_samples_path <- "/home/fungal/databases/samples_fasta/"
 global_variants_path <- "/home/fungal/databases/variants_fasta/"
 
 # output path 
-global_out_path <- "/home/fungal/databases/user_outputs/"
+global_out_path <- "D:/EXAMPLES/" #"/home/fungal/databases/user_outputs/"
 
 # blast cpus
 global_blast_nproc <- "2"
@@ -121,7 +125,7 @@ query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
 global_samples <- data.table(sqlQuery(query))
 
 # construct papers table...
-global_papers <- global_samples[,c("paper_id", "title_year", "authors", "journal", "doi", "contact")]
+global_papers <- global_samples[,c("add_date","paper_id", "title_year", "authors", "journal", "doi", "contact")]
 # this will be changed in future...
 
 global_papers$submitted_by <- rep(global_info[,"name"], nrow(global_papers))
@@ -132,7 +136,12 @@ splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title
 colnames(splited_title_year) <- c("title", "year")
 global_papers <- cbind(global_papers, splited_title_year)
 global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
-  
+
+# sort
+rowidx <- order(global_papers[, "add_date"], global_papers[, "authors"])
+global_papers <- global_papers[rowidx, , drop = FALSE]
+
+
 # store minimal amount of information
 global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "latitude","continent", "sample_type", "ITS1_extracted", "ITS2_extracted","ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")] 
 

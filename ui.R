@@ -82,6 +82,10 @@ ui <- tagList(
         tabItem("fmd_aboutus",
                 aboutusUI(id = "id_aboutus")
         ),
+        # join mailing list
+        tabItem("fmd_join",
+                joinUI(id = "id_join")
+        ),
         # settings
         tabItem("fmd_admin",
                 adminUI(id = "id_admin")

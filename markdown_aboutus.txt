@@ -1,10 +1,77 @@
-﻿Thanks to the recent advance of high-throughput-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. 
+﻿Thanks to the recent advance of high-throughput-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues, water, air, dust and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. For more details, check the [Help](https://globalfungi.com/?help=0).
+<br>
+<br>
+[![alt text](www/youtube01.png)](https://www.youtube.com/watch?v=0_opE1hOXwY)
+[![alt text](www/youtube02.png)](https://www.youtube.com/watch?v=HmGyr26Hhso)
 <br>
 <br>
 Webpage: https://globalfungi.com 
 <br>
 <br>
 Contact: info@globalfungi.com
+<br>
+<br>
+Twitter: @globalfungi
+<br>
+<br>
+Join the mailing list [here](https://globalfungi.com/?join=0).
+<br>
+<br>
+<br>
+**About GlobalFungi / official citation:**
+<br>
+<br>
+Větrovský T., Morais D., Kohout P., Lepinay C., Algora Gallardo C., Awokunle Hollá S., Doreen Bahnmann B., Bílohnědá K., Brabcová V., D'Alò F., Human Z.R., Jomura M., Kolařík M., Kvasničková J., Lladó S., López-Mondéjar R., Martinović T., Mašínová T., Meszárošová L., Michalčíková L., Michalová T., Mundra S., Navrátilová D., Odriozola I., Piché-Choquette S., Štursová M., Švec K., Tláskal V., Urbanová M., Vlk L., Voříšková J., Žifčáková L., Baldrian P.: GlobalFungi, a global database of fungal occurrences from high-throughput-sequencing metabarcoding studies. Scientific Data 7, 228 (2020). 
+<br>
+[Link](https://www.nature.com/articles/s41597-020-0567-7).
+<br>
+<br>
+<br>
+**Papers that use GlobalFungi data**
+<br>
+<br>
+Kalsoom Khan, F., Kluting, K., Tångrot, J., Urbina, H., Ammunet, T., Eshghi Sahraei, S., Rydén, M., Ryberg, M., Rosling, A.: Naming the untouchable – environmental sequences and niche partitioning as taxonomical evidence in fungi. Ima Fungus 11, 23 (2020).
+[Link](https://link.springer.com/article/10.1186/s43008-020-00045-9)
+<br>
+<br>
+Větrovský, T., Kohout, P., Kopecký, M., Machac, A., Man, M., Bahnmann, B.D., Brabcová, V., Choi, J., Meszárošová, L., Human, Z.R., Lepinay, C., Lladó, S., Lopez-Mondejar, R., Martinovic, T., Mašínová, T., Morais, D., Navrátilová, D., Odriozola, I., Štursová, M., Švec, K., Tláskal, V., Urbanová, M., Wan, J., Žifčáková, L., Howe, A., Ladau, J., Peay, K.G., Storch, D., Wild, J., Baldrian, P.: A meta-analysis of global fungal distribution reveals climate-driven patterns. Nature Communications 10, 5142 (2019).
+[Link](https://www.nature.com/articles/s41467-019-13164-8)
+<br>
+<br>
+Vlk, L., Tedersoo, L., Antl, T., Větrovský, T., Abarenkov, K., Pergl, J., Albrechtová, J., Vosátka, M., Baldrian, P., Pyšek, P., Kohout, P.: Alien ectomycorrhizal plants differ in their ability to interact with co-introduced and native ectomycorrhizal fungi in novel sites. ISME Journal 14, 2336-2346 (2020).
+[Link](https://www.nature.com/articles/s41396-020-0692-5)
+<br>
+<br>
+Vlk, L., Tedersoo, L., Antl, T., Větrovský, T., Abarenkov, K., Pergl, J., Albrechtová, J., Vosátka, M., Baldrian, P., Pyšek, P., Kohout, P.: Early successional ectomycorrhizal fungi are more likely to naturalize outside their native range than other ectomycorrhizal fungi. New Phytologist 227, 1289-1293 (2020).
+[Link](https://nph.onlinelibrary.wiley.com/doi/full/10.1111/nph.16557)
+<br>
+<br>
+<br>
+**What is new in the GlobalFungi Database?**
+<br>
+<br>
+__November 2020: Release 2__
+<br>
+Database extended to cover data from marine and freshwater ecosystems.
+<br>
+New release includes samples from new habitats: air and aquatic.
+<br>
+255 studies; 26978 samples; 145873740 ITS sequence variants; 445775962 ITS1 sequences; 347086040 ITS2 sequences.
+<br>
+Database version v0.9.8; Second release; Taxonomy based on UNITE version 8.1 (2.2.2019).
+<br>
+<br>
+![alt text](www/release2.png)
+<br>
+Release 2: Samples from previous release (red); New samples (blue) 
+<br>
+<br>
+__July 2020: Release 1__
+<br>
+207 studies; 20009 samples; 119566862 ITS sequence variants; 416291533 ITS1 sequences; 231278756 ITS2 sequences.
+<br>
+Database version v0.9.6; First release; Taxonomy based on UNITE version 8.1 (2.2.2019).
+
 
 
 

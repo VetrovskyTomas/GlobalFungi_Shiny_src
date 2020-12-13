@@ -13,6 +13,7 @@ geoshapeUI <- function(id) {
     # content
     sidebarPanel(width = "100%", style = "background-color:white;",
       fluidRow(
+        "  Use the icons to select the area of interest.",
         leafletOutput(ns("mymap"), height=500)
       ),
       br(),

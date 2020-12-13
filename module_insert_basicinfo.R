@@ -72,7 +72,6 @@ insertBasicUI <- function(id) {
         label = "When my data are posted online in one of the new releases of the database, I wish my name to appear at the 'GlobalFungi Group Author' list. For that purpose, I agree to share my e-mail, affiliation and ORCID for the potential submission of papers in publications describing the database content, its development, or metastudies using the whole database should it include the 'GlobalFungi Group Author'", 
         choices = c("YES","NO"), width = "300px", selected = 1, multiple = FALSE))
     ),
-    
     fluidRow(
       column(8, actionButton(ns("buttStart"), label = "Process basic info", icon = icon("microchip")))
     )
@@ -135,27 +134,35 @@ insertBasicFunc <- function(input, output, session, study) {
       study$basic$study_email <- input$study_email1
       study$basic$study_hash <- md5
       
-      # # write it...
-      query <- paste0("INSERT INTO ",options()$mysql$study,
-                      " (hash, contributor, email, affiliation_institute, affiliation_country, ORCID, title, authors, year, journal, volume, pages, doi, repository, include, coauthor, email_confirmed, submission_finished, date) VALUES ('",
-                      md5, "', '", 
-                      safeSqlQueryVal(input$study_contributor), "', '",
-                      safeSqlQueryVal(input$study_email1), "', '",
-                      safeSqlQueryVal(input$study_affiliation_institute), "', '",
-                      safeSqlQueryVal(input$study_affiliation_country), "', '",
-                      safeSqlQueryVal(input$study_ORCID), "', '",
-                      safeSqlQueryVal(input$study_title), "', '",
-                      safeSqlQueryVal(input$study_authors), "', '",
-                      safeSqlQueryVal(input$study_year), "', '",
-                      safeSqlQueryVal(input$study_journal), "', '",
-                      safeSqlQueryVal(input$study_volume), "', '",
-                      safeSqlQueryVal(input$study_pages), "', '",
-                      safeSqlQueryVal(input$study_doi), "', '",
-                      safeSqlQueryVal(input$study_repository), "', '",
-                      safeSqlQueryVal(input$study_include), "', '",
-                      safeSqlQueryVal(input$study_coauthor), "', 0, 0, '",
-                      format(Sys.time(), "%Y %b %d %X"), "')")
-      sqlQuery(query)
+      # test duplicate
+      query <- sprintf(paste0("SELECT `email` FROM ",options()$mysql$study," WHERE hash = '",md5,"';"))
+      result <- data.table(sqlQuery(query))
+      print(paste("RESULT FOR UNIQUE RECORDS: ",nrow(result)))
+      if (nrow(result)==0) {
+        # # write it...
+        query <- paste0("INSERT INTO ",options()$mysql$study,
+                        " (hash, contributor, email, affiliation_institute, affiliation_country, ORCID, title, authors, year, journal, volume, pages, doi, repository, include, coauthor, email_confirmed, submission_finished, date) VALUES ('",
+                        md5, "', '", 
+                        safeSqlQueryVal(input$study_contributor), "', '",
+                        safeSqlQueryVal(input$study_email1), "', '",
+                        safeSqlQueryVal(input$study_affiliation_institute), "', '",
+                        safeSqlQueryVal(input$study_affiliation_country), "', '",
+                        safeSqlQueryVal(input$study_ORCID), "', '",
+                        safeSqlQueryVal(input$study_title), "', '",
+                        safeSqlQueryVal(input$study_authors), "', '",
+                        safeSqlQueryVal(input$study_year), "', '",
+                        safeSqlQueryVal(input$study_journal), "', '",
+                        safeSqlQueryVal(input$study_volume), "', '",
+                        safeSqlQueryVal(input$study_pages), "', '",
+                        safeSqlQueryVal(input$study_doi), "', '",
+                        safeSqlQueryVal(input$study_repository), "', '",
+                        safeSqlQueryVal(input$study_include), "', '",
+                        safeSqlQueryVal(input$study_coauthor), "', 0, 0, '",
+                        format(Sys.time(), "%Y %b %d %X"), "')")
+        sqlQuery(query)
+      } else {
+        print(paste("duplicate query for md5: ",md5))
+      }
       ###############################################################################
       
     }

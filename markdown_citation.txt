@@ -1,4 +1,4 @@
-## How should GlobalFungi be cited?
+## How to cite GlobalFungi?
 <br>
 Větrovský T., Morais D., Kohout P., Lepinay C., Algora Gallardo C., Awokunle Hollá S., Doreen Bahnmann B., Bílohnědá K., Brabcová V., D'Alò F., Human Z.R., Jomura M., Kolařík M., Kvasničková J., Lladó S., López-Mondéjar R., Martinović T., Mašínová T., Meszárošová L., Michalčíková L., Michalová T., Mundra S., Navrátilová D., Odriozola I., Piché-Choquette S., Štursová M., Švec K., Tláskal V., Urbanová M., Vlk L., Voříšková J., Žifčáková L., Baldrian P.: GlobalFungi, a global database of fungal occurrences from high-throughput-sequencing metabarcoding studies. Scientific Data 7, 228 (2020). 
 

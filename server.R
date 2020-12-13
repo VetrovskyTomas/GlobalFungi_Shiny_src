@@ -1,6 +1,8 @@
 ##############
 ### SERVER ###
 ##############
+options(shiny.maxRequestSize=10000*1024^2)
+
 main_username <- "admin"
 main_password <- "Leho"
 my_username <- "test"
@@ -9,7 +11,7 @@ my_password <- "test"
 server <- function(session, input, output) {
   # test mobile device
   output$isItMobile <- renderText({
-    ifelse(input$isMobile, "mobile", "NOTE: optimal usability would be achieved using Firefox or Chrome on PC")
+    ifelse(input$isMobile, "mobile", "NOTE: best viewed using Firefox, Chrome or Edge on PC")
   })
   
   # UI for user login modal dialog
@@ -153,6 +155,20 @@ server <- function(session, input, output) {
         print(paste0("The url query study value is ", vals$text))
         callModule(module = insertFunc, id = "id_insert", vals)
         updateTabItems(session, "menu_tabs", "fmd_insert")
+    } else   
+      # help redirection by link...
+      if (!is.null(query[['help']])) {
+        vals$key <- query[['help']]
+        print(paste0("The url query help value is ", vals$text))
+        callModule(module = helpFunc, id = "id_help")
+        updateTabItems(session, "menu_tabs", "fmd_help")
+    } else   
+      # help redirection by link...
+      if (!is.null(query[['join']])) {
+        vals$key <- query[['join']]
+        print(paste0("The url query join value is ", vals$text))
+        callModule(module = joinFunc, id = "id_join")
+        updateTabItems(session, "menu_tabs", "fmd_join")
       }
   })
   
@@ -171,6 +187,7 @@ server <- function(session, input, output) {
                 tags$hr(),
                 menuItem("How to cite", icon = icon("smile-wink"), tabName = "fmd_cite"),
                 menuItem(paste0("About ",global_info[,"name"]), icon = icon("globe-americas"), tabName = "fmd_aboutus"),
+                menuItem("Join mailing list", icon = icon("envelope"), tabName = "fmd_join"),
                 menuItem("Help", icon = icon("question-circle"), tabName = "fmd_help"),
                 ###########################
                 hidden(tags$div(
@@ -183,8 +200,8 @@ server <- function(session, input, output) {
                 ),
                 ###########################
                 tags$hr(),
-                menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
                 menuItem("Submit your study", icon = icon("file-upload"), tabName = "fmd_insert", badgeColor = "red"),
+                menuItem("Leave a message", icon = icon("info-circle"), tabName = "fmd_message"),
                 tags$hr(),
                 menuItem("Collaborators", icon = icon("people-carry"), tabName = "fmd_collaborators"),
                 tags$hr(),
@@ -224,6 +241,7 @@ server <- function(session, input, output) {
   callModule(module = resultsFunc, id = "id_results", vals)
   callModule(module = messageFunc, id = "id_message")
   callModule(module = aboutusFunc, id = "id_aboutus")
+  callModule(module = joinFunc, id = "id_join")
   callModule(module = adminFunc, id = "id_admin")
   callModule(module = collaboratorsFunc, id = "id_collaborators")
   #################################################

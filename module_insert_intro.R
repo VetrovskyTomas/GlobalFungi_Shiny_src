@@ -7,7 +7,7 @@ insertIntroUI <- function(id) {
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
       fluidRow(
         column(2, img(src='insert.png')),
-        column(6, br(), h2(id="section_title", "Inserting your study guide"))
+        column(6, br(), h2(id="section_title", "Submitting your study to GlobalFungi - a step-by-step guide"))
       ),
       fluidRow(column(12, includeMarkdown("markdown_insert.txt"))),
       fluidRow(

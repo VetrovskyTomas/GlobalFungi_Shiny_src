@@ -20,7 +20,7 @@ analysisUI <- function(id) {
           "",
           placeholder = "CCGAAGTACAGGCCCTCTCGTAGGGCTAAACTTCCACCCTTTGTTTATCATACCATGTTGCTTTGGCGAGACGTCCTCGGACCACCGGCCCTCGGGCGGGTGCGCGCTCGCCAGAGAAAAATCAAACCCAAACCATTTTAGTAGTAGTCTGAAAACAAGTTTCAATTATTA",
           width="100%",
-          height = "200px"),
+          height = "120px"),
         
         # Input: Select a file ----
         fluidRow(
@@ -208,7 +208,7 @@ analysisFunc <- function(input, output, session, parent) {
       incProgress(1/5)
 
       # run blast command...
-      cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 1 -num_threads ", global_blast_nproc)
+      cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 10 -num_threads ", global_blast_nproc)
       cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)

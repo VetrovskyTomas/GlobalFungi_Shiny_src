@@ -44,6 +44,9 @@ adminUI <- function(id) {
           br(),
           DT::dataTableOutput(ns("table_studies")),
           downloadButton(ns("downloadData"), "Download", style = "visibility: hidden;")
+        ),
+        tabPanel("Data upload", value = "tab_upload",
+                 insertUploadUI(id = ns("insert_upload"))
         )
       )
     )
@@ -204,6 +207,19 @@ adminFunc <- function(input, output, session) {
     } else {
       renderGauge(div_id = "graph_search", gauge_name = "No data within selected range...",rate = 0)
     }
+  })
+  
+  # TEST
+  # create storage for study info
+  study <- reactiveValues()
+  study$valid <- TRUE
+  study$info <- NULL
+  study$basic <- NULL
+  study$metadata <- NULL
+  study$correct <- FALSE
+  study$start <- FALSE
+  observe({
+    callModule(module = insertUploadFunc, id = "insert_upload", study)  
   })
   
 }

@@ -7,11 +7,11 @@ resutsTypesAndBiomesUI <- function(id) {
                  column(6,    
                         wellPanel(
                         h2("Sample type breakdown of resulting samples"),
-                        tags$div(id="typePieStud", style="width:100%;height:200px;"),
+                        tags$div(id="typePieStud", style="width:100%;height:240px;"),
                         deliverChart(div_id = ns("typePieStud")),
                         style = "background-color:white;",
                         h2("Sample type breakdown of all samples"),
-                        tags$div(id="typePieGlob", style="width:100%;height:200px;"),
+                        tags$div(id="typePieGlob", style="width:100%;height:240px;"),
                         deliverChart(div_id = ns("typePieGlob")),
                         style = "background-color:white;"
                         )
@@ -19,11 +19,11 @@ resutsTypesAndBiomesUI <- function(id) {
                  column(6,      
                         wellPanel(
                         h2("Sample biome breakdown of resulting samples"),
-                        tags$div(id="biomePieStud", style="width:100%;height:200px;"),
+                        tags$div(id="biomePieStud", style="width:100%;height:240px;"),
                         deliverChart(div_id = ns("biomePieStud")),
                         style = "background-color:white;",
                         h2("Sample biome breakdown of all samples"),
-                        tags$div(id="biomePieGlob", style="width:100%;height:200px;"),
+                        tags$div(id="biomePieGlob", style="width:100%;height:240px;"),
                         deliverChart(div_id = ns("biomePieGlob")),
                         style = "background-color:white;"
                         )
@@ -43,7 +43,7 @@ resutsTypesAndBiomesFunc <- function(input, output, session,  variable) {
     datS <- as.data.frame(table(variable$samples[,"sample_type"]))
     colnames(datS) <- c("name", "value")
     # render...
-    renderPieChart(div_id = "typePieStud", data = datS, show.legend = FALSE, radius = "75%")
+    renderPieChart(div_id = "typePieStud", data = datS, show.legend = FALSE, radius = "65%")
     
     # global pie chart sample type...
     datG <- as.data.frame(table(global_samples[,"sample_type"]))
@@ -52,13 +52,13 @@ resutsTypesAndBiomesFunc <- function(input, output, session,  variable) {
     x <- as.character(datG$name) %in% datS$name
     datG <- rbind(datG[x,], datG[!x,])
     # render...
-    renderPieChart(div_id = "typePieGlob", data = datG, show.legend = FALSE, radius = "75%")  
+    renderPieChart(div_id = "typePieGlob", data = datG, show.legend = FALSE, radius = "65%")  
 
     #pie chart of samples biome...
     datS <- as.data.frame(table(variable$samples[,"Biome"]))
     colnames(datS) <- c("name", "value")
     # render...
-    renderPieChart(div_id = "biomePieStud", data = datS, show.legend = FALSE, radius = "75%")
+    renderPieChart(div_id = "biomePieStud", data = datS, show.legend = FALSE, radius = "65%")
     
     # global pie chart biome...
     datG <- as.data.frame(table(global_samples[,"Biome"]))
@@ -67,7 +67,7 @@ resutsTypesAndBiomesFunc <- function(input, output, session,  variable) {
     x <- as.character(datG$name) %in% datS$name
     datG <- rbind(datG[x,], datG[!x,])
     # render...
-    renderPieChart(div_id = "biomePieGlob", data = datG, show.legend = FALSE, radius = "75%")
+    renderPieChart(div_id = "biomePieGlob", data = datG, show.legend = FALSE, radius = "65%")
   } else {
     renderGauge(div_id = "typePieStud", gauge_name = "No results...", rate = 0)
     renderGauge(div_id = "typePieGlob", gauge_name = "No results...", rate = 0)

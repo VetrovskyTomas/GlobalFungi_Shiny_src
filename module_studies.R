@@ -33,7 +33,9 @@ studiesFunc <- function(input, output, session, parent) {
     inputs
   }
   
+  # fill data frame
   df <- reactiveValues(data = data.frame(
+    Date =  global_papers$add_date,
     Name =  global_papers$title,
     Authors = global_papers$authors,
     Journal = global_papers$journal,
@@ -46,8 +48,10 @@ studiesFunc <- function(input, output, session, parent) {
     row.names = 1:nrow(global_papers)
   ))
   
+  col_names <- c("Date of Addition", "Title", "Authors", "Journal", "Year", "DOI","Actions")
+  
   output$data <- DT::renderDataTable(
-    df$data, server = FALSE, escape = FALSE, selection = 'none'
+    df$data, colnames = col_names, server = FALSE, escape = FALSE, selection = 'none'
   )
 
   # redirect...  
@@ -57,7 +61,8 @@ studiesFunc <- function(input, output, session, parent) {
     #info about result type...
     vals$type =  "study"
     #pass code of the study...
-    vals$text <- toString(global_papers[selectedRow,1])
+    vals$text <- toString(global_papers[selectedRow,2])
+    print(vals$text)
     callModule(session = parent, module = resultsFunc, id = "id_results",vals)
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
     }

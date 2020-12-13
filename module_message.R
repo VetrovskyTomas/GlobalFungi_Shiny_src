@@ -43,9 +43,9 @@ messageFunc <- function(input, output, session) {
       if (message !=""){
         # write it...
         query <- paste0("INSERT INTO ",options()$mysql$messages, 
-                                " (email, subject, message, date) VALUES ('", 
+                                " (email, subject, message) VALUES ('", 
                                 safeSqlQueryVal(sender), "', '", safeSqlQueryVal(isolate(input$subject)), "', '", 
-                                safeSqlQueryVal(message), "', '", format(Sys.time(), "%Y %b %d %X"), "')")
+                                safeSqlQueryVal(message), "')")
         sqlQuery(query)
         
         # send email to global fungi...

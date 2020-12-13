@@ -29,7 +29,7 @@ searchUI <- function(id) {
           selectizeInput(inputId = ns("search_key_species"),
                          options = list(
                            maxOptions=length(global_species_list),
-                           placeholder = 'Please select an option below'
+                           placeholder = 'Start typing here'
                          ),
                          label = "Select species:", choices = global_species_list, width = "300px",
                          selected = 1, 
@@ -41,7 +41,7 @@ searchUI <- function(id) {
           selectizeInput(inputId = ns("search_key_genus"),
             options = list(
               maxOptions=length(global_genus_list),
-              placeholder = 'Please select an option below'
+              placeholder = 'Start typing here'
             ),
             label = "Select genus:", choices = global_genus_list, width = "300px",
             selected = 1, 
@@ -109,11 +109,13 @@ searchFunc <- function(input, output, session, parent) {
   observe({
       # load species options...
       updateSelectizeInput(session, "search_key_species",
+                           selected="",
                            choices = global_species_list, 
                            server = TRUE)
       
       # load genus options...
       updateSelectizeInput(session, "search_key_genus", 
+                           selected="",
                            choices = global_genus_list, 
                            server = TRUE)
   })

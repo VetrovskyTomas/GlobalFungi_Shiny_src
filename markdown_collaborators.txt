@@ -1,6 +1,8 @@
 ﻿## List of Collaborators
 
 
+- Andrea Moravcová - Charles University - Czech Republic
+- Anna Popelářová - Charles University - Czech Republic
 - Barbara Doreen Bahnmann - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
@@ -8,7 +10,7 @@
 - Diana Navrátilová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Federica D'Alò - University of Tuscia - Italy
 - Iñaki Odriozola - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
-- Jana Kvasničková  - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Jana Kvasničková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Jana Voříšková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Karel Švec - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Ki Hyeong Park - Seoul National University - Republic of Korea
@@ -21,12 +23,16 @@
 - Mayuko Jomura - Nihon University - Japan
 - Michaela Urbanová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Miroslav Kolařík - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Monika Pappová - Charles University - Czech Republic
+- Ondřej Gargoš - Charles University - Czech Republic
 - Petr Baldrian - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Petr Kohout - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Petr Martin Mamula - Charles University - Czech Republic
 - Rubén López-Mondéjar - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Salvador Lladó - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sandra Awokunle Hollá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sarah Piché-Choquette - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Štěpánka Žárová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sunil Mundra - United Arab Emirates University - United Arab Emirates
 - Tereza Mašínová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Tereza Michalová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
@@ -34,9 +40,9 @@
 - Tomáš Větrovský - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Vendula Brabcová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Vojtěch Tláskal - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Young Woon Lim - Seoul National University - Republic of Korea
 - Zander Rainier Human - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 
-
-This work was supported by the Czech Science Foundation and the ELIXIR CZ.
+This work was supported by the Czech Science Foundation and by the ELIXIR CZ.
 
 

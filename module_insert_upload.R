@@ -9,11 +9,15 @@ insertUploadUI <- function(id) {
       column(3, br(), actionButton(ns('reset'), 'Reset Input', icon = icon("broom")))
     ),
     fluidRow(
+      column(12, checkboxInput(inputId = ns("SRA_deposited"), label = "Sequencing data are in public Sequence Read Archive (SRA) repository mentioned in 
+                               'Basic info' form and all samples can be identified based on provided metadata table (NO DATA UPLOAD IS NEEDED).", FALSE))
+    ),
+    fluidRow(
       column(12,"File(s) prepared for upload:"),
       column(12,verbatimTextOutput(ns('summary')))
     ),
     br(),
-    fluidRow(column(12, actionButton(ns("buttStart"), label = "Upload sequence data", icon = icon("microchip")))),
+    fluidRow(column(12, actionButton(ns("buttStart"), label = "Upload sequence data (Finish the submission)", icon = icon("microchip")))),
     br()
   )
 }
@@ -23,8 +27,6 @@ insertUploadFunc <- function(input, output, session, study) {
   
   # namespace for dynamic input...
   ns <- session$ns
-  
-  options(shiny.maxRequestSize=10000*1024^2)
   
   values <- reactiveValues(
     upload_state = NULL
@@ -51,7 +53,11 @@ insertUploadFunc <- function(input, output, session, study) {
   
   observe({
     if (is.null(study$files)){
-      shinyjs::disable("buttStart")
+      if (input$SRA_deposited == TRUE) {
+        shinyjs::enable("buttStart")
+      } else {
+        shinyjs::disable("buttStart")
+      }
     } else {
       shinyjs::enable("buttStart")
     }
@@ -75,27 +81,32 @@ insertUploadFunc <- function(input, output, session, study) {
   })  
   
   observeEvent(input$buttStart, {
-    if (nrow(file_input()) == 0) {
-      alert(paste0("Missing value - ",study_input()))
-      study$info <- paste0("Missing value - ",check_inputs,"\n")
-    } else {
-      print("You processed the upload...")
-      #*******************************************
-      # generate folder for study data...
-      
-      outputDir <- paste0(global_out_path, study$key, "/")
-      print(outputDir)
-      system(paste("mkdir ", outputDir, sep = ""))
-      
-      for (x in c(1:length(file_input()$datapath))) {
-        cmd <- paste0("mv ",file_input()$datapath[x]," ",outputDir, file_input()$name[x])
-        print(cmd)
-        system(cmd)
-      }
-      #*******************************************
-      study$info <- paste0("Upload is finished for ",nrow(file_input())," files...")
-      study$upload$data <- file_input()
+    if (input$SRA_deposited == TRUE) {
+      print("You processed the upload (SRA).")
+      study$info <- paste0("Sequencing data are in public Sequence Read Archive (SRA)")
+      #study$upload$data <- file_input()
       study$upload$test <- "OK"
+    } else {
+      if (!is.null(file_input())) {
+        print("You processed the upload (FILES).")
+        #*******************************************
+        # generate folder for study data...
+          outputDir <- paste0(global_out_path, study$key, "/")
+          print(outputDir)
+          system(paste("mkdir ", outputDir, sep = ""))
+          
+          for (x in c(1:length(file_input()$datapath))) {
+            cmd <- paste0("mv ",file_input()$datapath[x]," ",outputDir, file_input()$name[x])
+            print(cmd)
+            system(cmd)
+          }
+        #*******************************************
+        study$info <- paste0("Upload is finished for ",nrow(file_input())," files...")
+        study$upload$data <- file_input()
+        study$upload$test <- "OK"
+      } else {
+        alert(paste0("Missing file input!"))
+      }
     }
   })
   
