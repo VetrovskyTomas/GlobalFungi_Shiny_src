@@ -5,6 +5,7 @@
 - Anna Popelářová - Charles University - Czech Republic
 - Barbara Doreen Bahnmann - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Cassie Ettinger - University of California, Davis - United States
 - Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Daniel Morais - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Diana Navrátilová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
@@ -26,6 +27,7 @@
 - Monika Pappová - Charles University - Czech Republic
 - Ondřej Gargoš - Charles University - Czech Republic
 - Petr Baldrian - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Petr Heděnec - University of Copenhagen - Denmark
 - Petr Kohout - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Petr Martin Mamula - Charles University - Czech Republic
 - Rubén López-Mondéjar - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic

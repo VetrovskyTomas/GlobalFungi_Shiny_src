@@ -170,7 +170,7 @@ resultsFunc <- function(input, output, session, variable) {
               # get samples table...
               print(paste0("Number of seqs in ",text," is ", nrow(variants)))
               
-              out_data$SeqVars <- variants[,c("hash","samples", "marker", "sequence")]
+              out_data$SeqVars <- variants[,c("hash","samples","abundances", "marker", "sequence")]
               #print(out_data$SeqVars)
               incProgress(1/3)
               out_data$samples <- sample_tab(variants)

@@ -61,6 +61,7 @@ source("module_insert_upload.R")
 
 # hidden 
 source("module_admin.R")
+source("module_admin_analysis.R")
 
 # general results page 
 source("module_results.R")

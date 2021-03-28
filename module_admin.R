@@ -47,6 +47,9 @@ adminUI <- function(id) {
         ),
         tabPanel("Data upload", value = "tab_upload",
                  insertUploadUI(id = ns("insert_upload"))
+        ),
+        tabPanel("Analysis", value = "tab_anal",
+                 analysisAdminUI(id = ns("id_admin_analysis"))
         )
       )
     )
@@ -219,7 +222,8 @@ adminFunc <- function(input, output, session) {
   study$correct <- FALSE
   study$start <- FALSE
   observe({
-    callModule(module = insertUploadFunc, id = "insert_upload", study)  
+    callModule(module = insertUploadFunc, id = "insert_upload", study) 
+    callModule(module = analysisAdminFunc, id = "id_admin_analysis", parent = main_session)
   })
   
 }

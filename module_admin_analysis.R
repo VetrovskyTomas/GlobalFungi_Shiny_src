@@ -1,16 +1,11 @@
 # Function for module UI
-analysisUI <- function(id) {
+analysisAdminUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     useShinyjs(),
     # picture
     sidebarPanel(width = "100%", style = "background-color:#0c2b37;",
-      #div(style = "padding: 0px 0px;margin-top:-1em;margin-bottom:0em;",
-      fluidRow(
-        column(1, style = "background-color:#0c2b37;",img(src='search_seq.png', height = 56)),
-        column(11, h2(id="header_title", "Search by sequence!"))
-      )
-      #)
+        column(12, h2(id="welcome_title", "Special search by sequence!"))
     ),
     # Sidebar panel for inputs ----
     sidebarPanel(width = "100%", style = "background-color:#f8f8f8;",
@@ -46,7 +41,7 @@ analysisUI <- function(id) {
 }
 
 # Function for module server logic
-analysisFunc <- function(input, output, session, parent) {
+analysisAdminFunc <- function(input, output, session, parent) {
   #namespace for dynamic input...
   ns <- session$ns
   
@@ -76,18 +71,17 @@ analysisFunc <- function(input, output, session, parent) {
   output$dynamic_params <- renderUI({
     if (input$search_type == "blast_group"){
       fluidRow(
-        column(3,
-              selectizeInput(ns("max_blast_results"),
-                       options = list(
-                         maxOptions=length(global_species_list),
-                         placeholder = 'Please select an option below'
-                       ),
-                       label = "Max of BLAST results:", choices = c(10, 50, 100, 500), width = "300px",
-                       selected = 1,
-                       multiple = FALSE # allow for multiple inputs
-                       )
-                       )
-        
+          column(4,
+                 selectizeInput(ns("max_blast_results"),
+                                options = list(
+                                  maxOptions=length(global_species_list),
+                                  placeholder = 'Please select an option below'
+                                ),
+                                label = "Max of BLAST results:", choices = c(10, 50, 100, 500, 1000, 10000), width = "300px",
+                                selected = 1,
+                                multiple = FALSE # allow for multiple inputs
+                 )
+          )
       )
     }
   })

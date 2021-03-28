@@ -137,7 +137,7 @@ insertMetadataFunc <- function(input, output, session, study) {
             incProgress(1/(nrow(metatable)-1))
 
             query <- paste0("INSERT INTO ",options()$mysql$metadata,
-                            " (paper_study,longitude,latitude,elevation,continent,country,location,sample_type,Biome,Biome_detail,MAT_study,MAP_study,sample_name,area_sampled,area_GPS,number_of_subsamples,sample_depth,year_of_sampling,month_of_sampling,day_of_sampling,sampling_info,sample_description,sequencing_platform,target_gene,extraction_DNA_mass,extraction_DNA_size,extraction_DNA_method,primers,primers_sequence,pH,pH_method,organic_matter_content,total_C_content,total_N_content,total_P,total_Ca,total_K,plants_dominant,plants_all,sample_info,sample_seqid,sample_barcode) VALUES ('",
+                            " (paper_study,latitude,longitude,elevation,continent,country,location,sample_type,Biome,Biome_detail,MAT_study,MAP_study,sample_name,area_sampled,area_GPS,number_of_subsamples,sample_depth,year_of_sampling,month_of_sampling,day_of_sampling,sampling_info,sample_description,sequencing_platform,target_gene,extraction_DNA_mass,extraction_DNA_size,extraction_DNA_method,primers,primers_sequence,pH,pH_method,organic_matter_content,total_C_content,total_N_content,total_P,total_Ca,total_K,plants_dominant,plants_all,sample_info,sample_seqid,sample_barcode) VALUES ('",
                             study$key, "', '",
                             safeSqlQueryVal(metatable[x,1]), "', '",
                             safeSqlQueryVal(metatable[x,2]), "', '",

@@ -35,7 +35,7 @@ resutsVariantsFunc <- function(input, output, session,  data, type, text) {
       filename = paste0(type,".fasta"),
       content = function(file) {
         #>e770bf38a768561247b4fd234c884834|SampleID_2224|genus_Abortiporus|marker_ITS2|abund_1_total_103388
-        data$SeqVars$title <- paste0(">",data$SeqVars$hash,"|SampleIDs_",data$SeqVars$samples,"|marker_",data$SeqVars$marker)
+        data$SeqVars$title <- paste0(">",data$SeqVars$hash,"|SampleIDs_",data$SeqVars$samples,"|abundances_",data$SeqVars$abundances,"|marker_",data$SeqVars$marker)
         X <- data$SeqVars[,c("title", "sequence")]
         print(X)
         D <- do.call(rbind, lapply(seq(nrow(X)), function(i) t(X[i, ])))

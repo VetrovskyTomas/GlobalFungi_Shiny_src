@@ -100,7 +100,7 @@ global_variants_path <- "/home/fungal/databases/variants_fasta/"
 global_out_path <- "D:/EXAMPLES/" #"/home/fungal/databases/user_outputs/"
 
 # blast cpus
-global_blast_nproc <- "2"
+global_blast_nproc <- "12"
 
 #################################################################################
 # tracking get last session count
