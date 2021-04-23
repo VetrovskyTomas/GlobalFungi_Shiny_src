@@ -54,8 +54,8 @@ sendEmail <- function (sender, recipients,subjtext, bodytext) {
             to = recipients,
             subject=subjtext,
             body = bodytext,
-            smtp = list(host.name = "email09.active24.com", port = 465, 
-                        user.name="info@globalfungi.com", passwd="ea4XRNz0XT", ssl=TRUE),
+            smtp = list(host.name = "email09.active24.com", port = 587, # port = 465, 
+                        user.name="info@globalfungi.com", passwd="ea4XRNz0XT", ssl=FALSE),
             authenticate = TRUE,
             send = TRUE)
 }
