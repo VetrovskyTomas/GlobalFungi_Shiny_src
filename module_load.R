@@ -89,6 +89,7 @@ global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
 # nucleotide database for blast
 global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
+global_blast_db_double <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_DOUBLE.fa"
 
 # sample sequences path 
 global_samples_path <- "/home/fungal/databases/samples_fasta/"

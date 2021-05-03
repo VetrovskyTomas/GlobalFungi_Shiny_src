@@ -66,6 +66,18 @@ analysisFunc <- function(input, output, session, parent) {
     selected.rows$index <- as.numeric(strsplit(isolate(input$lastClickId), "_")[[1]][2])
   })
   
+  blast_db <- reactive({ 
+    if (input$ignore_singletons) {
+      global_blast_db_double   
+    } else {
+      global_blast_db
+    }
+  })
+  
+  observeEvent(input$ignore_singletons, {
+    print(paste("BLAST DB:", blast_db()))
+  })
+  
   # show results...
   show_results <- function(vals) {
     callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals))
@@ -74,20 +86,24 @@ analysisFunc <- function(input, output, session, parent) {
   ##################################################################
   # dynamic header - seq vars...
   output$dynamic_params <- renderUI({
-    if (input$search_type == "blast_group"){
+    if (grepl("blast", input$search_type, fixed = TRUE)){
       fluidRow(
-        column(3,
-              selectizeInput(ns("max_blast_results"),
-                       options = list(
-                         maxOptions=length(global_species_list),
-                         placeholder = 'Please select an option below'
-                       ),
-                       label = "Max of BLAST results:", choices = c(10, 50, 100, 500), width = "300px",
-                       selected = 1,
-                       multiple = FALSE # allow for multiple inputs
-                       )
-                       )
-        
+        column(5,checkboxInput(inputId = ns("ignore_singletons"), label = "Ignore singleton variants for BLAST", TRUE)),
+        if (input$search_type == "blast_group"){
+          fluidRow(
+            column(3,
+                   selectizeInput(ns("max_blast_results"),
+                                  options = list(
+                                    maxOptions=length(global_species_list),
+                                    placeholder = 'Please select an option below'
+                                  ),
+                                  label = "Max of BLAST results:", choices = c(10, 50, 100, 500), width = "300px",
+                                  selected = 1,
+                                  multiple = FALSE # allow for multiple inputs
+                   )
+            )
+          )
+        }
       )
     }
   })
@@ -160,7 +176,6 @@ analysisFunc <- function(input, output, session, parent) {
     print("exact...........")
     withProgress(message = 'Running exact search...', {
       # modify fasta dataframe...
-      
       input_fasta$titles <- substring(input_fasta$titles, 2)
       input_fasta$md5 <- as.character(sapply(input_fasta$sequences, digest, algo="md5", serialize=F))
       
@@ -209,7 +224,7 @@ analysisFunc <- function(input, output, session, parent) {
 
       # run blast command...
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 10 -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", blast_db()," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
@@ -287,7 +302,7 @@ analysisFunc <- function(input, output, session, parent) {
       maxres <- input$max_blast_results
       print(paste("Maximum of blast results:",maxres))
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs ",maxres," -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", blast_db()," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
