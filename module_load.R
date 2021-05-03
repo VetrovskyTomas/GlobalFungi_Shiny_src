@@ -115,11 +115,11 @@ print(paste0("Current session number ",global_session))
 
 
 # database info
-query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its1_raw_count`,`its2_raw_count`,`info`,`citation`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
+query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its_variants_count`,`its1_raw_count`,`its2_raw_count`,`info`,`citation`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
 global_info <- data.table(sqlQuery(query))
 
-query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
-global_variants_count <- sqlQuery(query)
+#query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
+#global_variants_count <- sqlQuery(query)
 # load samples table...
 query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
 global_samples <- data.table(sqlQuery(query))

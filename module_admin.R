@@ -17,11 +17,17 @@ adminUI <- function(id) {
     sidebarPanel(width = "100%", style = "background-color:white;",
       tabsetPanel(id = ns("navbar"),
         tabPanel("Messages",br(),
-          selectInput(ns('select_tab'),'Select table',choice = c("messages")),
           actionButton(ns("refresh_mess"), "Refresh table", icon = icon("redo")),
           br(),
           br(),
-          DT::dataTableOutput(ns("table_selected"))                                     
+          checkboxInput(inputId = ns("unprocessed_mess"), label = "show only unprocessed", TRUE),
+          DT::dataTableOutput(ns("table_messages"))                                     
+        ),
+        tabPanel("Mail list",br(),
+                 actionButton(ns("refresh_mail"), "Refresh table", icon = icon("redo")),
+                 br(),
+                 br(),
+                 DT::dataTableOutput(ns("table_maillist"))                                     
         ),
         tabPanel("Traffic",br(),
           fluidRow(
@@ -71,11 +77,59 @@ adminFunc <- function(input, output, session) {
     inputs
   }  
   
+  # mail list table button...  
+  observeEvent(input$refresh_mail, {
+    output$table_maillist <- DT::renderDataTable(
+      DT::datatable({
+        table_mail <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$maillist," ORDER BY id DESC")))
+        table_mail = subset(table_mail, select = c(date, name, email))
+        table_mail
+      }, escape = FALSE, selection = 'none')
+    )
+  }, ignoreInit = TRUE)  
+  
+  refres_messages <- reactive({
+    DT::renderDataTable(
+      DT::datatable({
+        table_mess <- NULL
+        if (input$unprocessed_mess == FALSE) { 
+          table_mess <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$messages," ORDER BY id DESC")))
+        } else {
+          table_mess <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$messages," WHERE `processed` = 0 ORDER BY id DESC")))
+        }
+        # process button
+        table_mess$hash_butt <- ifelse(table_mess$processed==0,shinyInput(actionButton, nrow(table_mess), 'messbutton_', label = paste("process (id:",table_mess$id,")"),
+                                                                          onclick = paste0("Shiny.onInputChange('", ns("messClickId"), "',this.id);",
+                                                                                           "Shiny.onInputChange('", ns("messClick"), "', Math.random())")),"processed")
+        table_mess = subset(table_mess, select = c(date, email, subject, message, hash_butt))
+        table_mess
+      }, escape = FALSE, selection = 'none')
+    )
+  })
+  
+  # messages table button...  
+  observeEvent(input$messClick, {
+    index <- as.numeric(strsplit(isolate(input$messClickId), "_")[[1]][2])
+    if (!is.null(index)){
+      selectedRow <- index
+      table_mess <- NULL
+      if (input$unprocessed_mess == FALSE) { 
+        table_mess <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$messages," ORDER BY id DESC")))
+      } else {
+        table_mess <- data.table(sqlQuery(paste0("SELECT * FROM ",options()$mysql$messages," WHERE `processed` = 0 ORDER BY id DESC")))
+      }      
+      mess_id <<- table_mess[selectedRow,"id"]
+      print(paste("you have selected row:",selectedRow, " id ", mess_id))
+      # set as processed...
+      sqlQuery(paste0("UPDATE ",options()$mysql$messages," SET processed = 1 WHERE id = ",mess_id))
+      ####
+      output$table_messages <- refres_messages()
+    }
+  }, ignoreInit = TRUE)  
+  
   # refresh message table...
   observeEvent(input$refresh_mess, {
-      output$table_selected <- DT::renderDataTable({
-        table <- data.table(sqlQuery(paste0("SELECT * FROM ",input$select_tab," ORDER BY id DESC")))
-      })
+    output$table_messages <- refres_messages()
   })
   
   # refresh studies table...

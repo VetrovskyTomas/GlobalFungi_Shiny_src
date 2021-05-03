@@ -26,15 +26,72 @@ Větrovský T., Morais D., Kohout P., Lepinay C., Algora Gallardo C., Awokunle H
 <br>
 <br>
 <br>
+**What is new in the GlobalFungi Database?**
+<br>
+<br>
+__May 1, 2021: Release 3__
+<br>
+Data from more than 100 novel studies added, higher coverage of aquatic habitats.
+<br>
+367 studies; 36 684 samples; 213 747 241 ITS sequence variants; 582 264 149 ITS1 sequences; 526 638 147 ITS2 sequences.
+<br>
+Taxonomy based on UNITE version 8.2 (4.2.2020). Database interface version v0.9.9.
+<br>
+<br>
+![alt text](www/release3.png)
+<br>
+Release 3: Samples from previous release (red); New samples (blue)
+<br>
+<br>
+__November 1, 2020: Release 2__
+<br>
+Database extended to cover data from marine and freshwater ecosystems.
+<br>
+New release includes samples from new habitats: air and aquatic.
+<br>
+255 studies; 26 978 samples; 145 873 740 ITS sequence variants; 445 775 962 ITS1 sequences; 347 086 040 ITS2 sequences.
+<br>
+Taxonomy based on UNITE version 8.1 (2.2.2019). Database interface version v0.9.8.
+<br>
+<br>
+![alt text](www/release2.png)
+<br>
+Release 2: Samples from previous release (red); New samples (blue) 
+<br>
+<br>
+__July 1, 2020: Release 1__
+<br>
+207 studies; 20 009 samples; 119 566 862 ITS sequence variants; 416 291 533 ITS1 sequences; 231 278 756 ITS2 sequences.
+<br>
+Taxonomy based on UNITE version 8.1 (2.2.2019). Database interface version v0.9.6.
+<br>
+<br>
+<br>
 **Papers that use GlobalFungi data**
 <br>
 <br>
+Baldrian, P., Větrovský, T., Lepinay, C., Kohout, P.: High-throughput sequencing view on the magnitude of global fungal diversity. Fungal Diversity in press. 
+[https://doi.org/10.1007/s13225-021-00472-y](https://doi.org/10.1007/s13225-021-00472-y)
+<br>
+<br>
 Kalsoom Khan, F., Kluting, K., Tångrot, J., Urbina, H., Ammunet, T., Eshghi Sahraei, S., Rydén, M., Ryberg, M., Rosling, A.: Naming the untouchable – environmental sequences and niche partitioning as taxonomical evidence in fungi. Ima Fungus 11, 23 (2020).
-[https://doi.org/10.1186/s43008-020-00045-9](https://link.springer.com/article/10.1186/s43008-020-00045-9)  
+[https://doi.org/10.1186/s43008-020-00045-9](https://link.springer.com/article/10.1186/s43008-020-00045-9)
+<br>
+<br>
+Lücking, R., Aime, M.C., Robbertse, B., Miller, A.N., Aoki, T., Ariyawansa, H.A., Cardinali, G., Crous, P.W., Druzhinina, I.S., Geiser, D.M., Hawksworth, D.L., Hyde, K.D., Irinyi, L., Jeewon, R., Johnston, P.R., Kirk, P.M., Malosso, E., May, T.W., Meyer, W., Nilsson, H.R., Öpik, M., Robert, V., Stadler, M., Thines, M., Vu, D., Yurkov, A.M., Zhang, N., Schoch, C.L.: Fungal taxonomy and sequence-based nomenclature. Nature Microbiology 6, 540-548 (2021).
+[https://doi.org/10.1038/s41564-021-00888-x](https://doi.org/10.1038/s41564-021-00888-x)
+<br>
+<br>
+Muszewska, A., Okrasińska, A., Steczkiewicz, K., Drgas, O., Orłowska, M., Perlińska-Lenart, U., Aleksandrzak-Piekarczyk, T., Szatraj, K., Zielenkiewicz, U., Piłsyk, S., Malc, E., Mieczkowski, P., Kruszewska, J.S., Bernat, P., Pawłowska, J.: Metabolic Potential, Ecology and Presence of Associated Bacteria Is Reflected in Genomic Diversity of Mucoromycotina. Frontiers in Microbiology 12, 239 (2021).\
+[https://doi.org/10.3389/fmicb.2021.636986](https://doi.org/10.3389/fmicb.2021.636986)
 <br>
 <br>
 Newsham, K.K., Cox, F., Sands, C.J., Garnett, M.H., Magan, N., Horrocks, C.A., Dungait, J.A.J., Robinson, C.H.: A Previously Undescribed Helotialean Fungus That Is Superabundant in Soil Under Maritime Antarctic Higher Plants. Frontiers in Microbiology 11, 615608 (2020).
 [https://doi.org/10.3389/fmicb.2020.615608](https://www.frontiersin.org/articles/10.3389/fmicb.2020.615608/full)
+<br>
+<br>
+Põlme, S., Abarenkov, K., Henrik Nilsson, R., Lindahl, B.D., Clemmensen, K.E., Kauserud, H., Nguyen, N., Kjøller, R., Bates, S.T., Baldrian, P., Frøslev, T.G., Adojaan, K., Vizzini, A., Suija, A., Pfister, D., Baral, H.-O., et al.: FungalTraits: a user-friendly traits database of fungi and fungus-like stramenopiles. Fungal Diversity 105, 1-16 (2020).
+[https://doi.org/10.1007/s13225-020-00466-2](https://doi.org/10.1007/s13225-020-00466-2)
 <br>
 <br>
 Réblová, M., Kolařík, M., Nekvindová, J., Miller, A.N., Hernández-Restrepo, M.: Phylogeny, Global Biogeography and Pleomorphism of Zanclospora. Microorganisms 9, 706 (2021).
@@ -46,43 +103,12 @@ Sugiyama, Y., Sato, H.: The Limited Establishment of Native Ectomycorrhizal Fung
 <br>
 <br>
 Větrovský, T., Kohout, P., Kopecký, M., Machac, A., Man, M., Bahnmann, B.D., Brabcová, V., Choi, J., Meszárošová, L., Human, Z.R., Lepinay, C., Lladó, S., Lopez-Mondejar, R., Martinovic, T., Mašínová, T., Morais, D., Navrátilová, D., Odriozola, I., Štursová, M., Švec, K., Tláskal, V., Urbanová, M., Wan, J., Žifčáková, L., Howe, A., Ladau, J., Peay, K.G., Storch, D., Wild, J., Baldrian, P.: A meta-analysis of global fungal distribution reveals climate-driven patterns. Nature Communications 10, 5142 (2019).
-[https://doi.org/10.1038/s41467-019-13164-8](https://www.nature.com/articles/s41467-019-13164-8)       
+[https://doi.org/10.1038/s41467-019-13164-8](https://www.nature.com/articles/s41467-019-13164-8)
 <br>
 <br>
 Vlk, L., Tedersoo, L., Antl, T., Větrovský, T., Abarenkov, K., Pergl, J., Albrechtová, J., Vosátka, M., Baldrian, P., Pyšek, P., Kohout, P.: Alien ectomycorrhizal plants differ in their ability to interact with co-introduced and native ectomycorrhizal fungi in novel sites. ISME Journal 14, 2336-2346 (2020).
-[https://doi.org/10.1038/s41396-020-0692-5](https://www.nature.com/articles/s41396-020-0692-5)   
+[https://doi.org/10.1038/s41396-020-0692-5](https://www.nature.com/articles/s41396-020-0692-5)
 <br>
 <br>
 Vlk, L., Tedersoo, L., Antl, T., Větrovský, T., Abarenkov, K., Pergl, J., Albrechtová, J., Vosátka, M., Baldrian, P., Pyšek, P., Kohout, P.: Early successional ectomycorrhizal fungi are more likely to naturalize outside their native range than other ectomycorrhizal fungi. New Phytologist 227, 1289-1293 (2020).
-[https://doi.org/10.1111/nph.16557](https://nph.onlinelibrary.wiley.com/doi/full/10.1111/nph.16557)  
-<br>
-<br>
-<br>
-**What is new in the GlobalFungi Database?**
-<br>
-<br>
-__November 2020: Release 2__
-<br>
-Database extended to cover data from marine and freshwater ecosystems.
-<br>
-New release includes samples from new habitats: air and aquatic.
-<br>
-255 studies; 26978 samples; 145873740 ITS sequence variants; 445775962 ITS1 sequences; 347086040 ITS2 sequences.
-<br>
-Database version v0.9.8; Second release; Taxonomy based on UNITE version 8.1 (2.2.2019).
-<br>
-<br>
-![alt text](www/release2.png)
-<br>
-Release 2: Samples from previous release (red); New samples (blue) 
-<br>
-<br>
-__July 2020: Release 1__
-<br>
-207 studies; 20009 samples; 119566862 ITS sequence variants; 416291533 ITS1 sequences; 231278756 ITS2 sequences.
-<br>
-Database version v0.9.6; First release; Taxonomy based on UNITE version 8.1 (2.2.2019).
-
-
-
-
+[https://doi.org/10.1111/nph.16557](https://nph.onlinelibrary.wiley.com/doi/full/10.1111/nph.16557)
