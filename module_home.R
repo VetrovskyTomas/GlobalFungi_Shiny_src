@@ -18,13 +18,11 @@ homeUI <- function(id) {
     # tutorials
     fluidRow(
       column(12, style='padding-left:15px; padding-right:0px; padding-top:0px; padding-bottom:10px',
-        actionButton("twitter_butt", label = NULL, 
-                             style = "width: 64px; height: 64px; background: url('twitter_butt.png');  background-size: cover; background-position: center;",
-                             onclick = paste0("window.open('https://twitter.com/globalfungi')")),
+            actionButton("twitter_butt", label = "GlobaFungi twitter page", icon = icon("twitter"), onclick = paste0("window.open('https://twitter.com/globalfungi')")),
         img(src='none.png', height = 32),     
         "Youtube tutorials:  ",
         img(src='none.png', height = 8),     
-             actionButton(ns("buttUse"), label = "How to use it (tutorial)", icon = icon("youtube"), onclick = paste0("window.open('https://www.youtube.com/watch?v=0_opE1hOXwY')")),
+             actionButton(ns("buttUse"), label = "How to use GlobalFungi Database (tutorial)", icon = icon("youtube"), onclick = paste0("window.open('https://www.youtube.com/watch?v=0_opE1hOXwY')")),
         img(src='none.png', height = 8),  
              actionButton(ns("buttSubmit"), label = "How to Submit your Study (tutorial)", icon = icon("youtube"), onclick = paste0("window.open('https://www.youtube.com/watch?v=HmGyr26Hhso')"))
       )

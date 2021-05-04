@@ -36,7 +36,7 @@ studiesFunc <- function(input, output, session, parent) {
   # fill data frame
   df <- reactiveValues(data = data.frame(
     Date =  global_papers$add_date,
-    Name =  global_papers$title,
+    Title =  global_papers$title,
     Authors = global_papers$authors,
     Journal = global_papers$journal,
     Year =  global_papers$year,
@@ -48,10 +48,8 @@ studiesFunc <- function(input, output, session, parent) {
     row.names = 1:nrow(global_papers)
   ))
   
-  col_names <- c("Date of Addition", "Title", "Authors", "Journal", "Year", "DOI","Actions")
-  
   output$data <- DT::renderDataTable(
-    df$data, colnames = col_names, server = FALSE, escape = FALSE, selection = 'none'
+    df$data, server = FALSE, escape = FALSE, selection = 'none'
   )
 
   # redirect...  

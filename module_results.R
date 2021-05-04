@@ -107,7 +107,9 @@ resultsFunc <- function(input, output, session, variable) {
           # filter papers data...
           incProgress(1/3)
           output$info_table <- renderTable({
-            global_papers[which(global_papers$paper_id %in% text),c("title", "authors", "year","journal", "doi", "contact")]
+            paper_tab <- global_papers[which(global_papers$paper_id %in% text),c("title", "authors", "year","journal", "doi", "contact")]
+            names(paper_tab) <- c("Title", "Authors", "Year","Journal", "DOI", "Contact")
+            paper_tab
           })
           # filer sample based on selection...
           incProgress(1/3)

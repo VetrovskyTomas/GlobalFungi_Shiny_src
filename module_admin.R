@@ -154,8 +154,8 @@ adminFunc <- function(input, output, session) {
                                                            onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
                                                                             "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),table$hash)
       
-      table = subset(table, select = c(hash_butt, samples, person, paper, collaboration, status))
-
+      table = subset(table, select = c(hash_butt, date, samples, person, paper, collaboration, status))
+      names(table) <- c("save metadata", "start date", "#samples", "person", "paper", "collaboration","status")
       table
       }, escape = FALSE, selection = 'none')
     )
