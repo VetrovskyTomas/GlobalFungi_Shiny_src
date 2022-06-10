@@ -373,6 +373,10 @@ resultsFunc <- function(input, output, session, variable) {
           if (length(input$sample_single) > 0) {
             filtered_data$samples <- filtered_data$samples[filtered_data$samples$abundances > 1,]
           }
+          # filter by manipulation...
+          if (length(input$sample_manipulated) > 0) {
+            filtered_data$samples <- filtered_data$samples[filtered_data$samples$manipulated != "true",]
+          }
           # filter by sample type...
           filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$sample_type %in% input$sample_type),]
           # filter by sample biome...
@@ -402,9 +406,14 @@ resultsFunc <- function(input, output, session, variable) {
               filter <- paste("Sample biomes:",paste(input$sample_biome, collapse=","),"\n",filter)
               filter <- paste("Sample types:",paste(input$sample_type, collapse=","),"\n",filter)
               if (length(input$sample_single) > 0) {
-                filter <- paste(" Singletons ignored: TRUE\n",filter)
+                filter <- paste("Singletons ignored: TRUE\n",filter)
               } else {
-                filter <- paste(" Singletons ignored: FALSE\n",filter)
+                filter <- paste("Singletons ignored: FALSE\n",filter)
+              }
+              if (length(input$sample_manipulated) > 0) {
+                filter <- paste("Manipulated samples ignored: TRUE\n",filter)
+              } else {
+                filter <- paste("Manipulated samples ignored: FALSE\n",filter)
               }
               return(paste0("Filtered result is covering ", nrow(filtered_data$samples), " samples - selected filters:\n", filter))
             })
@@ -446,7 +455,12 @@ resultsFunc <- function(input, output, session, variable) {
                                       choiceNames = "ignore",
                                       choiceValues = "ignore",
                                       selected = ""
-          ) 
+          ),checkboxGroupInput(ns("sample_manipulated"), 
+                             "Ignore manipulated studies:",
+                             choiceNames = "ignore",
+                             choiceValues = "ignore",
+                             selected = ""
+          )
           ),
           column(2,checkboxGroupInput(ns("sample_biome"), 
                                       "Filter biome:",

@@ -144,7 +144,7 @@ global_papers <- global_papers[rowidx, , drop = FALSE]
 
 
 # store minimal amount of information
-global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "latitude","continent", "sample_type", "ITS1_extracted", "ITS2_extracted","ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")] 
+global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "latitude","continent", "sample_type", "ITS1_extracted", "ITS2_extracted","ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling", "manipulated")] 
 
  
 # load SH table...

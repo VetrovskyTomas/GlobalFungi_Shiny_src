@@ -4,15 +4,20 @@
 - Andrea Moravcová - Charles University - Czech Republic
 - Anna Popelářová - Charles University - Czech Republic
 - Barbara Doreen Bahnmann - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Barbora Jelínková - Charles University - Czech Republic
 - Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Cassie Ettinger - University of California, Davis - United States
 - Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Daniel Morais - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Diana Navrátilová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Honghong Li - Natural Resources Institute Finland (Luke) - Finland
 - Federica D'Alò - University of Tuscia - Italy
+- Florian Gschwend - Agroscope - Switzerland
 - Iñaki Odriozola - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Jakub Skřivánek - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Jana Kvasničková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Jana Voříšková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Julie Faltysová - Charles University - Czech Republic
 - Karel Švec - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Ki Hyeong Park - Seoul National University - Republic of Korea
 - Květa Bílohnědá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
@@ -20,10 +25,13 @@
 - Lenka Michalčíková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Loïc Chalmandrier - University of Regensburg - Germany 
 - Lucia Žifčáková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Luis Merino Martín - Universidad Rey Juan Carlos - Spain
 - Lukáš Vlk - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Martina Štursová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Martina Vašutová - University of South Bohemia - Czech Republic
 - Mayuko Jomura - Nihon University - Japan
 - Michaela Urbanová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Michal Choma - University of South Bohemia - Czech Republic 
 - Miroslav Kolařík - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Monika Pappová - Charles University - Czech Republic
 - Ondřej Gargoš - Charles University - Czech Republic
@@ -35,8 +43,9 @@
 - Salvador Lladó - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sandra Awokunle Hollá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sarah Piché-Choquette - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
-- Štěpánka Žárová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Štěpánka Moulíková - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sunil Mundra - United Arab Emirates University - United Arab Emirates
+- Tania Fort - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Tereza Mašínová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Tereza Michalová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Tijana Martinović - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic

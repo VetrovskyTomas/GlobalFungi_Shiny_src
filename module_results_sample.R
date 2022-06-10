@@ -50,7 +50,7 @@ resultsSampleFunc <- function(input, output, session, id) {
                                "sample_name",
                                "area_sampled", 
                                "area_GPS", "number_of_subsamples", "sample_depth",
-                               "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description")]
+                               "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description", "manipulated")]
       colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", 
                                "Continent", 
                                "Country", 
@@ -65,7 +65,7 @@ resultsSampleFunc <- function(input, output, session, id) {
                                "Area represented by GPS (m2)", 
                                "Number of subsamples", 
                                "Sampling depth (cm)",
-                               "Sampling year", "Sampling month", "Sampling day", "Sampling info", "Sample description")
+                               "Sampling year", "Sampling month", "Sampling day", "Sampling info", "Sample description", "Manipulated")
       sample_vals[sample_vals == "NA_"] <- "NA"
       sample_vals <- data.frame(variable = rownames(t(sample_vals)), values = t(sample_vals))
       names(sample_vals) <- c("Variable", " ")
