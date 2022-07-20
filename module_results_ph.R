@@ -29,7 +29,7 @@ resutspHFunc <- function(input, output, session,  variable) {
   counts <- reactiveValues()
   counts$sel_obs <- 0
   counts$glob_obs <- 0
-  
+
   observe({  
     # get all values from samples and remove NA...
     dat_glob <- global_samples[,"pH"] %>% filter(global_samples[,"pH"] != "NA_")
@@ -50,25 +50,36 @@ resutspHFunc <- function(input, output, session,  variable) {
                    font.size.axis.x = 10)
     
     #bar chart sample type...
-    dat_sel <- variable$samples[,"pH"] %>% filter(variable$samples[,"pH"] != "NA_")
+    dat_sel <- variable$samples[variable$samples$pH != "NA_",]
     counts$sel_obs <- nrow(dat_sel)
-    if (nrow(dat_sel)>0){
-      dat_sel <- rbind(dat_glob, dat_sel)
+    if (!is.null(dat_sel)){
+      dat_studyn <- dat_sel[dat_sel$manipulated == "false",][,"pH"]
+      dat_studym <- dat_sel[dat_sel$manipulated == "true",][,"pH"]
+      dat_studyn <- rbind(dat_glob, dat_studyn)
+      dat_studym <- rbind(dat_glob, dat_studym)
       # sel bar chart sample type...
-      dat <- transform(dat_sel, pH = as.numeric(pH))
-      dat <- transform(dat, bin = cut(pH, 20))
-      out_sum_st <- as.data.frame(table(dat$bin))
+      datn <- transform(dat_studyn, pH = as.numeric(pH))
+      datn <- transform(datn, bin = cut(pH, 20))
+      out_sum_stn <- as.data.frame(table(datn$bin))
+      datm <- transform(dat_studym, pH = as.numeric(pH))
+      datm <- transform(datm, bin = cut(pH, 20))
+      out_sum_stm <- as.data.frame(table(datm$bin))
       # change structure...
-      rownames(out_sum_st) <- out_sum_st[,1]
-      out_sum_st = subset(out_sum_st, select = -Var1 )
-      row.names(out_sum_st)<-gsub("\\(", "\\[", row.names(out_sum_st))
+      rownames(out_sum_stn) <- out_sum_stn[,1]
+      out_sum_stn = subset(out_sum_stn, select = -Var1 )
+      rownames(out_sum_stm) <- out_sum_stm[,1]
+      out_sum_stm = subset(out_sum_stm, select = -Var1 )
+      row.names(out_sum_stn)<-gsub("\\(", "\\[", row.names(out_sum_stn))
       #substract
-      out_sum_sub <- out_sum_st-out_sum[colnames(out_sum_st)]
+      vec1 <- out_sum_stn-out_sum[colnames(out_sum_stn)]
+      vec2 <- out_sum_stm-out_sum[colnames(out_sum_stm)]
+      out_sum_sub <- data.frame(vec1, vec2)
+      colnames(out_sum_sub) <- c("Freq.","Freq. manipulated")
       # render...
-      renderBarChart(div_id = "pHBarSel", data = out_sum_sub, theme = "shine",
-                     show.legend = FALSE, 
-                     direction = "vertical", 
-                     font.size.axis.x = 10)    
+      renderBarChart(stack_plot = TRUE, div_id = "pHBarSel", data = out_sum_sub, theme = "shine",
+                     show.legend = FALSE,
+                     direction = "vertical",
+                     font.size.axis.x = 10)
     } else {
       renderGauge(div_id = "pHBarSel", gauge_name = "Data not provided...",
                   rate = 0)

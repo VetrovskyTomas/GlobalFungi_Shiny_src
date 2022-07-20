@@ -88,7 +88,10 @@ analysisFunc <- function(input, output, session, parent) {
   output$dynamic_params <- renderUI({
     if (grepl("blast", input$search_type, fixed = TRUE)){
       fluidRow(
-        column(5,checkboxInput(inputId = ns("ignore_singletons"), label = "Ignore singleton variants for BLAST", TRUE)),
+        column(5,
+               disabled(
+                 checkboxInput(inputId = ns("ignore_singletons"), label = "Ignore singleton variants for BLAST", TRUE))
+               ),
         if (input$search_type == "blast_group"){
           fluidRow(
             column(3,

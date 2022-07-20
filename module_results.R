@@ -280,16 +280,18 @@ resultsFunc <- function(input, output, session, variable) {
                   }
                 })
               }
-    
     #################################################################
     if (!is.null(out_data$samples)){
-      out_data$filter <- FALSE
-      callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", out_data)
-      callModule(module = resutsMatMapFunc, id = "results_matmap", out_data)
-      callModule(module = resutspHFunc, id = "results_ph", out_data)
-      callModule(module = resutsGeographyFunc, id = "results_geography", out_data)
-      callModule(module = resutsMapFunc, id = "results_map", out_data)
-      callModule(module = resutsSamplesFunc, id = "results_samples", out_data)
+      filtered_data <- reactiveValues()
+      filtered_data$filter <- TRUE
+      filtered_data$samples <- isolate(out_data$samples[out_data$samples$manipulated != "true",])
+      
+      callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
+      callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
+      callModule(module = resutspHFunc, id = "results_ph", filtered_data)
+      callModule(module = resutsGeographyFunc, id = "results_geography", filtered_data)
+      callModule(module = resutsMapFunc, id = "results_map", filtered_data)
+      callModule(module = resutsSamplesFunc, id = "results_samples", filtered_data)
       ####
       # table with SHs info...
       if (!is.null(out_data$SHs)){
@@ -355,7 +357,7 @@ resultsFunc <- function(input, output, session, variable) {
     output$info_sample_filtered <- renderText({
       num_samples <- 0
       if (!is.null(out_data$samples)){
-        num_samples <- nrow(out_data$samples)
+        num_samples <- nrow(filtered_data$samples)
       }
       return(paste0("Filtered result is covering ", num_samples, " samples (NO FILTERS APPLIED)"  ))
     })
@@ -368,13 +370,13 @@ resultsFunc <- function(input, output, session, variable) {
           filtered_data <- reactiveValues()
           filtered_data$filter <- TRUE
           filtered_data$samples <- isolate(out_data$samples)
-          
+          print(nrow(filtered_data$samples))
           # filter by singletons...
           if (length(input$sample_single) > 0) {
             filtered_data$samples <- filtered_data$samples[filtered_data$samples$abundances > 1,]
           }
           # filter by manipulation...
-          if (length(input$sample_manipulated) > 0) {
+          if (length(input$sample_manipulated) == 0) {
             filtered_data$samples <- filtered_data$samples[filtered_data$samples$manipulated != "true",]
           }
           # filter by sample type...
@@ -411,9 +413,9 @@ resultsFunc <- function(input, output, session, variable) {
                 filter <- paste("Singletons ignored: FALSE\n",filter)
               }
               if (length(input$sample_manipulated) > 0) {
-                filter <- paste("Manipulated samples ignored: TRUE\n",filter)
+                filter <- paste("Manipulated samples add: TRUE\n",filter)
               } else {
-                filter <- paste("Manipulated samples ignored: FALSE\n",filter)
+                filter <- paste("Manipulated samples add: FALSE\n",filter)
               }
               return(paste0("Filtered result is covering ", nrow(filtered_data$samples), " samples - selected filters:\n", filter))
             })
@@ -430,7 +432,7 @@ resultsFunc <- function(input, output, session, variable) {
             callModule(module = resutsSamplesFunc, id = "results_samples", filtered_data)
             if (!is.null(out_data$SHs)){
               filtered_data$SHs <- isolate(out_data$SHs)
-              callModule(module = resutsSHsFunc, id = "results_shs", filtered_data)
+              callModule(module = resutsSHsFunc, id = "results_shs", out_data)
             }
           } else {
             shinyjs::hide(id = "panel")
@@ -442,6 +444,7 @@ resultsFunc <- function(input, output, session, variable) {
     # dynamic filters...
     output$dynamic_filters <- renderUI({
       if (!is.null(out_data$samples)){
+        num_man <- length(out_data$samples$manipulated[out_data$samples$manipulated=="true"])
         # variables...
         sample_years <- as.numeric(out_data$samples$year_of_sampling)
         year_na <- NA %in% sample_years
@@ -455,12 +458,14 @@ resultsFunc <- function(input, output, session, variable) {
                                       choiceNames = "ignore",
                                       choiceValues = "ignore",
                                       selected = ""
-          ),checkboxGroupInput(ns("sample_manipulated"), 
-                             "Ignore manipulated studies:",
-                             choiceNames = "ignore",
-                             choiceValues = "ignore",
+          ),
+          if (num_man>0){
+          checkboxGroupInput(ns("sample_manipulated"), 
+                            paste0("Add manipulated studies (",length(out_data$samples$manipulated[out_data$samples$manipulated=="true"]),") :"),
+                             choiceNames = "add",
+                             choiceValues = "add",
                              selected = ""
-          )
+          )}
           ),
           column(2,checkboxGroupInput(ns("sample_biome"), 
                                       "Filter biome:",
@@ -514,7 +519,7 @@ resultsFunc <- function(input, output, session, variable) {
     output$info_sample_count <- renderText({
       num_samples <- 0
       if (!is.null(out_data$samples)){
-        num_samples <- nrow(out_data$samples)
+        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated=="false"])
       }
       return(paste0("Original result is covering ", num_samples, " samples")) 
     })
@@ -535,7 +540,7 @@ resultsFunc <- function(input, output, session, variable) {
     output$out_title <- renderText({
       num_samples <- 0
       if (!is.null(out_data$samples)){
-        num_samples <- nrow(out_data$samples)
+        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated=="false"])
       }
       return(paste0("Here are the results for ", type, " covering ", num_samples, " samples")) 
     })
