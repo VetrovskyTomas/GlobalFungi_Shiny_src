@@ -283,8 +283,9 @@ resultsFunc <- function(input, output, session, variable) {
     #################################################################
     if (!is.null(out_data$samples)){
       filtered_data <- reactiveValues()
-      filtered_data$filter <- TRUE
+      filtered_data$filter <- FALSE
       filtered_data$samples <- isolate(out_data$samples[out_data$samples$manipulated != "true",])
+      print(nrow(filtered_data$samples))
       
       callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
       callModule(module = resutsMatMapFunc, id = "results_matmap", filtered_data)
@@ -461,7 +462,7 @@ resultsFunc <- function(input, output, session, variable) {
           ),
           if (num_man>0){
           checkboxGroupInput(ns("sample_manipulated"), 
-                            paste0("Add manipulated studies (",length(out_data$samples$manipulated[out_data$samples$manipulated=="true"]),") :"),
+                            paste0("Add manipulated samples (",length(out_data$samples$manipulated[out_data$samples$manipulated=="true"]),") :"),
                              choiceNames = "add",
                              choiceValues = "add",
                              selected = ""
