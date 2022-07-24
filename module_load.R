@@ -67,7 +67,8 @@ sqlQuery <- function (query) {
                   port = options()$mysql$port, user = options()$mysql$user, 
                   password = options()$mysql$password)
   # set charset
-  rs <- dbSendQuery(db, 'set character set "latin1"')
+  #rs <- dbSendQuery(db, 'set character set "latin1"')
+  rs <- dbSendQuery(db, 'set character set "utf8"')
   # Construct the fetching query
   data <- dbGetQuery(db, query)
   dbDisconnect(db)
@@ -126,17 +127,19 @@ query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
 global_samples <- data.table(sqlQuery(query))
 
 # construct papers table...
-global_papers <- global_samples[,c("add_date","paper_id", "title_year", "authors", "journal", "doi", "contact")]
+global_papers <- global_samples[,c("add_date","paper_id", "title", "year", "authors", "journal", "doi", "contact")]
 # this will be changed in future...
 
 global_papers$submitted_by <- rep(global_info[,"name"], nrow(global_papers))
 global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
 
 # split title and year...
-splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title_year), '_', fixed=TRUE))
-colnames(splited_title_year) <- c("title", "year")
-global_papers <- cbind(global_papers, splited_title_year)
-global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
+#print(global_papers$title_year)
+#Sys.setlocale('LC_CTYPE','C')
+#splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title_year), '_', fixed=TRUE))
+#colnames(splited_title_year) <- c("title", "year")
+#global_papers <- cbind(global_papers, splited_title_year)
+#global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
 
 # sort
 rowidx <- order(global_papers[, "add_date"], global_papers[, "authors"])

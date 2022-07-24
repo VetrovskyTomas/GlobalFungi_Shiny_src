@@ -1,4 +1,4 @@
-﻿Thanks to the recent advance of high-throughput-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues, water, air, dust and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. For more details, check the [Help](https://globalfungi.com/?help=0).
+Thanks to the recent advance of high-throughput-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues, water, air, dust and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. For more details, check the [Help](https://globalfungi.com/?help=0).
 <br>
 <br>
 [![alt text](www/youtube01.png)](https://www.youtube.com/watch?v=0_opE1hOXwY)
@@ -29,6 +29,20 @@ Větrovský T., Morais D., Kohout P., Lepinay C., Algora Gallardo C., Awokunle H
 **What is new in the GlobalFungi Database?**
 <br>
 <br>
+__July 20, 2022: Release 4__
+<br>
+Data from 148 novel studies added, covering also manipulated studies.
+<br>
+515 studies; 57 184 samples; 481 799 996 ITS sequence variants; 791 513 743 ITS1 sequences; 2 147 483 647 ITS2 sequences.
+<br>
+Taxonomy based on UNITE version 8.2 (4.2.2020). Database interface version v1.0.
+<br>
+<br>
+![alt text](www/release4.png)
+<br>
+Release 4: Samples from previous release (red); New samples (blue)
+<br>
+<br>
 __May 1, 2021: Release 3__
 <br>
 Data from more than 100 novel studies added, higher coverage of aquatic habitats.
@@ -36,11 +50,6 @@ Data from more than 100 novel studies added, higher coverage of aquatic habitats
 367 studies; 36 684 samples; 213 747 241 ITS sequence variants; 582 264 149 ITS1 sequences; 526 638 147 ITS2 sequences.
 <br>
 Taxonomy based on UNITE version 8.2 (4.2.2020). Database interface version v0.9.9.
-<br>
-<br>
-![alt text](www/release3.png)
-<br>
-Release 3: Samples from previous release (red); New samples (blue)
 <br>
 <br>
 __November 1, 2020: Release 2__
@@ -52,11 +61,6 @@ New release includes samples from new habitats: air and aquatic.
 255 studies; 26 978 samples; 145 873 740 ITS sequence variants; 445 775 962 ITS1 sequences; 347 086 040 ITS2 sequences.
 <br>
 Taxonomy based on UNITE version 8.1 (2.2.2019). Database interface version v0.9.8.
-<br>
-<br>
-![alt text](www/release2.png)
-<br>
-Release 2: Samples from previous release (red); New samples (blue) 
 <br>
 <br>
 __July 1, 2020: Release 1__
