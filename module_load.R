@@ -89,8 +89,15 @@ killDbConnections <- function () {
 global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
 # nucleotide database for blast
-global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
-global_blast_db_double <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_DOUBLE.fa"
+#global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
+#global_blast_db_double <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_DOUBLE.fa"
+
+#global_blast_FUN_ANNOT <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa"
+#global_blast_FUN_POOR <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa"
+#global_blast_FUN <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa"
+#global_blast_NO_HIT <- "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa"
+global_blast_db_names <- c("Fungal annotated", "Fungal eval<e-50","Fungal eval>e-50", "Unknown")
+global_blast_db_paths <- c("/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa", "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa")
 
 # sample sequences path 
 global_samples_path <- "/home/fungal/databases/samples_fasta/"

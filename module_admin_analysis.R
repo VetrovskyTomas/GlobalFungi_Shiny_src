@@ -61,6 +61,14 @@ analysisAdminFunc <- function(input, output, session, parent) {
     selected.rows$index <- as.numeric(strsplit(isolate(input$lastClickId), "_")[[1]][2])
   })
   
+  blast_db <- reactive({
+    paste0("'",paste(input$blast_db,collapse=" "),"'")
+  })
+  
+  observeEvent(input$blast_db, {
+    print(paste("BLAST DB:", blast_db()))
+  })
+  
   # show results...
   show_results <- function(vals) {
     callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals))
@@ -69,6 +77,15 @@ analysisAdminFunc <- function(input, output, session, parent) {
   ##################################################################
   # dynamic header - seq vars...
   output$dynamic_params <- renderUI({
+    fluidRow(
+    column(5,
+           checkboxGroupInput(ns("blast_db"), 
+                              "Select datbase:",
+                              choiceNames = global_blast_db_names, 
+                              choiceValues = global_blast_db_paths,
+                              selected = "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa"
+           )
+    ),
     if (input$search_type == "blast_group"){
       fluidRow(
           column(4,
@@ -84,6 +101,7 @@ analysisAdminFunc <- function(input, output, session, parent) {
           )
       )
     }
+    )
   })
   ##################################################################
   # process fasta
@@ -203,7 +221,7 @@ analysisAdminFunc <- function(input, output, session, parent) {
 
       # run blast command...
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs 10 -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", blast_db()," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       
@@ -281,7 +299,7 @@ analysisAdminFunc <- function(input, output, session, parent) {
       maxres <- input$max_blast_results
       print(paste("Maximum of blast results:",maxres))
       cmd_params <- paste0("-use_index true -outfmt 6 -max_target_seqs ",maxres," -num_threads ", global_blast_nproc)
-      cmd_blast <- paste0("blastn -task megablast -db ", global_blast_db," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
+      cmd_blast <- paste0("blastn -task megablast -db ", blast_db()," -query ",outputDir, "my_query.fasta -out ", outputDir,"results.out ", cmd_params)
       system(cmd_blast)
       incProgress(1/5)
       

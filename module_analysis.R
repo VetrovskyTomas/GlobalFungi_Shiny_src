@@ -66,15 +66,11 @@ analysisFunc <- function(input, output, session, parent) {
     selected.rows$index <- as.numeric(strsplit(isolate(input$lastClickId), "_")[[1]][2])
   })
   
-  blast_db <- reactive({ 
-    if (input$ignore_singletons) {
-      global_blast_db_double   
-    } else {
-      global_blast_db
-    }
+  blast_db <- reactive({
+    paste0("'",paste(input$blast_db,collapse=" "),"'")
   })
   
-  observeEvent(input$ignore_singletons, {
+  observeEvent(input$blast_db, {
     print(paste("BLAST DB:", blast_db()))
   })
   
@@ -89,8 +85,12 @@ analysisFunc <- function(input, output, session, parent) {
     if (grepl("blast", input$search_type, fixed = TRUE)){
       fluidRow(
         column(5,
-               disabled(
-                 checkboxInput(inputId = ns("ignore_singletons"), label = "Ignore singleton variants for BLAST", TRUE))
+               checkboxGroupInput(ns("blast_db"), 
+                                  "Select datbase:",
+                                  choiceNames = global_blast_db_names, 
+                                  choiceValues = global_blast_db_paths,
+                                  selected = "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa"
+               )
                ),
         if (input$search_type == "blast_group"){
           fluidRow(
