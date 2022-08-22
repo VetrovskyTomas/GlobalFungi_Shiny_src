@@ -134,7 +134,7 @@ query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
 global_samples <- data.table(sqlQuery(query))
 
 # construct papers table...
-global_papers <- global_samples[,c("add_date","paper_id", "title", "year", "authors", "journal", "doi", "contact")]
+global_papers <- global_samples[,c("add_date","paper_id", "title", "year", "authors", "journal", "doi", "contact", "manipulated")]
 # this will be changed in future...
 
 global_papers$submitted_by <- rep(global_info[,"name"], nrow(global_papers))

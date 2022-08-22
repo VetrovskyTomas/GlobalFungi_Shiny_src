@@ -1,4 +1,4 @@
-Thanks to the recent advance of high-throughput-sequencing methods we are facing an accumulating wealth of fungal sequencing data from various geographical regions, ecosystems and habitats. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did not bring much extra value so far. The idea behind this __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by next-generation-sequencing through a web based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team and should support the FAIR data initiative: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial habitats except those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues, water, air, dust and others. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. For more details, check the [Help](https://globalfungi.com/?help=0).
+Thanks to the recent advance of high-throughput-sequencing methods going hand-in-hand with the interest of global biodiversity, we are facing an accumulating wealththe amount of fungal sequencing data from various geographical regions, ecosystems and habitats grows rapidly and represents a highly valuable asset for science. Although the application of NGS methods revolutionized our understanding of fungal ecology, the accumulating raw fungal NGS data in sequence repositories did do not bring much extra value so far. The idea behind this the __GlobalFungi Database__ is to provide everyone the access to published data on fungal community composition obtained by nexthigh-throughputgeneration-sequencing through a web web-based interface that allows various queries of the database and visualization of the results. This idea was conceived by a group of researchers from the Institute of Microbiology of the Czech Academy of Sciences in Prague – the GlobalFungi team. It and should support the FAIR data initiativeapproaches: make data Findable, Accessible, Interoperable and Reusable and provide a convenient access for users. The database covers data from all terrestrial and aquatic habitats that were notexcept those subject to experimental manipulation, containing information on fungal communities from soil, litter, dead plant material, living plant tissues, water, air, dust and others. In addition, since the Release 4 in July 2022, GlobalFungi also includes data from experiments that used manipulation of global change factors: temperature, precipitation, CO<sub>2</sub> concentrations or N deposition. We believe that this addition helps the scientific community to understand the response of fungi to the changing environment and develop models of their future. GlobalFungi invites participation of the scientific community in that it encourages submission of data by the authors of studies that are not yet covered. Importantly, the GlobalFungi team is also open to share data with anyone with a justified scientific question. For more details, check the [Help](https://globalfungi.com/?help=0) or contact the GlobalFungi team.
 <br>
 <br>
 [![alt text](www/youtube01.png)](https://www.youtube.com/watch?v=0_opE1hOXwY)
@@ -31,7 +31,9 @@ Větrovský T., Morais D., Kohout P., Lepinay C., Algora Gallardo C., Awokunle H
 <br>
 __July 20, 2022: Release 4__
 <br>
-Data from 148 novel studies added, covering also manipulated studies.
+Data from experiments that used manipulation of global change factors : temperature, precipitation, CO<sub>2</sub> concentrations or N deposition are now included in GlobalFungi!
+<br>
+Data from 148 novel studies added since Release 3.
 <br>
 515 studies; 57 184 samples; 481 799 996 ITS sequence variants; 791 513 743 ITS1 sequences; 2 147 483 647 ITS2 sequences.
 <br>
@@ -71,19 +73,30 @@ Taxonomy based on UNITE version 8.1 (2.2.2019). Database interface version v0.9.
 <br>
 <br>
 <br>
-**Papers that use GlobalFungi data**
+**Selected papers that use GlobalFungi data**
 <br>
 <br>
-Baldrian, P., Větrovský, T., Lepinay, C., Kohout, P.: High-throughput sequencing view on the magnitude of global fungal diversity. Fungal Diversity in press. 
+Baldrian, P., Větrovský, T., Lepinay, C., Kohout, P.: High-throughput sequencing view on the magnitude of global fungal diversity. Fungal Diversity 114, 539–547 (2022). 
 [https://doi.org/10.1007/s13225-021-00472-y](https://doi.org/10.1007/s13225-021-00472-y)
 <br>
 <br>
-Kalsoom Khan, F., Kluting, K., Tångrot, J., Urbina, H., Ammunet, T., Eshghi Sahraei, S., Rydén, M., Ryberg, M., Rosling, A.: Naming the untouchable – environmental sequences and niche partitioning as taxonomical evidence in fungi. Ima Fungus 11, 23 (2020).
+Kalsoom Khan, F., Kluting, K., Tångrot, J., Urbina, H., Ammunet, T., Eshghi Sahraei, S., Rydén, M., Ryberg, M., Rosling, A.: Naming the untouchable – environmental sequences and niche partitioning as taxonomical evidence in fungi. IMA Fungus 11, 23 (2020).
 [https://doi.org/10.1186/s43008-020-00045-9](https://link.springer.com/article/10.1186/s43008-020-00045-9)
+<br>
+<br>
+Kolařík, M., Wei, I.C., Hsieh, S.Y., Piepenbring, M., Kirschner, R.: Nucleotide composition bias of rDNA sequences as a source of phylogenetic artifacts in Basidiomycota-a case of a new lineage of a uredinicolous Ramularia-like anamorph with affinities to Ustilaginomycotina. Mycological Progress 20, 1553-1571 (2021). 
+[https://doi.org/10.1007/s11557-021-01749-x](https://link.springer.com/article/10.1007/s11557-021-01749-x)
+<br>
+<br>
+Kolaříková, Z., Slavíková, R., Krüger, C., Krüger, M., Kohout, P.: PacBio sequencing of Glomeromycota rDNA: a novel amplicon covering all widely used ribosomal barcoding regions and its applicability in taxonomy and ecology of arbuscular mycorrhizal fungi. New Phytologist 231, 490-499 (2021). [https://doi.org/10.1111/nph.17372](https://nph.onlinelibrary.wiley.com/doi/10.1111/nph.17372)
 <br>
 <br>
 Lücking, R., Aime, M.C., Robbertse, B., Miller, A.N., Aoki, T., Ariyawansa, H.A., Cardinali, G., Crous, P.W., Druzhinina, I.S., Geiser, D.M., Hawksworth, D.L., Hyde, K.D., Irinyi, L., Jeewon, R., Johnston, P.R., Kirk, P.M., Malosso, E., May, T.W., Meyer, W., Nilsson, H.R., Öpik, M., Robert, V., Stadler, M., Thines, M., Vu, D., Yurkov, A.M., Zhang, N., Schoch, C.L.: Fungal taxonomy and sequence-based nomenclature. Nature Microbiology 6, 540-548 (2021).
 [https://doi.org/10.1038/s41564-021-00888-x](https://doi.org/10.1038/s41564-021-00888-x)
+<br>
+<br>
+Mozzachiodi, S., Bai, F.Y., Baldrian, P., Bell, G., Boundy-Mills, K., Buzzini, P., Cadez, N., Cubillos, F.A., Dashko, S., Dimitrov, R., Fisher, K.J., Gibson, B., Gouliamova, D., Greig, D., Heistinger, L., Hittinger, C.T., Jecmenica, M., Koufopanou, V., Landry, C.R., Masinova, T., Naumova, E.S., Opulente, D., Pena, J.J., Petrovic, U., Tsai, I.J., Turchetti, B., Villarreal, P., Yurkov, A., Liti, G., Boynton, P. Yeasts from temperate forests. Yeast 39, 4-24 (2022). 
+[https://doi.org/10.1002/yea.3699](https://onlinelibrary.wiley.com/doi/10.1002/yea.3699)
 <br>
 <br>
 Muszewska, A., Okrasińska, A., Steczkiewicz, K., Drgas, O., Orłowska, M., Perlińska-Lenart, U., Aleksandrzak-Piekarczyk, T., Szatraj, K., Zielenkiewicz, U., Piłsyk, S., Malc, E., Mieczkowski, P., Kruszewska, J.S., Bernat, P., Pawłowska, J.: Metabolic Potential, Ecology and Presence of Associated Bacteria Is Reflected in Genomic Diversity of Mucoromycotina. Frontiers in Microbiology 12, 239 (2021).\

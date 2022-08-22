@@ -1,4 +1,4 @@
-﻿
+
 __Why to submit your study?__
 
 We believe that there are several motivations to submit your data. First, your data will be accessible to others in an easily accessible form, your work gets visibility and the international community of researchers gets the access to additional resources. We believe that data sharing is important and should be promoted. If you agree upon data submission, your contribution will be made visible by including your name and affiliation into the list of collaborators as soon as your data are processed and released. If you wish, you can also decide to have your name added to the Group Authorship group GlobalFungi to be mentioned in future publications describing the database content, its development, or metastudies using the whole database. Please note that you can only submit your data if you are the first or the corresponding author of a published paper with all sequences deposited in a public repository.
@@ -12,6 +12,8 @@ The sample(s) submitted in the GlobalFungi Database should follow study eligibil
 Note: The GlobalFungi database is not a data repository but a database that aims to collect sequencing data and their corresponding metadata about the fungal diversity worldwide. By entering your sequencing data and metadata in the GlobalFungi database, you give a permit to the GlobalFungi team to process your data and incorporate them into the database in one of the upcoming releases. 
 
 For more information about data submission, please contact us by e-mail at: __info@globalfungi.com__
+
+If you wish to submit your study that uses manipulation of global change factors, please contact us at: info@globalfungi.com before starting your submission.
 
 __Eligibility criteria__
 

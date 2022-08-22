@@ -41,6 +41,7 @@ studiesFunc <- function(input, output, session, parent) {
     Journal = global_papers$journal,
     Year =  global_papers$year,
     DOI = global_papers$doi,
+    manipulated = global_papers$manipulated,
     Actions = shinyInput(actionButton, nrow(global_papers), 'button_', label = "Show", 
       onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
                        "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),
@@ -48,8 +49,11 @@ studiesFunc <- function(input, output, session, parent) {
     row.names = 1:nrow(global_papers)
   ))
   
-  output$data <- DT::renderDataTable(
-    df$data, server = FALSE, escape = FALSE, selection = 'none'
+  output$data <- DT::renderDataTable({
+    DT::datatable(
+      df$data, escape = FALSE, selection = 'none',
+    ) #%>% formatStyle(0, target='row', backgroundColor = styleEqual(which(df$data$manipulated =="true"),'#fff5d1'))
+    }, server = FALSE
   )
 
   # redirect...  

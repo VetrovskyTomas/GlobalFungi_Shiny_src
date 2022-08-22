@@ -72,8 +72,8 @@ homeFunc <- function(input, output, session, samples) {
   output$fm_info <- renderPrint({
     # create output text
     return(cat(paste0(global_info[,"name"], " dataset release ",global_info[,"release"], " (", global_info[,"date"],"). Taxonomy based on UNITE version ",global_info[,"unite_version"], ".\n",
-      "Actual number of samples in database ", nrow(global_samples), "; Studies ",nrow(global_papers),".\n",
-      "Number of ITS sequence variants ",global_info[,"its_variants_count"], "; Number of ITS1 sequences " , global_info[,"its1_raw_count"],"; Number of ITS2 sequences " , global_info[,"its2_raw_count"],".")
+      "Actual number of samples in the database: ", nrow(global_samples), "; actual number of studies included: ",nrow(global_papers),".\n",
+      "Number of ITS sequence variants: ",format(as.numeric(global_info[,"its_variants_count"]), nsmall=0, big.mark=" "), "; number of ITS1 sequences " ,format(as.numeric(global_info[,"its1_raw_count"]), nsmall=0, big.mark=" "),"; number of ITS2 sequences " ,format(as.numeric(global_info[,"its2_raw_count"]), nsmall=0, big.mark=" "),".")
       ))
   })
   

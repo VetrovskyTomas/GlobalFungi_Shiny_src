@@ -1,15 +1,19 @@
-﻿## List of Collaborators
+## List of Collaborators
 
 
-- Andrea Moravcová - Charles University - Czech Republic
+- Anastasiia Gromyko - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Andrea Moravcová - Institute of Microbiology of the Czech Academy of Sciences Charles University - Czech Republic
 - Anna Popelářová - Charles University - Czech Republic
 - Barbara Doreen Bahnmann - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Barbora Jelínková - Charles University - Czech Republic
 - Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Carina Paetzel - Eberswalde University for Sustainable Development - Germany
 - Cassie Ettinger - University of California, Davis - United States
 - Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Daniel Morais - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Diana Navrátilová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
+- Eva Smělíková - Charles University - Czech Republic
+- Helena Rothová - Charles University - Czech Republic
 - Honghong Li - Natural Resources Institute Finland (Luke) - Finland
 - Federica D'Alò - University of Tuscia - Italy
 - Florian Gschwend - Agroscope - Switzerland
@@ -31,7 +35,8 @@
 - Martina Vašutová - University of South Bohemia - Czech Republic
 - Mayuko Jomura - Nihon University - Japan
 - Michaela Urbanová - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
-- Michal Choma - University of South Bohemia - Czech Republic 
+- Michal Choma - University of South Bohemia - Czech Republic
+- Michal Lihan - University College London - United Kingdom
 - Miroslav Kolařík - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Monika Pappová - Charles University - Czech Republic
 - Ondřej Gargoš - Charles University - Czech Republic
@@ -39,6 +44,7 @@
 - Petr Heděnec - University of Copenhagen - Denmark
 - Petr Kohout - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Petr Martin Mamula - Charles University - Czech Republic
+- Renata Lejsková - Charles University - Czech Republic
 - Rubén López-Mondéjar - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Salvador Lladó - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Sandra Awokunle Hollá - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
@@ -57,4 +63,5 @@
 
 This work was supported by the Czech Science Foundation and by the ELIXIR CZ.
 
+GlobalFungi is proud to collaborate with the SPUN: Society for Protection of Underground Networks (https://www.spun.earth/).
 
