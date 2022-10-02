@@ -130,7 +130,7 @@ analysisFunc <- function(input, output, session, parent) {
         }
         seq <- ""
       } else {
-        seq <- paste0(seq,line)
+        seq <- toupper(paste0(seq,line))
       }
     }
     seqs <- c(seqs, seq)
@@ -408,7 +408,7 @@ analysisFunc <- function(input, output, session, parent) {
             input_fasta <- get_fasta(fasta_out(stri_split_lines(input$textSeq)[[1]], FALSE))
           } else {
             # simple nucleotide text...
-            seq <- gsub("[\r\n]", "", input$textSeq)
+            seq <- toupper(gsub("[\r\n]", "", input$textSeq))
             input_fasta <- get_fasta(data.frame(titles = ">query", sequences = as.character(seq), stringsAsFactors = F))
           }
         } else {
