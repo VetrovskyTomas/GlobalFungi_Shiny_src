@@ -38,7 +38,10 @@ options(mysql = list(
   "metadata" = "metadata",
   
   # inserted metadata
-  "maillist" = "maillist"
+  "maillist" = "maillist",
+  
+  # clustered sequences
+  "clusters_table" = "clusters"
 ))
 
 safeSqlQueryVal <- function (query_val) {
@@ -98,6 +101,10 @@ global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
 #global_blast_NO_HIT <- "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa"
 global_blast_db_names <- c("Fungal annotated", "Fungal eval<e-50","Fungal eval>e-50", "Unknown")
 global_blast_db_paths <- c("/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa", "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa")
+
+
+global_clusters_db_names <- c("ITS1", "ITS2")
+global_clusters_db_paths <- c("/home/fungal/databases/blast_database/CLUSTERS_ITS1.fas","/home/fungal/databases/blast_database/CLUSTERS_ITS2.fas")
 
 # sample sequences path 
 global_samples_path <- "/home/fungal/databases/samples_fasta/"

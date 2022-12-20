@@ -54,6 +54,10 @@ ui <- tagList(
         tabItem("fmd_analysis",
                 analysisUI(id = "id_analysis")
         ),
+        #search taxon
+        tabItem("fmd_clusters",
+                clustersUI(id = "id_clusters")
+        ),
         #studies
         tabItem("fmd_studies",
                 studiesUI(id = "id_studies")

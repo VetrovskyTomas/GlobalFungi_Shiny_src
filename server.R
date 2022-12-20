@@ -181,6 +181,8 @@ server <- function(session, input, output) {
                 menuItem("Sequence search", icon = icon("dna"), tabName = "fmd_analysis"),
                 menuItem("Geosearch", icon = icon("globe"), tabName = "fmd_geoshape"),
                 menuItem("Studies", icon = icon("microscope"), tabName = "fmd_studies"),
+                ###########################
+                ###########################
                 tags$hr(),
                 #result page...
                 menuItem("Results", icon = icon("poll"), tabName = "fmd_results", selected = !is.null(query[['SH']])),
@@ -194,6 +196,7 @@ server <- function(session, input, output) {
                   id = "hidden",
                   sidebarMenu(
                   tags$hr(),
+                  menuItem("Cluster analysis", icon = icon("circle-nodes"), tabName = "fmd_clusters", badgeLabel = "NEW", badgeColor = "red"),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
                            badgeLabel = "admin", badgeColor = "orange")
                 ))
@@ -232,6 +235,7 @@ server <- function(session, input, output) {
   #home screen...
   callModule(module = homeFunc, id = "id_home", samples)
   callModule(module = analysisFunc, id = "id_analysis", parent = session)
+  callModule(module = clustersFunc, id = "id_clusters", parent = session)
   callModule(module = searchFunc, id = "id_search", parent = session)
   callModule(module = studiesFunc, id = "id_studies", parent = session)
   callModule(module = geoshapeFunc, id = "id_geoshape")

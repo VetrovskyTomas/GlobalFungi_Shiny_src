@@ -187,6 +187,50 @@ resultsFunc <- function(input, output, session, variable) {
             }
           })
         } else
+          # Cluster option...  
+          if (type == "cluster-blast") {
+            withProgress(message = 'Searching...', {
+              # Construct the fetching query
+              key_string <- paste0("('",paste(key, collapse="','" ),"')")
+              query <- paste0("SELECT `otu`,`samples`,`abundances`,`SH`,`marker`,`sequence` from ",options()$mysql$clusters_table," WHERE `otu` IN ",key_string)
+              variants <- sqlQuery(query)
+              print(paste("cluster-blast - key is: ",key))
+              
+              incProgress(1/3)
+              
+              if (nrow(variants) > 0) {
+                # tracking...
+                tracking_traffic(type, length(variants$SH))
+                
+                print(paste0("length(variants$SH) ",length(variants$SH)))
+                # get SH info table...
+                  # single variant
+                  if (variants$SH != 0){
+                    output$info_table <- renderTable({
+                      sh_data <- global_SH[which(global_SH$SH_id %in% variants$SH),c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+                      sh_data$SH <- paste0("<a href='", "/?SH=",sh_data$SH,"' target='_blank'>", sh_data$SH,"</a>")
+                      data.frame(sh_data)
+                    }, sanitize.text.function = function(x) x)
+                  } else {
+                    output$info_table <- renderTable({
+                      bar_data <- data.frame(
+                        SH = c("-")
+                      )
+                    })
+                  }
+                
+                incProgress(1/3)
+                
+                # get samples table...
+                print(paste0("Number of seqs in ",text," is ", nrow(variants)))
+                
+                out_data$SeqVars <- variants[,c("otu","samples","abundances", "marker", "sequence")]
+                #print(out_data$SeqVars)
+                incProgress(1/3)
+                out_data$samples <- sample_tab(variants)
+              }
+            })
+        } else
           # SH option...  
           if (type == "SH") {
             withProgress(message = 'Searching...', {
@@ -511,7 +555,7 @@ resultsFunc <- function(input, output, session, variable) {
     output$info_key <- renderText(
       if (type == "study"){
         toString(global_papers[which(global_papers$paper_id %in% text),"title"])
-      } else { 
+      } else {
         text
       }
     )
