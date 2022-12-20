@@ -76,6 +76,10 @@ Taxonomy based on UNITE version 8.1 (2.2.2019). Database interface version v0.9.
 **Selected papers that use GlobalFungi data**
 <br>
 <br>
+Réblová, M., Hernández-Restrepo, M., Sklenář, F., Nekvindová, J., Réblová, K., Kolařík, M.: Consolidation of Chloridium: new classification into eight sections with 37 species and reinstatement of the genera Gongromeriza and Psilobotrys. Studies in Mycology 103, 87–212 (2022).
+[https://doi.org/10.3390/jof7121097](https://doi.org/10.3390/jof7121097)
+<br>
+<br>
 Baldrian, P., Větrovský, T., Lepinay, C., Kohout, P.: High-throughput sequencing view on the magnitude of global fungal diversity. Fungal Diversity 114, 539–547 (2022). 
 [https://doi.org/10.1007/s13225-021-00472-y](https://doi.org/10.1007/s13225-021-00472-y)
 <br>

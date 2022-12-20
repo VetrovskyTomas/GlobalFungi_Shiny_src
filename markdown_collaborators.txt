@@ -1,6 +1,7 @@
 ## List of Collaborators
 
 
+- Aku Korhonen - Natural Resources Institute Finland - Finland
 - Anastasiia Gromyko - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Andrea Moravcová - Institute of Microbiology of the Czech Academy of Sciences Charles University - Czech Republic
 - Anna Popelářová - Charles University - Czech Republic
@@ -8,6 +9,7 @@
 - Barbora Jelínková - Charles University - Czech Republic
 - Camelia Algora Gallardo - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Carina Paetzel - Eberswalde University for Sustainable Development - Germany
+- Carolina Paola Trentini - Instituto de Biología Subtropical (IBS CONICET-UNAM) - Argentina 
 - Cassie Ettinger - University of California, Davis - United States
 - Clémentine Lepinay - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
 - Daniel Morais - Institute of Microbiology of the Czech Academy of Sciences - Czech Republic
