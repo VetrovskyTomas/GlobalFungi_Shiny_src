@@ -267,6 +267,10 @@ server <- function(session, input, output) {
       actionButton("elixir_butt", label = NULL, 
                    style = "width: 144px; height: 64px; background: url('elixir_button.png');  background-size: cover; background-position: center;",
                    onclick = paste0("window.open('https://www.elixir-czech.cz/')")
+      ),
+      actionButton("mbu_butt", label = NULL, 
+                   style = "width: 144px; height: 64px; background: url('mbu_button.png');  background-size: cover; background-position: center;",
+                   onclick = paste0("window.open('https://mbucas.cz/en/')")
       )
     )
   })

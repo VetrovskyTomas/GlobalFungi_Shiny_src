@@ -32,7 +32,15 @@ ui <- tagList(
     # body...
     dashboardBody(
       useShinyjs(),
-      tags$head(includeScript("google-analytics.js")),
+      shiny::tags$head(
+        shiny::tags$script(
+          src = "https://www.googletagmanager.com/gtag/js?id=G-7RYP33XMMT",
+          async = ""
+        ),
+        shiny::tags$script(
+          src = "js/gtag.js"
+        )
+      ),
       tags$head(tags$link(rel="shortcut icon", href="geosearch.png")),
       tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")

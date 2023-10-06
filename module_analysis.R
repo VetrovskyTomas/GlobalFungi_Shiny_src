@@ -348,11 +348,7 @@ analysisFunc <- function(input, output, session, parent) {
       })
       
       # reder blast results table...
-      output$info_table <- DT::renderDataTable(
-        DT::datatable({
-          vals$blast_out
-        }, escape = FALSE, selection = 'none')
-      )
+      
       incProgress(1/5)
     })
     return(vals)
@@ -378,6 +374,8 @@ analysisFunc <- function(input, output, session, parent) {
     values$upload_state <- 'reset'
     enable("textSeq")
     reset("fasta_file")
+    output$info_table <- DT::renderDataTable(NULL)
+    output$info_fasta <- renderText(NULL)
   })
   
   file_input <- reactive({
@@ -392,7 +390,11 @@ analysisFunc <- function(input, output, session, parent) {
 
   # analyze...
   observeEvent(input$analyze_button, {
+      # clean previous result
       input_fasta <- NULL
+      output$info_table <- isolate(DT::renderDataTable(NULL))
+      output$info_fasta <- isolate(renderText(NULL))
+
       # load fasta from file...
       if (!is.null(file_input())) {
         # reading from file...
@@ -417,6 +419,7 @@ analysisFunc <- function(input, output, session, parent) {
       }
       # 
       if (!is.null(input_fasta)) {
+        #
         print(paste0("FASTA IS OK...type ",input$search_type," #of seqs. ", nrow(input_fasta) ," max res: ", input$max_blast_results))
         
         # exact match...
