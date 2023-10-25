@@ -15,16 +15,6 @@ homeUI <- function(id) {
     fluidRow(
       column(12,verbatimTextOutput(ns("fm_info")))
     ),
-    # link to GlobalFungi
-    fluidRow(
-      column(12, style='padding-left:15px; padding-right:0px; padding-top:0px; padding-bottom:10px',
-             actionButton("globalfungi_butt", label = "To access published data on arbuscular mycorrhizal fungal communities, click here!", 
-                          #icon = icon("world"), 
-                          icon("circle"), 
-                          style="color: #fff; background-color: #ea594e; border-color: #ce022d",
-                          onclick = paste0("window.open('https://globalamfungi.com/')")),
-      )
-    ),
     # tutorials
     fluidRow(
       column(12, style='padding-left:15px; padding-right:0px; padding-top:0px; padding-bottom:10px',
@@ -46,6 +36,16 @@ homeUI <- function(id) {
                          deliverChart(div_id = ns("contPie")),
                          style = "background-color:white;")
                 )
+    ),
+    # link to GlobalFungi
+    fluidRow(
+      column(12, style='padding-left:15px; padding-right:0px; padding-top:0px; padding-bottom:10px',
+             actionButton("globalfungi_butt", label = "To access published data on arbuscular mycorrhizal fungal communities, click here!", 
+                          #icon = icon("world"), 
+                          icon("circle"), 
+                          style="color: #fff; background-color: #ea594e; border-color: #ce022d",
+                          onclick = paste0("window.open('https://globalamfungi.com/')")),
+      )
     )
   )
 }
