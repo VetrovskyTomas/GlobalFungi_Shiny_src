@@ -89,7 +89,7 @@ analysisFunc <- function(input, output, session, parent) {
                                   "Select datbase:",
                                   choiceNames = global_blast_db_names, 
                                   choiceValues = global_blast_db_paths,
-                                  selected = "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa"
+                                  selected = "/home/fungal/databases/blast_database/gf5/BLAST_GF5_DOUBLE.fa"
                )
                ),
         if (input$search_type == "blast_group"){
@@ -97,7 +97,6 @@ analysisFunc <- function(input, output, session, parent) {
             column(3,
                    selectizeInput(ns("max_blast_results"),
                                   options = list(
-                                    maxOptions=length(global_species_list),
                                     placeholder = 'Please select an option below'
                                   ),
                                   label = "Max of BLAST results:", choices = c(10, 50, 100, 500), width = "300px",

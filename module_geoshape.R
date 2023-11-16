@@ -61,6 +61,7 @@ geoshapeFunc <- function(input, output, session, samples) {
   selected_global$samples <- NULL
 
   # define map samples...
+  
   map_samples <- data.frame(locationID = global_samples$id,
                     longitude = global_samples$longitude,
                     latitude = global_samples$latitude,
@@ -227,8 +228,14 @@ geoshapeFunc <- function(input, output, session, samples) {
       })
       # table with samples metadata...
       output$selection_samples_out <- DT::renderDataTable({
-        selected_global$samples[,c("id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling")]
-      }, colnames = c("ID", "primers", "longitude", "latitude", "type", "ITS tot.", "Biome", "MAT", "MAP", "pH", "year"), selection = 'single')
+        selected_samples <- selected_global$samples
+        selected_samples$sampling_year_range <- ifelse(selected_samples$year_of_sampling_from == selected_samples$year_of_sampling_to,
+                                                       as.character(selected_samples$year_of_sampling_from),
+                                                       paste(selected_samples$year_of_sampling_from, selected_samples$year_of_sampling_to, sep = "-"))
+        selected_samples <- selected_samples[, c("permanent_id", "primers", "longitude", "latitude", "sample_type", "ITS_total", "Biome", "MAT", "MAP", "pH", "sampling_year_range")]
+        selected_samples
+      }, colnames = c("Sample ID", "primers", "longitude", "latitude", "type", "ITS tot.", "Biome", "MAT", "MAP", "pH", "Sampling Year Range"), selection = 'single')
+      
       # table with SH from selection...
       output$selection_SH_out <- DT::renderDataTable(
         DT::datatable({

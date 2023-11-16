@@ -103,17 +103,16 @@ resultsFunc <- function(input, output, session, variable) {
         withProgress(message = 'Searching...', {
           # tracking...
           tracking_traffic(type, text)
-          
           # filter papers data...
           incProgress(1/3)
           output$info_table <- renderTable({
-            paper_tab <- global_papers[which(global_papers$paper_id %in% text),c("title", "authors", "year","journal", "doi", "contact")]
+            paper_tab <- global_papers[which(global_papers$id %in% text),c("title", "authors", "year","journal", "doi", "contact")]
             names(paper_tab) <- c("Title", "Authors", "Year","Journal", "DOI", "Contact")
             paper_tab
           })
           # filer sample based on selection...
           incProgress(1/3)
-          out_data$samples <- global_samples[which(global_samples$paper_id %in% text),]
+          out_data$samples <- global_samples[which(global_samples$paper == text),]
         })
       } else
         # sequence option...  
@@ -328,7 +327,7 @@ resultsFunc <- function(input, output, session, variable) {
     if (!is.null(out_data$samples)){
       filtered_data <- reactiveValues()
       filtered_data$filter <- FALSE
-      filtered_data$samples <- isolate(out_data$samples[out_data$samples$manipulated != "true",])
+      filtered_data$samples <- isolate(out_data$samples[out_data$samples$manipulated != 1,])
       print(nrow(filtered_data$samples))
       
       callModule(module = resutsTypesAndBiomesFunc, id = "results_types_biomes", filtered_data)
@@ -422,7 +421,7 @@ resultsFunc <- function(input, output, session, variable) {
           }
           # filter by manipulation...
           if (length(input$sample_manipulated) == 0) {
-            filtered_data$samples <- filtered_data$samples[filtered_data$samples$manipulated != "true",]
+            filtered_data$samples <- filtered_data$samples[filtered_data$samples$manipulated != 1,]
           }
           # filter by sample type...
           filtered_data$samples <- filtered_data$samples[which(filtered_data$samples$sample_type %in% input$sample_type),]
@@ -436,7 +435,8 @@ resultsFunc <- function(input, output, session, variable) {
           if ((length(input$sample_year_NA)>0)&&(input$sample_year_NA == TRUE)){
             years <- c(years,NA)
           }
-          filtered_data$samples <- filtered_data$samples[which(as.numeric(filtered_data$samples$year_of_sampling) %in% years),]
+          #filtered_data$samples <- filtered_data$samples[which(as.numeric(filtered_data$samples$year_of_sampling) %in% years),]
+          filtered_data$samples <- filtered_data$samples[apply(filtered_data$samples, 1, function(row) any(row["year_of_sampling_from"] <= years & years <= row["year_of_sampling_to"])),]
           
           # show filtered samples count info...
           output$info_sample_filtered <- renderText({
@@ -489,11 +489,15 @@ resultsFunc <- function(input, output, session, variable) {
     # dynamic filters...
     output$dynamic_filters <- renderUI({
       if (!is.null(out_data$samples)){
-        num_man <- length(out_data$samples$manipulated[out_data$samples$manipulated=="true"])
+        num_man <- length(out_data$samples$manipulated[out_data$samples$manipulated==1])
         # variables...
-        sample_years <- as.numeric(out_data$samples$year_of_sampling)
+        sample_years_from <- as.numeric(out_data$samples$year_of_sampling_from)
+        sample_years_to <- as.numeric(out_data$samples$year_of_sampling_to)
+        sample_years <- c(sample_years_from, sample_years_to)
+        
         year_na <- NA %in% sample_years
         sample_years=sample_years[!is.na(sample_years)]
+        
         sample_biomes <- sort(unique(out_data$samples$Biome))
         sample_types <- sort(unique(out_data$samples$sample_type))
         # filters...
@@ -506,7 +510,7 @@ resultsFunc <- function(input, output, session, variable) {
           ),
           if (num_man>0){
           checkboxGroupInput(ns("sample_manipulated"), 
-                            paste0("Add manipulated samples (",length(out_data$samples$manipulated[out_data$samples$manipulated=="true"]),") :"),
+                            paste0("Add manipulated samples (",length(out_data$samples$manipulated[out_data$samples$manipulated==1]),") :"),
                              choiceNames = "add",
                              choiceValues = "add",
                              selected = ""
@@ -554,7 +558,7 @@ resultsFunc <- function(input, output, session, variable) {
     # key
     output$info_key <- renderText(
       if (type == "study"){
-        toString(global_papers[which(global_papers$paper_id %in% text),"title"])
+        toString(global_papers[which(global_papers$id %in% text),"title"])
       } else {
         text
       }
@@ -563,10 +567,12 @@ resultsFunc <- function(input, output, session, variable) {
     # show samples count info...
     output$info_sample_count <- renderText({
       num_samples <- 0
+      num_samples_man <- 0
       if (!is.null(out_data$samples)){
-        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated=="false"])
+        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated==0])
+        num_samples_man <- length(out_data$samples$manipulated[out_data$samples$manipulated==1])
       }
-      return(paste0("Original result is covering ", num_samples, " samples")) 
+      return(paste0("Original result is covering ", num_samples, " samples (", num_samples_man, " manipulated ignored)")) 
     })
     
     # hide or show panel with tabs...
@@ -584,10 +590,12 @@ resultsFunc <- function(input, output, session, variable) {
     # show title...
     output$out_title <- renderText({
       num_samples <- 0
+      num_samples_man <- 0
       if (!is.null(out_data$samples)){
-        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated=="false"])
+        num_samples <- length(out_data$samples$manipulated[out_data$samples$manipulated==0])
+        num_samples_man <- length(out_data$samples$manipulated[out_data$samples$manipulated==1])
       }
-      return(paste0("Here are the results for ", type, " covering ", num_samples, " samples")) 
+      return(paste0("Here are the results for ", type, " containing ", num_samples," natural and ", num_samples_man, " manipulated samples")) 
     })
   })
   

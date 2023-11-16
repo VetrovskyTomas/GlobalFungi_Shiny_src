@@ -53,8 +53,8 @@ resutspHFunc <- function(input, output, session,  variable) {
     dat_sel <- variable$samples[variable$samples$pH != "NA_",]
     counts$sel_obs <- nrow(dat_sel)
     if (!is.null(dat_sel)){
-      dat_studyn <- dat_sel[dat_sel$manipulated == "false",][,"pH"]
-      dat_studym <- dat_sel[dat_sel$manipulated == "true",][,"pH"]
+      dat_studyn <- dat_sel[dat_sel$manipulated == 0,][,"pH"]
+      dat_studym <- dat_sel[dat_sel$manipulated == 1,][,"pH"]
       dat_studyn <- rbind(dat_glob, dat_studyn)
       dat_studym <- rbind(dat_glob, dat_studym)
       # sel bar chart sample type...

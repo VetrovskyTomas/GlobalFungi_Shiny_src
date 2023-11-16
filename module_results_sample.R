@@ -29,16 +29,40 @@ resultsSampleFunc <- function(input, output, session, id) {
   
   sample_id <- isolate(id)
     if (sample_id > -1){
-    query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples," WHERE `id` = '",sample_id,"'"))
-    sample <- data.table(sqlQuery(query))
+      result_basic <- global_samples[id == sample_id,]
+      
+      # id  44884
+      # paper 505
+      # permanent_id  GF3S02027a
+      # sample_type root
+      # latitude  18.586694
+      # longitude -95.074407
+      # continent North America
+      # year_of_sampling_from 2014
+      # year_of_sampling_to 2014
+      # biome forest
+      # primers ITS1F_KYO1/ITS2_KYO2
+      # MAT 24.9
+      # MAP 3079.0
+      # pH  NULL
+      # SOC NULL
+      # ITS_total 4540
+      # manipulated True
+      
+      #print(result_basic)
+      permanent_id <- result_basic[,"permanent_id"]
+      #print(paste0("sample details ",permanent_id))
+      #print(paste0("sample_id ",sample_id))
+    query <- sprintf(paste0("SELECT * FROM ",options()$mysql$advanced," WHERE `id` = ",sample_id,""))
+    result_advanced <- data.table(sqlQuery(query))
     
-    print(paste0("sample details ",sample_id))
+    sample <- cbind(result_basic, result_advanced)
     #print(sample)
     #print(sample[,"sample_name"])
     
     # table basic
     output$sample_table_basic <- renderTable({
-      sample_vals <- sample[,c("id", "longitude", "latitude", "elevation", 
+      sample_vals <- sample[,c("permanent_id", "longitude", "latitude", "elevation", 
                                "continent",
                                "country", 
                                "location",
@@ -48,24 +72,46 @@ resultsSampleFunc <- function(input, output, session, id) {
                                "MAT_study", 
                                "MAP_study",
                                "sample_name",
-                               "area_sampled", 
-                               "area_GPS", "number_of_subsamples", "sample_depth",
-                               "year_of_sampling", "month_of_sampling", "day_of_sampling", "sampling_info", "sample_description", "manipulated")]
+                               "area_sampled")]
+      
+      sample_vals[, area_GPS :=  ifelse(sample$area_GPS_from == sample$area_GPS_to,
+                                                    as.character(sample$area_GPS_from),
+                                                    paste(sample$area_GPS_from, "-", sample$area_GPS_to))]
+      
+      sample_vals[, number_of_subsamples := ifelse(sample$number_of_subsamples_from == sample$number_of_subsamples_to,
+                                     as.character(sample_vals$number_of_subsamples_from),
+                                     paste(sample_vals$number_of_subsamples_from, "-", sample_vals$number_of_subsamples_to))]
+      
+      sample_vals[, sample_depth := ifelse(sample$sample_depth_from == sample$sample_depth_to,
+                                     as.character(sample$sample_depth_from),
+                                     paste(sample$sample_depth_from, "-", sample$sample_depth_to))]
+      
+      sample_vals[, year_of_sampling := ifelse(sample$year_of_sampling_from == sample$year_of_sampling_to,
+                                               as.character(sample$year_of_sampling_from),
+                                               paste(sample$year_of_sampling_from, "-", sample$year_of_sampling_to))]
+      
+      sample_vals[, c("month_of_sampling", "day_of_sampling", "sampling_info", "sample_description", "manipulated") :=
+                    sample[, .(month_of_sampling, day_of_sampling, sampling_info, sample_description, manipulated)]]
+    
+      
+      # Remove the columns "area_GPS_from" and "area_GPS_to" from the data frame
+      #sample_vals <- sample_vals[, !names(sample_vals) %in% c("area_GPS_from", "area_GPS_to")]
+      
       colnames(sample_vals) <- c("Sample ID", "Longitude", "Latitude", "Elevation study (m)", 
-                               "Continent", 
-                               "Country", 
-                               "Location",
-                               "Sample type",
-                               "Biome",
-                               "Biome (ENVO)",
-                               "MAT (\u00B0C) study", 
-                               "MAP (mm) study",
-                               "Sample ID in study",
-                               "Area covered by sampling (m2)",
-                               "Area represented by GPS (m2)", 
-                               "Number of subsamples", 
-                               "Sampling depth (cm)",
-                               "Sampling year", "Sampling month", "Sampling day", "Sampling info", "Sample description", "Manipulated")
+                                 "Continent", 
+                                 "Country", 
+                                 "Location",
+                                 "Sample type",
+                                 "Biome",
+                                 "Biome (ENVO)",
+                                 "MAT (\u00B0C) study", 
+                                 "MAP (mm) study",
+                                 "Sample ID in study",
+                                 "Area covered by sampling (m2)",
+                                 "Area represented by GPS (m2)", 
+                                 "Number of subsamples",  
+                                 "Sampling depth (cm)",
+                                 "Sampling year", "Sampling month", "Sampling day", "Sampling info", "Sample description", "Manipulated")
       sample_vals[sample_vals == "NA_"] <- "NA"
       sample_vals <- data.frame(variable = rownames(t(sample_vals)), values = t(sample_vals))
       names(sample_vals) <- c("Variable", " ")
@@ -74,18 +120,37 @@ resultsSampleFunc <- function(input, output, session, id) {
     
     # table advance
     output$sample_table_advance <- renderTable({
-      sample_vals <- sample[,c("sequencing_platform", "target_gene", "extraction_DNA_mass", "extraction_DNA_size", "extraction_DNA_method",
-                               "primers", "primers_sequence", 
-                               "pH", 
-                               "pH_method", 
-                               "organic_matter_content",
-                               "total_C_content", 
-                               "total_N_content",
-                               "total_P", 
-                               "total_Ca", 
-                               "total_K", 
-                               "plants_dominant", 
-                               "plants_all", "sample_info")]
+      sample_vals <- sample[,c("sequencing_platform", "target_gene")]
+      
+      sample_vals[, extraction_DNA_mass := ifelse(sample$extraction_DNA_mass_from == sample$extraction_DNA_mass_to,
+                                           as.character(sample$extraction_DNA_mass_from),
+                                           paste(sample$extraction_DNA_mass_from, "-", sample$extraction_DNA_mass_to))]
+      
+      sample_vals[, c("extraction_DNA_size", "extraction_DNA_method",
+                      "primers", "primers_sequence", 
+                      "pH", 
+                      "pH_method", 
+                      "organic_matter_content",
+                      "total_C_content", 
+                      "total_N_content",
+                      "total_P", 
+                      "total_Ca", 
+                      "total_K", 
+                      "plants_dominant", 
+                      "plants_all", "sample_info") :=
+                    sample[, .(extraction_DNA_size, extraction_DNA_method,
+                               primers, primers_sequence, 
+                               pH, 
+                               pH_method, 
+                               organic_matter_content,
+                               total_C_content, 
+                               total_N_content,
+                               total_P, 
+                               total_Ca, 
+                               total_K, 
+                               plants_dominant, 
+                               plants_all, sample_info)]]
+      
       colnames(sample_vals) <- c("Sequencing platform", "Target marker", "Sample mass for DNA extraction (g)", "Sample size for DNA extraction (other)", "DNA extraction method",
                                 "Primers", "Primer sequences", 
                                 "pH", 
@@ -106,7 +171,8 @@ resultsSampleFunc <- function(input, output, session, id) {
     # table paper
     output$sample_table_paper <- renderTable({
       sample_vals <- global_samples[which(global_samples$id %in% sample_id), ]
-      sample_vals <- global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),c("title", "authors", "year","journal", "doi", "contact", "submitted_by")]
+      sample_vals <- global_papers[which(global_papers$id %in% sample_vals$paper),c("title", "authors", "year","journal", "doi", "contact")]
+      sample_vals$submitted_by <- global_info$name
       colnames(sample_vals) <- c("Title", "Authors", "Year","Journal", "DOI", "Contact", "Submitted by")
       sample_vals <- data.frame(study = rownames(t(sample_vals)), values = t(sample_vals))
       names(sample_vals) <- c("Study", " ")
@@ -115,14 +181,14 @@ resultsSampleFunc <- function(input, output, session, id) {
     
     output$dynamic_button <- renderUI({
       sample_vals <- global_samples[which(global_samples$id %in% sample_id), ]
-      paper_id <- global_papers[which(global_papers$paper_id %in% sample_vals$paper_id),c("paper_id")]
+      paper_id <- global_papers[which(global_papers$id %in% sample_vals$paper),c("id")]
       actionButton(ns("showStudy"), "Show study samples", icon = icon("microscope"), onclick =paste0("window.open('/?paper=",paper_id,"', '_blank')"))
     })    
     
     output$downloadSeqs <- downloadHandler(
-      filename = paste0(sample_id,"_sequences.zip"),
+      filename = paste0(permanent_id,"_sequences.zip"),
       content = function(file) {
-        file.copy(paste0(global_samples_path, sample_id,"_sample.zip"), file)
+        file.copy(paste0(global_samples_path, permanent_id,"_sample.zip"), file)
       }
     )
     }

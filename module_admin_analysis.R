@@ -91,7 +91,6 @@ analysisAdminFunc <- function(input, output, session, parent) {
           column(4,
                  selectizeInput(ns("max_blast_results"),
                                 options = list(
-                                  maxOptions=length(global_species_list),
                                   placeholder = 'Please select an option below'
                                 ),
                                 label = "Max of BLAST results:", choices = c(10, 50, 100, 500, 1000, 10000), width = "300px",

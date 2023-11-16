@@ -24,12 +24,48 @@ resutsSamplesFunc <- function(input, output, session,  variable) {
 
   observe({
     print("SAMPLES REFRESH...")
-    table_samples <- samples[,c("id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH", "year_of_sampling", "primers", "ITS_total", "manipulated")]
-    col_names <- c("Sample ID", "Sample type", "Biome", "Longitude", "Latitude", "MAT (\u00B0C) CHELSA", "MAP (mm) CHELSA", "pH", "Sampling year", "Primers", "ITS total", "Manipulated")
+    
+    #table_samples <- samples[,c("permanent_id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH", "year_of_sampling", "primers", "ITS_total", "manipulated")]
+    
+    #table_samples <- samples[,c("permanent_id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH", "year_of_sampling_from", "year_of_sampling_to", "primers", "ITS_total", "manipulated")]
+    #table_samples$year_of_sampling <- ifelse(table_samples$year_of_sampling_from == table_samples$year_of_sampling_to,
+    #                                            as.character(table_samples$year_of_sampling_from),
+    #                                            paste(table_samples$year_of_sampling_from, table_samples$year_of_sampling_to, sep = "-"))
+    #col_names <- c("Sample ID", "Sample type", "Biome", "Longitude", "Latitude", "MAT (\u00B0C) CHELSA", "MAP (mm) CHELSA", "pH", "Sampling year", "Primers", "ITS total", "Manipulated")
+    #if("abundances" %in% colnames(samples)) {
+    #  table_samples <- samples[,c("permanent_id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH", "year_of_sampling_from", "year_of_sampling_to", "primers", "abundances", "ITS_total", "manipulated")]
+    #  table_samples$year_of_sampling <- ifelse(table_samples$year_of_sampling_from == table_samples$year_of_sampling_to,
+    #                                           as.character(table_samples$year_of_sampling_from),
+    #                                           paste(table_samples$year_of_sampling_from, table_samples$year_of_sampling_to, sep = "-"))
+    #  col_names <- c("Sample ID", "Sample type", "Biome", "Longitude", "Latitude", "MAT (\u00B0C)", "MAP (mm)", "pH", "Sampling year", "Primers","ITS observed", "ITS total", "Manipulated")
+    #} 
+    
+    
+    #####################
+    table_samples <- samples[,c("permanent_id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH")]
+    col_names <- c("Sample ID", "Sample type", "Biome", "Longitude", "Latitude", "MAT (\u00B0C)", "MAP (mm)", "pH")
+    
     if("abundances" %in% colnames(samples)) {
-      table_samples <- samples[,c("id", "sample_type", "Biome", "longitude", "latitude", "MAT", "MAP", "pH", "year_of_sampling", "primers", "abundances", "ITS_total", "manipulated")]
-      col_names <- c("Sample ID", "Sample type", "Biome", "Longitude", "Latitude", "MAT (\u00B0C)", "MAP (mm)", "pH", "Sampling year", "Primers","ITS observed", "ITS total", "Manipulated")
+      table_samples$year_of_sampling <- ifelse(samples$year_of_sampling_from == samples$year_of_sampling_to,
+                                               as.character(samples$year_of_sampling_from),
+                                               paste(samples$year_of_sampling_from, samples$year_of_sampling_to, sep = "-"))
+      table_samples$primers <- samples$primers
+      table_samples$abundances <- samples$abundances
+      table_samples$ITS_total <- samples$ITS_total
+      table_samples$manipulated = ifelse(samples$manipulated == 1, "Yes", "No")
+      col_names <- c(col_names, "Sampling year", "Primers","ITS observed", "ITS total", "Manipulated")
+    } else {
+      table_samples$year_of_sampling <- ifelse(samples$year_of_sampling_from == samples$year_of_sampling_to,
+                                               as.character(samples$year_of_sampling_from),
+                                               paste(samples$year_of_sampling_from, samples$year_of_sampling_to, sep = "-"))
+      table_samples$primers <- samples$primers
+      table_samples$ITS_total <- samples$ITS_total
+      table_samples$manipulated = ifelse(samples$manipulated == 1, "Yes", "No")
+      col_names <- c(col_names, "Sampling year", "Primers", "ITS total", "Manipulated")
     }
+    
+    
+    #####################
     
     # table with samples metadata...
     output$metadata <- DT::renderDataTable({

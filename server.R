@@ -196,7 +196,7 @@ server <- function(session, input, output) {
                   id = "hidden",
                   sidebarMenu(
                   tags$hr(),
-                  menuItem("Cluster analysis", icon = icon("circle-nodes"), tabName = "fmd_clusters", badgeLabel = "NEW", badgeColor = "red"),
+                  #menuItem("Cluster analysis", icon = icon("circle-nodes"), tabName = "fmd_clusters", badgeLabel = "NEW", badgeColor = "red"),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
                            badgeLabel = "admin", badgeColor = "orange")
                 ))

@@ -6,7 +6,16 @@ options(mysql = list(
   "password" = "", # "password" = "ubuntu",
   "db" = "fm", # "db" = "fmd",
   # samples table
-  "samples" = "samples",
+  # "samples" = "samples",
+
+  # samples basic
+  "basic" = "samples_basic",
+  
+  # samples basic
+  "advanced" = "samples_advanced",
+  
+  # papers
+  "papers" = "samples_papers",
   
   # main table with all variants
   "variants_table" = "variants",
@@ -92,22 +101,26 @@ killDbConnections <- function () {
 global_vars_to_fasta_py <- "/srv/shiny-server/seqs_variants_to_fasta.py"
   
 # nucleotide database for blast
-#global_blast_db <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED.fa"
+#global_blast_db_single <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_SINGLE.fa"
 #global_blast_db_double <- "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_DOUBLE.fa"
 
 #global_blast_FUN_ANNOT <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa"
 #global_blast_FUN_POOR <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa"
 #global_blast_FUN <- "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa"
 #global_blast_NO_HIT <- "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa"
-global_blast_db_names <- c("Fungal annotated", "Fungal eval<e-50","Fungal eval>e-50", "Unknown")
-global_blast_db_paths <- c("/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa", "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa")
+#global_blast_db_names <- c("Fungal annotated", "Fungal eval<e-50","Fungal eval>e-50", "Unknown")
+#global_blast_db_paths <- c("/home/fungal/databases/blast_database/VARIANTS_FUNGAL_ANNOTATED.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL.fa", "/home/fungal/databases/blast_database/VARIANTS_FUNGAL_POOR.fa", "/home/fungal/databases/blast_database/VARIANTS_NO_HIT.fa")
+
+global_blast_db_names <- c("Nonsingletons (all variants)", "Singletons (annotated variants only)")
+global_blast_db_paths <- c("/home/fungal/databases/blast_database/VARIANTS_PROCESSED_DOUBLE.fa", "/home/fungal/databases/blast_database/VARIANTS_PROCESSED_SINGLE.fa")
+
 
 
 global_clusters_db_names <- c("ITS1", "ITS2")
 global_clusters_db_paths <- c("/home/fungal/databases/blast_database/CLUSTERS_ITS1.fas","/home/fungal/databases/blast_database/CLUSTERS_ITS2.fas")
 
 # sample sequences path 
-global_samples_path <- "/home/fungal/databases/samples_fasta/"
+global_samples_path <- "/home/fungal/databases/samples_fasta/permanent/"
 
 # variant sequences path 
 global_variants_path <- "/home/fungal/databases/variants_fasta/"
@@ -129,50 +142,28 @@ if (nrow(session)>0){
 }
 print(paste0("Current session number ",global_session))
 
-
+#future({
 # database info
 query <- sprintf(paste0("SELECT `name`,`version`,`release`,`unite_version`,`its_variants_count`,`its1_raw_count`,`its2_raw_count`,`info`,`citation`,`date` FROM ",options()$mysql$info," ORDER BY id DESC LIMIT 1;"))
 global_info <- data.table(sqlQuery(query))
 
-#query <- sprintf(paste0("SELECT TABLE_ROWS from information_schema.Tables where TABLE_SCHEMA= '",options()$mysql$db,"' && TABLE_NAME = '",options()$mysql$variants_table,"'"))
-#global_variants_count <- sqlQuery(query)
 # load samples table...
-query <- sprintf(paste0("SELECT * FROM ",options()$mysql$samples))
+#query <- sprintf(paste0("SELECT * FROM ",options()$mysql$basic," LIMIT 100"))
+query <- sprintf(paste0("SELECT * FROM ",options()$mysql$basic))
 global_samples <- data.table(sqlQuery(query))
 
-# construct papers table...
-global_papers <- global_samples[,c("add_date","paper_id", "title", "year", "authors", "journal", "doi", "contact", "manipulated")]
-# this will be changed in future...
+# load papers
+query <- sprintf(paste0("SELECT * FROM ",options()$mysql$papers))
+global_papers <- data.table(sqlQuery(query))
 
-global_papers$submitted_by <- rep(global_info[,"name"], nrow(global_papers))
-global_papers <- distinct(global_papers, paper_id, .keep_all= TRUE) # remove duplicate rows based on variable
-
-# split title and year...
-#print(global_papers$title_year)
-#Sys.setlocale('LC_CTYPE','C')
-#splited_title_year <- do.call('rbind', strsplit(as.character(global_papers$title_year), '_', fixed=TRUE))
-#colnames(splited_title_year) <- c("title", "year")
-#global_papers <- cbind(global_papers, splited_title_year)
-#global_papers = subset(global_papers, select = -c(title_year) ) #drop column...
-
-# sort
-rowidx <- order(global_papers[, "add_date"], global_papers[, "authors"])
-global_papers <- global_papers[rowidx, , drop = FALSE]
-
-
-# store minimal amount of information
-global_samples <- global_samples[,c("id","paper_id", "primers", "longitude", "latitude","continent", "sample_type", "ITS1_extracted", "ITS2_extracted","ITS_total", "Biome", "MAT", "MAP", "pH", "year_of_sampling", "manipulated")] 
-
- 
 # load SH table...
 query <- sprintf(paste0("SELECT * FROM ",options()$mysql$taxonomy))
 global_SH <- sqlQuery(query)
-global_SH <- global_SH[,c("SH", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species","genus_id","species_id","SH_id")]
 print(nrow(global_SH))
 
-# options
-global_SH_list <- sort(global_SH$SH)
+# get options
+global_SH_list <- global_SH$SH
 global_species_list <- sort(unique(global_SH$Species))
 global_species_list <- global_species_list[!global_species_list %in% grep(" sp.", global_species_list, value = T)]
 global_genus_list <- sort(unique(global_SH$Genus))
-  
+

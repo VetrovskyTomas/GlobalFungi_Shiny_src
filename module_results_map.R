@@ -49,7 +49,7 @@ resutsMapFunc <- function(input, output, session,  variable) {
         stringsAsFactors = F)
         pallete <- colorBin(palette = c('blue'), map_data$type, bins = c(0,1))
     }
-    
+
     # map of samples from the study...
     output$mymap <- renderLeaflet({
         leaflet(data = map_data, options = leafletOptions(preferCanvas = TRUE, minZoom = 1.2)) %>%
@@ -61,7 +61,6 @@ resutsMapFunc <- function(input, output, session,  variable) {
           updateWhenZooming = FALSE,  # map won't update tiles until zoom is done
           updateWhenIdle = TRUE)#, noWrap = TRUE) # map won't load new tiles when panning
           , group = "foto") %>%
-        addProviderTiles(providers$Stamen.TerrainLabels, group = "foto") %>%
           addMapPane("background", zIndex = 410) %>%
           addMapPane("foreground", zIndex = 420) %>%
           addCircleMarkers(data = global_samples, ~longitude, ~latitude,  options = pathOptions(clickable = FALSE, pane = "background"),layerId = -1,
@@ -103,9 +102,9 @@ resutsMapFunc <- function(input, output, session,  variable) {
       if (!is.null(click)) {
         sample_info <- samples[which(samples$id %in% click$id),]
         
-        text <- paste0("id-",sample_info[,"id"], " (", sample_info[,"ITS_total"]," ITS)")
+        text <- paste0(sample_info[,"permanent_id"], " (", sample_info[,"ITS_total"]," ITS)")
         if("abundances" %in% colnames(samples)) {
-          text <- paste0("id-",sample_info[,"id"], " (", sample_info[,"abundances"],"/",sample_info[,"ITS_total"],")")
+          text <- paste0(sample_info[,"permanent_id"], " (", sample_info[,"abundances"],"/",sample_info[,"ITS_total"],")")
         } 
         
         leafletProxy(mapId = "mymap") %>%

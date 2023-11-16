@@ -30,6 +30,7 @@ resutsGeographyFunc <- function(input, output, session,  variable) {
     # pie chart of samples geography...
     datS <- as.data.frame(table(variable$samples[,"continent"]))
     colnames(datS) <- c("name", "value")
+    
     # render...
     renderPieChart(div_id = "geoPieStud", data = datS, show.legend = FALSE, radius = "75%")
     

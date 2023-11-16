@@ -15,59 +15,63 @@ searchUI <- function(id) {
     ),
     # search page...
     sidebarPanel(width = "100%", style = "background-color:white;",
-      tabsetPanel(id = ns("navbar"),
-        tabPanel("SH",
-          br(),
-          textInput(inputId = ns("search_key_sh"),
-            placeholder = "Enter SH (98.5%), e.g: SH1509013.08FU",
-            label = "Select SH:", 
-            width = "300px"
-          )
-        ),
-        tabPanel("Species", 
-          br(),
-          selectizeInput(inputId = ns("search_key_species"),
-                         options = list(
-                           maxOptions=length(global_species_list),
-                           placeholder = 'Start typing here'
-                         ),
-                         label = "Select species:", choices = global_species_list, width = "300px",
-                         selected = 1, 
-                         multiple = FALSE # allow for multiple inputs
-          )
-        ),
-        tabPanel("Genus",
-          br(),  
-          selectizeInput(inputId = ns("search_key_genus"),
-            options = list(
-              maxOptions=length(global_genus_list),
-              placeholder = 'Start typing here'
-            ),
-            label = "Select genus:", choices = global_genus_list, width = "300px",
-            selected = 1, 
-            multiple = FALSE # allow for multiple inputs
-          )
-        )
-        ),
-      fluidRow(
-        column(6, actionButton(ns("buttSearch"), label = "Search"))
-      )
+                 tabsetPanel(id = ns("navbar"),
+                             tabPanel("SH",
+                                      br(),
+                                      textInput(inputId = ns("search_key_sh"),
+                                                placeholder = "Enter SH (98.5%), e.g: SH1165964.09FU",
+                                                label = "Select SH:", 
+                                                width = "300px"
+                                      )
+                             ),
+                             tabPanel("Species", 
+                                      br(),
+                                      selectizeInput(inputId = ns("search_key_species"),
+                                                     options = list(
+                                                       maxOptions=length(global_species_list),
+                                                       placeholder = 'Start typing here'
+                                                     ),
+                                                     label = "Select species:", 
+                                                     choices = global_species_list, 
+                                                     width = "300px",
+                                                     selected = 1, 
+                                                     multiple = FALSE # allow for multiple inputs
+                                      )
+                             ),
+                             tabPanel("Genus",
+                                      br(),  
+                                      selectizeInput(inputId = ns("search_key_genus"),
+                                                     options = list(
+                                                       maxOptions=length(global_genus_list),
+                                                       placeholder = 'Start typing here'
+                                                     ),
+                                                     label = "Select genus:", 
+                                                     choices = global_genus_list, 
+                                                     width = "300px",
+                                                     selected = 1, 
+                                                     multiple = FALSE # allow for multiple inputs
+                                      )
+                             )
+                 ),
+                 fluidRow(
+                   column(6, actionButton(ns("buttSearch"), label = "Search"))
+                 )
     ), 
-        
-        
+    
+    
     # breakdown of search options
     sidebarPanel(width = "100%", style = "background-color:white;",
-        fluidRow(
-          column(6, h2("Breakdown of search options"))
-        ),
-        fluidRow(
-          column(6, 
-            tags$div(id = "class_bar", style="width: 100%;height:300px;"),  # Specify the div for the chart. Can also be considered as a space holder
-            deliverChart(div_id = ns("class_bar"))  # Deliver the plotting
-          )
-        )
-      )
+                 fluidRow(
+                   column(6, h2("Breakdown of search options"))
+                 ),
+                 fluidRow(
+                   column(6, 
+                          tags$div(id = "class_bar", style="width: 100%;height:300px;"),  # Specify the div for the chart. Can also be considered as a space holder
+                          deliverChart(div_id = ns("class_bar"))  # Deliver the plotting
+                   )
+                 )
     )
+  )
 }
 
 # Function for module server logic
@@ -87,37 +91,38 @@ searchFunc <- function(input, output, session, parent) {
       vals$type <- 'SH'
       vals$text <- input$search_key_sh
     } else 
-    # species...
-    if (nav_type == "Species") {
-      vals$type <- 'species'
-      vals$text <- input$search_key_species
-    } else 
-    # genus...
-    if (nav_type == "Genus") {
-      vals$type <- 'genus'
-      vals$text <- input$search_key_genus
-    }
+      # species...
+      if (nav_type == "Species") {
+        vals$type <- 'species'
+        vals$text <- input$search_key_species
+      } else 
+        # genus...
+        if (nav_type == "Genus") {
+          vals$type <- 'genus'
+          vals$text <- input$search_key_genus
+        }
     
     # message...
     print(paste("You are searching for", vals$type, "- value is",vals$text))
-
+    
     # call results...
     callModule(session = parent, module = resultsFunc, id = "id_results",isolate(vals)) 
     updateTabItems(session = parent, "menu_tabs", "fmd_results")
   })
   
   observe({
-      # load species options...
-      updateSelectizeInput(session, "search_key_species",
-                           selected="",
-                           choices = global_species_list, 
-                           server = TRUE)
-      
-      # load genus options...
-      updateSelectizeInput(session, "search_key_genus", 
-                           selected="",
-                           choices = global_genus_list, 
-                           server = TRUE)
+    # load species options...
+    updateSelectizeInput(session, "search_key_species",
+                         selected="",
+                         choices = global_species_list, 
+                         server = TRUE)
+    
+    # load genus options...
+    updateSelectizeInput(session, "search_key_genus", 
+                         selected="",
+                         choices = global_genus_list, 
+                         server = TRUE)
+    print("Taxonomy options loaded...")
   })
   
   observe({

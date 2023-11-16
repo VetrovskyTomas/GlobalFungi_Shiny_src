@@ -33,18 +33,27 @@ studiesFunc <- function(input, output, session, parent) {
     inputs
   }
   
+  # sort papers
+  #order_columns <- c("add_date", "authors")
+  #rowidx <- order(global_papers[, order_columns[1]], global_papers[, order_columns[2]])
+  #global_papers <- global_papers[rowidx, , drop = FALSE]
+  
+  # Sort the Global_papers data frame by year in ascending order
+  global_papers <- global_papers[order(global_papers$year),]
+  
   # fill data frame
   df <- reactiveValues(data = data.frame(
-    Date =  global_papers$add_date,
-    Title =  global_papers$title,
+    Id = global_papers$id,
+    Inserted = global_papers$add_date,
+    Title = global_papers$title,
     Authors = global_papers$authors,
     Journal = global_papers$journal,
-    Year =  global_papers$year,
+    Year = global_papers$year,
     DOI = global_papers$doi,
-    manipulated = global_papers$manipulated,
+    manipulated = ifelse(global_papers$manipulated == 1, "Yes", "No"),
     Actions = shinyInput(actionButton, nrow(global_papers), 'button_', label = "Show", 
-      onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
-                       "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),
+                         onclick = paste0("Shiny.onInputChange('", ns("lastClickId"), "',this.id);",
+                                          "Shiny.onInputChange('", ns("lastClick"), "', Math.random())")),
     stringsAsFactors = FALSE,
     row.names = 1:nrow(global_papers)
   ))
@@ -52,7 +61,7 @@ studiesFunc <- function(input, output, session, parent) {
   output$data <- DT::renderDataTable({
     DT::datatable(
       df$data, escape = FALSE, selection = 'none',
-    ) #%>% formatStyle(0, target='row', backgroundColor = styleEqual(which(df$data$manipulated =="true"),'#fff5d1'))
+    )
     }, server = FALSE
   )
 
@@ -63,7 +72,7 @@ studiesFunc <- function(input, output, session, parent) {
     #info about result type...
     vals$type =  "study"
     #pass code of the study...
-    vals$text <- toString(global_papers[selectedRow,2])
+    vals$text <- as.numeric(global_papers[selectedRow,1])
     print(vals$text)
     callModule(session = parent, module = resultsFunc, id = "id_results",vals)
     updateTabItems(session = parent, "menu_tabs", "fmd_results")

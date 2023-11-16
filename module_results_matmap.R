@@ -66,8 +66,8 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
   samples <- isolate(variable$samples[variable$samples$MAT != "NA_",])
   print(paste0("MAT MAP ", nrow(samples), " FILTERED ",variable$filter))
   if (!is.null(samples)){
-    dat_studyn <- samples[samples$manipulated == "false",][,"MAT"]
-    dat_studym <- samples[samples$manipulated == "true",][,"MAT"]
+    dat_studyn <- samples[samples$manipulated == 0,][,"MAT"]
+    dat_studym <- samples[samples$manipulated == 1,][,"MAT"]
     dat_studyn <- rbind(dat_glob, dat_studyn)
     dat_studym <- rbind(dat_glob, dat_studym)
     # study bar chart sample type...
@@ -121,8 +121,8 @@ resutsMatMapFunc <- function(input, output, session,  variable) {
   #bar chart sample type...
   samples <- isolate(variable$samples[variable$samples$MAP != "NA_",])
   if (!is.null(samples)){
-    dat_studyn <- samples[samples$manipulated == "false",][,"MAP"]
-    dat_studym <- samples[samples$manipulated == "true",][,"MAP"]
+    dat_studyn <- samples[samples$manipulated == 0,][,"MAP"]
+    dat_studym <- samples[samples$manipulated == 1,][,"MAP"]
     dat_studyn <- rbind(dat_glob, dat_studyn)
     dat_studym <- rbind(dat_glob, dat_studym)
     # study bar chart sample type...
