@@ -164,6 +164,13 @@ server <- function(session, input, output) {
         updateTabItems(session, "menu_tabs", "fmd_help")
     } else   
       # help redirection by link...
+      if (!is.null(query[['jobs']])) {
+        vals$key <- query[['jobs']]
+        print(paste0("The url query jobs value is ", vals$text))
+        callModule(module = jobsFunc, id = "id_jobs")
+        updateTabItems(session, "menu_tabs", "fmd_jobs")
+    } else   
+      # help redirection by link...
       if (!is.null(query[['join']])) {
         vals$key <- query[['join']]
         print(paste0("The url query join value is ", vals$text))
@@ -198,7 +205,8 @@ server <- function(session, input, output) {
                   tags$hr(),
                   #menuItem("Cluster analysis", icon = icon("circle-nodes"), tabName = "fmd_clusters", badgeLabel = "NEW", badgeColor = "red"),
                   menuItem("Settings", icon = icon("user-cog"), tabName = "fmd_admin",
-                           badgeLabel = "admin", badgeColor = "orange")
+                           badgeLabel = "admin", badgeColor = "orange"),
+                  menuItem("Jobs", icon = icon("question-circle"), tabName = "fmd_jobs")
                 ))
                 ),
                 ###########################
@@ -248,6 +256,7 @@ server <- function(session, input, output) {
   callModule(module = joinFunc, id = "id_join")
   callModule(module = adminFunc, id = "id_admin")
   callModule(module = collaboratorsFunc, id = "id_collaborators")
+  callModule(module = jobsFunc, id = "id_jobs")
   #################################################
   
   # copyright...

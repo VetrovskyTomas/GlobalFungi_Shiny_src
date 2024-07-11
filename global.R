@@ -52,6 +52,7 @@ source("module_join.R")
 source("module_message.R")
 source("module_geoshape.R")
 source("module_collaborators.R")
+source("module_jobs.R")
 
 # insert
 source("module_insert.R")

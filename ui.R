@@ -106,6 +106,10 @@ ui <- tagList(
         tabItem("fmd_message",
                 messageUI(id = "id_message")
         ),
+        #jobs
+        tabItem("fmd_jobs",
+                jobsUI(id = "id_jobs")
+        ),
         # settings
         tabItem("fmd_collaborators",
                 collaboratorsUI(id = "id_collaborators")
