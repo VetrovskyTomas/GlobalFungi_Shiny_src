@@ -1,0 +1,20 @@
+The example data in "fm.sql" contains this:
+
+| Tables            | Rows     | Type   | Text Format           | Size         |
+|------------------|---------|--------|----------------------|-------------|
+| clusters         | 4       | InnoDB | utf8mb4_general_ci   | 160,0 KiB   |
+| genus           | 3 475   | InnoDB | latin1_swedish_ci   | 39,6 MiB    |
+| info            | 1       | InnoDB | utf8mb4_general_ci   | 16,0 KiB    |
+| maillist        | 3       | InnoDB | utf8mb4_general_ci   | 16,0 KiB    |
+| messages        | 3       | InnoDB | utf8mb4_general_ci   | 16,0 KiB    |
+| metadata        | 1       | InnoDB | latin1_swedish_ci   | 16,0 KiB    |
+| samples_advanced | ~58 963 | InnoDB | utf8mb4_general_ci   | 95,6 MiB    |
+| samples_basic   | ~87 524 | InnoDB | utf8mb4_general_ci   | 22,5 MiB    |
+| samples_papers  | 846     | InnoDB | utf8mb4_general_ci   | 320,0 KiB   |
+| samples_to_sh   | ~52 051 | InnoDB | latin1_swedish_ci   | 58,1 MiB    |
+| sh              | 3 693   | InnoDB | latin1_swedish_ci   | 480,0 KiB   |
+| species         | 1 960   | InnoDB | latin1_swedish_ci   | 368,0 KiB   |
+| study           | 2       | InnoDB | utf8mb4_general_ci   | 16,0 KiB    |
+| taxonomy        | 46 812  | InnoDB | latin1_swedish_ci   | 12,1 MiB    |
+| traffic         | 1 426   | InnoDB | latin1_swedish_ci   | 96,0 KiB    |
+| variants        | ~97 896 | InnoDB | latin1_swedish_ci   | 27,6 MiB    |
